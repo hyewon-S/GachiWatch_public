@@ -1,11 +1,9 @@
-package com.example.demo.dao;
+package ssd.springcooler.gachiwatch.dao;
 
 import java.util.List;
-import com.example.demo.dto.*;
-import com.example.demo.domain.Member;
+import ssd.springcooler.gachiwatch.domain.Member;
 
 public interface MemberDao {
-
     // 회원가입
     void insertMember(SignUpDto dto);
     void insertMemberGenres(Long memberId, List<Long> genreIds);

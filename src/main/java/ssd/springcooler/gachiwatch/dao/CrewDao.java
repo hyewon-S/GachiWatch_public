@@ -1,5 +1,6 @@
 package ssd.springcooler.gachiwatch.dao;
 
+
 import ssd.springcooler.gachiwatch.domain.*;
 
 import java.util.List;
@@ -8,6 +9,7 @@ public interface CrewDao {
     Member getCaptain(int crewId);
     List<Member> getMembers(int crewId);
     List<Crew> getCrewList();
+
     //List<Crew> getCrewList(List<Platform> platforms);
 
     Crew getCrew(int crewId);
