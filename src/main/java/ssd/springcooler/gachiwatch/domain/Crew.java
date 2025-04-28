@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Crew {
+    int crewId;
     Member captain;
     ArrayList<Member> crewMembers = new ArrayList<Member>();
     String crewName;
@@ -31,6 +32,10 @@ public class Crew {
         this.payDate = payDate;
         this.maxMember = maxMember;
         this.account = account;
+    }
+
+    public Crew() {
+
     }
 
     public int calcPayFee() {
