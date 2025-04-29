@@ -71,7 +71,7 @@ public class CrewServiceImpl implements CrewFacade {
     public List<String> getCrewChat(int crewId) {
         return chatDao.getChat(crewId);
     }
-    public boolean insertCrewChat(int crewId, String chat, Date date{
+    public boolean insertCrewChat(int crewId, String chat, Date date){
         return chatDao.insertChat(crewId, chat, date);
     }
 }

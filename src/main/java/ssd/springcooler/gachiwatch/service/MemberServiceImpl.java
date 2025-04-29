@@ -1,3 +1,11 @@
+package ssd.springcooler.gachiwatch.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import ssd.springcooler.gachiwatch.dao.MemberDao;
+
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {

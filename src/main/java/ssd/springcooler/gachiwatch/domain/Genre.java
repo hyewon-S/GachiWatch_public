@@ -1,3 +1,5 @@
+package ssd.springcooler.gachiwatch.domain;
+
 public enum Genre {
     SCIENCE_FICTION,
     TV_MOVIE,
