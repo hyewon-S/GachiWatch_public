@@ -10,7 +10,7 @@ public interface CrewDao {
     List<Member> getMembers(int crewId);
     List<Crew> getCrewList();
 
-    //List<Crew> getCrewList(List<Platform> platforms);
+    List<Crew> getCrewList(List<Platform> platforms);
 
     Crew getCrew(int crewId);
     Crew insertCrew(Crew crew);

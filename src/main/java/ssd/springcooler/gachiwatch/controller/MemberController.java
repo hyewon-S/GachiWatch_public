@@ -1,3 +1,14 @@
+package ssd.springcooler.gachiwatch.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import ssd.springcooler.gachiwatch.domain.Platform;
+import ssd.springcooler.gachiwatch.service.MemberService;
+
+import java.util.List;
+
 @Controller
 @RequestMapping("/mypage")
 public class MypageController {
@@ -71,7 +82,7 @@ public class MypageController {
     // 구독중인 OTT 수정
     @PostMapping("/platform/update")
     public String updateOtt(@RequestParam int memberId,
-                            @RequestParam List<OTT> ottList,
+                            @RequestParam List<Platform> ottList,
                             Model model) {
         memberService.updateSubscribedOtt(memberId, ottList);
         model.addAttribute("result", "success");

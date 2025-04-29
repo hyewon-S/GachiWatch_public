@@ -1,3 +1,7 @@
+package ssd.springcooler.gachiwatch.service;
+
+import java.util.List;
+
 public interface MemberService {
 
     /**

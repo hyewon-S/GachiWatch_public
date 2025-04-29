@@ -1,4 +1,4 @@
-//콘텐츠에 관한 정보
+package ssd.springcooler.gachiwatch.domain;//콘텐츠에 관한 정보
 
 import java.util.Date;
 import java.util.List;
