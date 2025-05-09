@@ -2,6 +2,7 @@ package ssd.springcooler.gachiwatch.dao;
 
 import java.util.List;
 import ssd.springcooler.gachiwatch.domain.Member;
+import ssd.springcooler.gachiwatch.dto.LoginDto;
 
 public interface MemberDao {
     // 회원가입
@@ -10,8 +11,8 @@ public interface MemberDao {
     void insertMemberOtts(Long memberId, List<Long> ottIds);
 
     // 로그인
-    MemberDto findByEmailAndPassword(LoginDto loginDto);
-    MemberDto findByKakaoEmail(String email);
+    LoginDto findByEmailAndPassword(LoginDto loginDto);
+    LoginDto findByKakaoEmail(String email);
 
     // 프로필
     void updateProfile(Long memberId, ProfileUpdateDto dto);
