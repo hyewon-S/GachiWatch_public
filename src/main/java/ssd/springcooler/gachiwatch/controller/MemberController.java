@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ssd.springcooler.gachiwatch.domain.Platform;
+import ssd.springcooler.gachiwatch.dto.ProfileUpdateDto;
 import ssd.springcooler.gachiwatch.service.MemberService;
 
 import java.util.List;
