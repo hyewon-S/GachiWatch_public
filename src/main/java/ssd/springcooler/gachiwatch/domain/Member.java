@@ -1,35 +1,39 @@
 package ssd.springcooler.gachiwatch.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter // lombok 어노테이션 (모든 필드에 적용)
 @Entity
+@Table(name = "Member")
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int memberId; // 각각의 멤버에게 할당되는 id
+    private int memberId; // 멤버 고유 ID
 
-    private String name;
-    private String password;
-    private String email;
-    private String nickname;
-    private String profileImage;
+    private String name; // 이름
+    private String password; // 비밀번호
+    private String email; // 이메일
+    private String nickname; // 닉네임
+    private String profileImage; // 프로필 사진
 
     @Enumerated(EnumType.STRING)
-    private Gender gender;
-    private LocalDate birthdate;
+    private Gender gender; // 성별 (하나만 선택이라 list타입 할 필요 x)
+    private LocalDate birthdate; // 생년월일
 
     @ElementCollection
-    private List<String> subscribedOTT = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private List<Platform> subscribedOTTs = new ArrayList<>(); // 구독 중인 OTT 리스트
 
     @ElementCollection
-    private List<String> preferredGenres = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private List<Genre> preferredGenres = new ArrayList<>(); // // 선호 장르 리스트
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>(); // 작성한 리뷰 리스트
 
     @ManyToMany
     @JoinTable(
@@ -37,7 +41,7 @@ public class Member {
             joinColumns = @JoinColumn(name = "member_id"),
             inverseJoinColumns = @JoinColumn(name = "content_id")
     )
-    private List<Content> likedContents = new ArrayList<>();
+    private List<Content> likedContents = new ArrayList<>(); // 찜했어요 콘텐츠 목록
 
     @ManyToMany
     @JoinTable(
@@ -45,17 +49,17 @@ public class Member {
             joinColumns = @JoinColumn(name = "member_id"),
             inverseJoinColumns = @JoinColumn(name = "content_id")
     )
-    private List<Content> watchedContents = new ArrayList<>();
+    private List<Content> watchedContents = new ArrayList<>(); // 봤어요 콘텐츠 목록
 
     @ManyToMany(mappedBy = "member")
-    private List<SubscriptionPod> joinedPods = new ArrayList<>();
+    private List<Crew> joinedCrews = new ArrayList<>(); // 참여중인 크루 목록
 
     // 기본 생성자
     public Member() {}
 
-    // 생성자
-    public Member(String username, String password, String email, String nickname, Gender gender, LocalDate birthdate) {
-        this.username = username;
+    // 사용자 지정 생성자
+    public Member(String name, String password, String email, String nickname, Gender gender, LocalDate birthdate) {
+        this.name = name;
         this.password = password;
         this.email = email;
         this.nickname = nickname;
@@ -63,53 +67,39 @@ public class Member {
         this.birthdate = birthdate;
     }
 
-    // Getter & Setter
-    public String getUsername() { return username; }
-    public void setEmail(String email) { this.email = email; }
-    public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
+    // Getter & Setter 어노테이션으로 대체
 
-    // 닉네임 변경
-    public void updateNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    // 프로필 이미지 변경
+    // 프로필 이미지 수정
     public void updateProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
-
-    // 구독 서비스 변경
-    public void updateSubscribedOTT(List<String> ottList) {
-        this.subscribedOTT = new ArrayList<>(ottList);
+    // 닉네임 수정
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+    // 비밀번호 수정
+    public void updatePassword(String password) {
+        this.password = password;
     }
 
-    // 선호 장르 변경
-    public void updatePreferredGenres(List<String> genres) {
+    // 구독 서비스 수정
+    public void updateSubscribedOTTs(List<Platform> ottList) {
+        this.subscribedOTTs = new ArrayList<>(ottList);
+    }
+
+    // 선호 장르 수정
+    public void updatePreferredGenres(List<Genre> genres) {
         this.preferredGenres = new ArrayList<>(genres);
     }
 
-    // 찜한 콘텐츠 추가 및 삭제
-    public void likeContent(Content content) {
-        likedContents.add(content);
-    }
-    public void removeLikedContent(Content content) {
-        likedContents.remove(content);
-    }
-
-    // 시청한 콘텐츠 추가 및 삭제
-    public void watchContent(Content content) {
-        watchedContents.add(content);
-    }
-    public void removeWatchedContent(Content content) {
+    // 시청한 콘텐츠 삭제
+    public void removeWatchedContents(Content content) {
         watchedContents.remove(content);
     }
 
-    // 리뷰 작성 및 삭제
-    public void writeReview(Review review) {
-        reviews.add(review);
-    }
-    public void deleteReview(Review review) {
+    // 리뷰 삭제
+    public void deleteReviews(Review review) {
         reviews.remove(review);
     }
-}
 
+}
