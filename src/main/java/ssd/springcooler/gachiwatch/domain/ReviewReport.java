@@ -1,5 +1,4 @@
 package ssd.springcooler.gachiwatch.domain;//리뷰 신고 정보
-import ssd.springcooler.gachiwatch.domain.Member;
 
 import java.util.Date;
 

@@ -15,6 +15,7 @@ public class Content {
 	private List<Review> reviews;
 	private int views; //조회수
 	private Date uploadDate; //업로드 날짜
+	private String contentType;
 	
 	//getters & setters
 	
@@ -97,6 +98,10 @@ public class Content {
 	public void setUploadDate(Date uploadDate) {
 		this.uploadDate = uploadDate;
 	}
+
+	public void setContentType(String contentType) { this.contentType = contentType; }
+
+	public String getContentType() { return contentType; }
 	
 	@Override
 	public String toString() {

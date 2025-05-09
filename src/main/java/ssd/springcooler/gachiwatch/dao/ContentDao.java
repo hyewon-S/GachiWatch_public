@@ -10,7 +10,7 @@ public interface ContentDao {
     void createContent (List<Content> content);
 
     // 2. id 여러개로 영화/TV 시리즈의 상세정보를 가져옴
-    List<Content> getContentList(List<Integer> ids)
+    List<Content> getContentList(List<Integer> ids);
 
     // 3. 특정 검색어/제목으로 DB에서 조회
     List<Content> findByKeyword(String keyword);

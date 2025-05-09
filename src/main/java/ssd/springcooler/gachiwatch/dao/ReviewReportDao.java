@@ -2,6 +2,8 @@ package ssd.springcooler.gachiwatch.dao;
 
 import ssd.springcooler.gachiwatch.domain.ReviewReport;
 
+import java.util.List;
+
 public interface ReviewReportDao {
     // 1. 리뷰 신고 등록
     void createReport(ReviewReport report);
