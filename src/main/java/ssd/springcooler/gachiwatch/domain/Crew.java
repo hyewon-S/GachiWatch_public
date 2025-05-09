@@ -9,7 +9,7 @@ public class Crew {
     ArrayList<Member> crewMembers = new ArrayList<Member>();
     String crewName;
     String crewDesc;
-    //OTT ott;
+    Platform ott;
     int payment;
     Date payDate;
     int maxMember;
@@ -21,13 +21,13 @@ public class Crew {
         this.maxMember = maxMember;
     }
 
-    public Crew(Member captain, String crewName, String crewDesc, /*OTT ott,*/ int payment,
+    public Crew(Member captain, String crewName, String crewDesc, Platform ott, int payment,
                 Date payDate, int maxMember, String account) {
         super();
         this.captain = captain;
         this.crewName = crewName;
         this.crewDesc = crewDesc;
-        //this.ott = ott;
+        this.ott = ott;
         this.payment = payment;
         this.payDate = payDate;
         this.maxMember = maxMember;
@@ -84,15 +84,15 @@ public class Crew {
     public void setCrewDesc(String crewDesc) {
         this.crewDesc = crewDesc;
     }
-/*
-    public OTT getOtt() {
+
+    public Platform getOtt() {
         return ott;
     }
 
-    public void setOtt(OTT ott) {
+    public void setOtt(Platform ott) {
         this.ott = ott;
     }
-*/
+
     public int getPayment() {
         return payment;
     }
