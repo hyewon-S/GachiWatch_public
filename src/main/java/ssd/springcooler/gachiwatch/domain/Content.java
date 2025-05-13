@@ -13,7 +13,6 @@ public class Content {
 	private Platform platform;
 	private double rate; //평점
 	private List<Review> reviews;
-	private int views; //조회수
 	private Date uploadDate; //업로드 날짜
 	private String contentType;
 	
@@ -81,14 +80,6 @@ public class Content {
 
 	public void setReviews(List<Review> reviews) {
 		this.reviews = reviews;
-	}
-
-	public int getViews() {
-		return views;
-	}
-
-	public void setViews(int views) {
-		this.views = views;
 	}
 
 	public Date getUploadDate() {
