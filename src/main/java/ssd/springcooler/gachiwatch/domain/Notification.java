@@ -1,17 +1,20 @@
 package ssd.springcooler.gachiwatch.domain;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Notification {
+@SuppressWarnings("serial")
+public class Notification implements Serializable {
     private int notificationId; //알림
-    private Member member; //알림을 받을 사용자
+    private int memberId; // 알림을 받을 사용자
+    //private Member member; //알림을 받을 사용자
     private Content content; //새롭게 업로드 된 콘텐츠 정보
     private LocalDateTime sentAt; //이메일 전송 시간
     private String substance; //이메일로 전송될 내용
     private NotificationStatus status; //알림 상태 (PENDING, SENT, FAILED)
 
     // 모든 필드에 대한 생성자 -> 나중에 필요시 활성화
-//    public Notification(int notificationId, Member member, Content content, LocalDateTime sentAt, String substance, NotificationStatus status) {
+//    public Notification(int notificationId, /*Member member*/ int memberId, Content content, LocalDateTime sentAt, String substance, NotificationStatus status) {
 //        this.notificationId = notificationId;
 //        this.member = member;
 //        this.content = content;
@@ -29,12 +32,21 @@ public class Notification {
         this.notificationId = notificationId;
     }
 
-    public Member getMember() {
-        return member;
+//    public Member getMember() {
+//        return member;
+//    }
+//
+//    public void setMember(Member member) {
+//        this.member = member;
+//    }
+
+
+    public int getMemberId() {
+        return memberId;
     }
 
-    public void setMember(Member member) {
-        this.member = member;
+    public void setMemberId(int memberId) {
+        this.memberId = memberId;
     }
 
     public Content getContent() {
@@ -73,7 +85,7 @@ public class Notification {
     public String toString() {
         return "Notification{" +
                 "notificationId=" + notificationId +
-                ", member=" + member +
+                ", memberId=" + memberId +
                 ", content=" + content +
                 ", sentAt=" + sentAt +
                 ", substance='" + substance + '\'' +
