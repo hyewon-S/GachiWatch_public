@@ -1,16 +1,10 @@
 package ssd.springcooler.gachiwatch.dao.mybatis;
 
-package com.example.demo.dao.mybatis;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.dao.MemberDao;
-import com.example.demo.dto.*;
-import com.example.demo.domain.Member;
-import com.example.demo.mapper.MemberMapper;
 import ssd.springcooler.gachiwatch.dto.MemberRegisterDto;
 
 @Repository
