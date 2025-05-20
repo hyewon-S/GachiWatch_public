@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import ssd.springcooler.gachiwatch.dto.LoginDto;
 import ssd.springcooler.gachiwatch.dto.MemberRegisterDto;
 
 @Repository
@@ -29,12 +30,12 @@ public class MyBatisMemberDao implements MemberDao {
     }
 
     @Override
-    public MemberDto findByEmailAndPassword(LoginDto loginDto) {
+    public LoginDto findByEmailAndPassword(LoginDto loginDto) {
         return memberMapper.findByEmailAndPassword(loginDto);
     }
 
     @Override
-    public MemberDto findByKakaoEmail(String email) {
+    public LoginDto findByKakaoEmail(String email) {
         return memberMapper.findByKakaoEmail(email);
     }
 
