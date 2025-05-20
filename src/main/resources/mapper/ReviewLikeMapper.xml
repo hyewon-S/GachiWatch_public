@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 일단 작성만 해둔 상태.. 미완성 -->
+<mapper namespace="ssd.springcooler.gachiwatch.dao.mybatis.mapper.ReviewLikeMapper">
+
+    <!-- 1. 좋아요 추가 -->
+    <insert id="addReviewLike">
+        INSERT INTO review_like (review_id, member_id, content_id, liked)
+        VALUES (#{reviewId}, #{memberId}, #{contentId}, TRUE)
+    </insert>
+
+    <!-- 2. 좋아요 상태 업데이트 (예: 취소 또는 다시 누름) -->
+    <update id="updateReviewLike">
+        UPDATE review_like
+        SET liked = NOT liked
+        WHERE review_id = #{reviewId}
+        AND member_id = #{memberId}
+        AND content_id = #{contentId}
+    </update>
+
+    <!-- 3. 좋아요 삭제 -->
+    <delete id="deleteReviewLike">
+        DELETE FROM review_like
+        WHERE review_id = #{reviewId}
+        AND member_id = #{memberId}
+        AND content_id = #{contentId}
+    </delete>
+
+    <!-- 4. 특정 리뷰에 대한 좋아요 수 -->
+    <select id="getLikeCountByIds" resultType="int">
+        SELECT COUNT(*)
+        FROM review_like
+        WHERE review_id = #{reviewId}
+        AND content_id = #{contentId}
+        AND liked = TRUE
+    </select>
+
+</mapper>
