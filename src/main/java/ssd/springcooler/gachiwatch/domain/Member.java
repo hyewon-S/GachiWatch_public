@@ -12,7 +12,13 @@ import java.util.List;
 @Table(name = "Member")
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(
+            name = "member_seq_gen",
+            sequenceName = "member_seq",
+            allocationSize = 1
+    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_gen")
+
     private int memberId; // 멤버 고유 ID
 
     private String name; // 이름
@@ -26,13 +32,22 @@ public class Member {
     private LocalDate birthdate; // 생년월일
 
     @ElementCollection
+    @CollectionTable(name = "member_subscribed_ott", joinColumns = @JoinColumn(name = "member_id"))
+    @Column(name = "platform")
     @Enumerated(EnumType.STRING)
     private List<Platform> subscribedOTTs = new ArrayList<>(); // 구독 중인 OTT 리스트
 
     @ElementCollection
+    @CollectionTable(name = "member_preferred_genre", joinColumns = @JoinColumn(name = "member_id"))
+    @Column(name = "genre")
     @Enumerated(EnumType.STRING)
     private List<Genre> preferredGenres = new ArrayList<>(); // // 선호 장르 리스트
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    //Review 클래스에서는 이렇게 설정돼 있어야 함
+    //@ManyToOne
+    //@JoinColumn(name = "member_id")
+    //private Member member;
     private List<Review> reviews = new ArrayList<>(); // 작성한 리뷰 리스트
 
     @ManyToMany
@@ -51,7 +66,7 @@ public class Member {
     )
     private List<Content> watchedContents = new ArrayList<>(); // 봤어요 콘텐츠 목록
 
-    @ManyToMany(mappedBy = "member")
+    @ManyToMany(mappedBy = "members")
     private List<Crew> joinedCrews = new ArrayList<>(); // 참여중인 크루 목록
 
     // 기본 생성자

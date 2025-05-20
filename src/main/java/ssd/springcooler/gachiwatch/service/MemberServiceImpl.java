@@ -3,12 +3,13 @@ package ssd.springcooler.gachiwatch.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.MemberDao;
+import ssd.springcooler.gachiwatch.dto.*;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MemberServiceImpl implements MemberService {
+public abstract class MemberServiceImpl implements MemberService {
 
     private final MemberDao memberDao;
 
@@ -16,7 +17,7 @@ public class MemberServiceImpl implements MemberService {
      * 회원가입 처리: 회원 기본정보, 선호 장르, 구독 OTT 등록
      */
     @Override
-    public void signUp(SignUpDto dto) {
+    public void register(MemberRegisterDto dto) {
         memberDao.insertMember(dto);
         memberDao.insertMemberGenres(dto.getMemberId(), dto.getGenreIds());
         memberDao.insertMemberOtts(dto.getMemberId(), dto.getOttIds());
@@ -26,7 +27,7 @@ public class MemberServiceImpl implements MemberService {
      * 로그인 처리
      */
     @Override
-    public MemberDto login(LoginDto dto) {
+    public LoginDto login(LoginDto dto) {
         return memberDao.findByEmailAndPassword(dto);
     }
 
@@ -50,7 +51,7 @@ public class MemberServiceImpl implements MemberService {
      * '봤어요' 콘텐츠 조회
      */
     @Override
-    public List<ContentDto> getWatchedContents(Long memberId) {
+    public List<ContentSummaryDto> getWatchedContents(Long memberId) {
         return memberDao.selectWatchedContents(memberId);
     }
 
@@ -92,7 +93,7 @@ public class MemberServiceImpl implements MemberService {
      * 내가 신고당한 내역 조회
      */
     @Override
-    public List<ReportReceivedDto> getReports(Long memberId) {
+    public List<ReportDto> getReports(Long memberId) {
         return memberDao.selectReportsAgainstMe(memberId);
     }
 }
