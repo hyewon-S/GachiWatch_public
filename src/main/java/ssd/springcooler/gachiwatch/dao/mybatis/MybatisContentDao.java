@@ -46,7 +46,7 @@ public class MybatisContentDao implements ContentDao {
     }
 
     @Override
-    public List<Content> search(List<Genre> genre, List<Platform> platform, String content_type, String range) {
+    public List<Content> search(List<Integer> genre, List<Integer> platform, String content_type, String range) {
         return contentMapper.search(genre, platform, content_type, range);
     }
 }

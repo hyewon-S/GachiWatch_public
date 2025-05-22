@@ -20,5 +20,5 @@ public interface ContentMapper {
 
     void deleteContent(int id);
 
-    List<Content> search(List<Genre> genre, List<Platform> platform, String content_type, String range);
+    List<Content> search(List<Integer> genre, List<Integer> platform, String content_type, String range);
 }
