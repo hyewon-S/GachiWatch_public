@@ -5,12 +5,12 @@ import java.util.List;
 
 public class Review {
 	private int reviewId;
-	private Member member; //Member 클래스 필요
-	private Content content;
-	private String contents; //리뷰 내용
+	private int memberId;
+	private int contentId;
+	private String substance; //리뷰 내용
 	private int likes; //해댱 리뷰에 대한 좋아요 개수
 	private Date date; //작성일, 최종 수정일
-	private List<ReviewReport> reportList;
+	private int score; //별점
 	
 	public int getReviewId() {
 		return reviewId;
@@ -20,28 +20,28 @@ public class Review {
 		this.reviewId = reviewId;
 	}
 
-	public Member getMember() {
-		return member;
+	public int getMemberId() {
+		return memberId;
 	}
 
-	public void setMember(Member member) {
-		this.member = member;
+	public void setMemberId(int memberId) {
+		this.memberId = memberId;
 	}
 
-	public Content getContent() {
-		return content;
+	public int getContentId() {
+		return contentId;
 	}
 
-	public void setContent(Content content) {
-		this.content = content;
+	public void setContentId(int contentId) {
+		this.contentId = contentId;
 	}
 
-	public String getContents() {
-		return contents;
+	public String getSubstance() {
+		return substance;
 	}
 
-	public void setContents(String contents) {
-		this.contents = contents;
+	public void setSubstance(String substance) {
+		this.substance = substance;
 	}
 
 	public int getLikes() {
@@ -60,17 +60,17 @@ public class Review {
 		this.date = date;
 	}
 
-	public List<ReviewReport> getReportList() {
-		return reportList;
+	public int getScore() {
+		return score;
 	}
 
-	public void setReportList(List<ReviewReport> reportList) {
-		this.reportList = reportList;
+	public void setScore(int score) {
+		this.score = score;
 	}
 
 	@Override
 	public String toString() {
-		return "reviewId : " + reviewId + " contents : " + contents;
+		return "reviewId : " + reviewId + " contents : " + substance;
 	}
 	
 }

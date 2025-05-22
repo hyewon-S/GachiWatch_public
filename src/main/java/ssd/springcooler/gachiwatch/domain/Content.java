@@ -8,13 +8,13 @@ public class Content {
 	private int contentId;
 	private String title;
 	private String intro;
-	private Genre genre;
-	private List<String> cast; //출연진
-	private Platform platform;
+	private List<Integer> genre;
+	private String cast; //출연진
+	private List<Integer> platform;
 	private double rate; //평점
-	private List<Review> reviews;
 	private Date uploadDate; //업로드 날짜
 	private String contentType;
+	private String imgUrl;
 	
 	//getters & setters
 	
@@ -42,27 +42,27 @@ public class Content {
 		this.intro = intro;
 	}
 
-	public Genre getGenre() {
+	public List<Integer> getGenre() {
 		return genre;
 	}
 
-	public void setGenre(Genre genre) {
+	public void setGenre(List<Integer> genre) {
 		this.genre = genre;
 	}
 
-	public List<String> getCast() {
+	public String getCast() {
 		return cast;
 	}
 
-	public void setCast(List<String> cast) {
+	public void setCast(String cast) {
 		this.cast = cast;
 	}
 
-	public Platform getPlatform() {
+	public List<Integer> getPlatform() {
 		return platform;
 	}
 
-	public void setPlatform(Platform platform) {
+	public void setPlatform(List<Integer> platform) {
 		this.platform = platform;
 	}
 
@@ -72,14 +72,6 @@ public class Content {
 
 	public void setRate(double rate) {
 		this.rate = rate;
-	}
-
-	public List<Review> getReviews() {
-		return reviews;
-	}
-
-	public void setReviews(List<Review> reviews) {
-		this.reviews = reviews;
 	}
 
 	public Date getUploadDate() {
@@ -93,6 +85,10 @@ public class Content {
 	public void setContentType(String contentType) { this.contentType = contentType; }
 
 	public String getContentType() { return contentType; }
+
+	public String getImgUrl() { return imgUrl; }
+
+	public void setImgUrl(String imgUrl) { this.imgUrl = imgUrl; }
 	
 	@Override
 	public String toString() {
