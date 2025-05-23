@@ -33,11 +33,10 @@ public class AccountController {
 
     // 로그인
     @PostMapping("/login")
-    public String login(@RequestParam String email,
-                        @RequestParam String password,
+    public String login(LoginDto loginDto,
                         HttpSession session,
                         Model model) {
-        LoginDto loginDto = memberService.login(email, password);
+        memberService.login(loginDto);
         if (loginDto != null) {
             session.setAttribute("user", loginDto);
             return "redirect:/main.jsp";

@@ -58,11 +58,11 @@ public class MemberController {
 
     // 찜한 콘텐츠 목록 보기 (찜순, OTT 필터, 정렬 가능)
     @GetMapping("/likecontent")
-    public String getLikeContent(@RequestParam int userId,
-                                 @RequestParam(required = false) String ottPlatform,
-                                 @RequestParam(required = false) String sortBy,
+    public String getLikeContent(@RequestParam int memberId,
+//                                 @RequestParam(required = false) String ottPlatform,
+//                                 @RequestParam(required = false) String sortBy,
                                  Model model) {
-        List<ContentDto> likeContent = likeContentService.getLikeContentByUser(userId, ottPlatform, sortBy);
+        List<ContentSummaryDto> likeContent = memberService.getLikedContents(memberId);
         model.addAttribute("likecontent", likeContent);
         return "/mypage/likecontent.jsp";
     }
@@ -71,7 +71,7 @@ public class MemberController {
     // 내가 본 콘텐츠
     @GetMapping("/watched")
     public String getWatched(@RequestParam int memberId, Model model) {
-        List<ContentDto> watchedList = memberService.getWatchedContents(memberId);
+        List<ContentSummaryDto> watchedList = memberService.getWatchedContents(memberId);
         model.addAttribute("watchedList", watchedList);
         return "/mypage/watched.jsp";
     }

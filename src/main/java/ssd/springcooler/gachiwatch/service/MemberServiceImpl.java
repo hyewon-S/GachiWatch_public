@@ -1,8 +1,9 @@
 package ssd.springcooler.gachiwatch.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.MemberDao;
+import ssd.springcooler.gachiwatch.domain.Genre;
+import ssd.springcooler.gachiwatch.domain.Platform;
 import ssd.springcooler.gachiwatch.dto.*;
 
 import java.util.List;
@@ -23,31 +24,31 @@ public abstract class MemberServiceImpl implements MemberService {
     @Override
     public void register(MemberRegisterDto dto) {
         memberDao.insertMember(dto);
-        memberDao.insertMemberGenres(dto.getMemberId(), dto.getGenreIds());
-        memberDao.insertMemberOtts(dto.getMemberId(), dto.getOttIds());
+//        memberDao.insertMemberGenres(dto.getMemberId(), dto.getGenreIds());
+//        memberDao.insertMemberOtts(dto.getMemberId(), dto.getOttIds());
     }
 
     /**
      * 로그인 처리
      */
     @Override
-    public LoginDto login(LoginDto dto) {
-        return memberDao.findByEmailAndPassword(dto);
+    public void login(LoginDto dto) {
+        memberDao.findByEmailAndPassword(dto);
     }
 
     /**
      * 프로필 수정
      */
     @Override
-    public void updateProfile(Long memberId, ProfileUpdateDto dto) {
-        memberDao.updateProfile(memberId, dto);
+    public void updateProfile(ProfileUpdateDto dto) {
+        memberDao.updateProfile(dto);
     }
 
     /**
      * 참여한 가치크루 목록 조회
      */
     @Override
-    public List<CrewDto> getMyCrews(Long memberId) {
+    public List<CrewDto> getMyCrews(int memberId) {
         return memberDao.selectMyCrews(memberId);
     }
 
@@ -55,7 +56,7 @@ public abstract class MemberServiceImpl implements MemberService {
      * '봤어요' 콘텐츠 조회
      */
     @Override
-    public List<ContentSummaryDto> getWatchedContents(Long memberId) {
+    public List<ContentSummaryDto> getWatchedContents(int memberId) {
         return memberDao.selectWatchedContents(memberId);
     }
 
@@ -63,7 +64,7 @@ public abstract class MemberServiceImpl implements MemberService {
      * '봤어요' 콘텐츠 삭제
      */
     @Override
-    public void deleteWatchedContent(Long contentId) {
+    public void deleteWatchedContent(int contentId) {
         memberDao.deleteWatchedContentById(contentId);
     }
 
@@ -71,7 +72,7 @@ public abstract class MemberServiceImpl implements MemberService {
      * 구독 중인 OTT 수정
      */
     @Override
-    public void updateSubscribedOtt(Long memberId, List<String> ottList) {
+    public void updateSubscribedOtt(int memberId, List<Platform> ottList) {
         // 기존 OTT 삭제
         memberDao.deleteMemberOtts(memberId);
 
@@ -84,7 +85,7 @@ public abstract class MemberServiceImpl implements MemberService {
      * 선호 장르 수정
      */
     @Override
-    public void updatePreferredGenre(Long memberId, List<String> genreList) {
+    public void updatePreferredGenre(int memberId, List<Genre> genreList) {
         // 기존 장르 삭제
         memberDao.deleteMemberGenres(memberId);
 
@@ -97,7 +98,7 @@ public abstract class MemberServiceImpl implements MemberService {
      * 내가 신고당한 내역 조회
      */
     @Override
-    public List<ReportDto> getReports(Long memberId) {
+    public List<ReportDto> getReports(int memberId) {
         return memberDao.selectReportsAgainstMe(memberId);
     }
 }
