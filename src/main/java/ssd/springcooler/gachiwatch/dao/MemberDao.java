@@ -31,6 +31,8 @@ public interface MemberDao {
     List<ContentSummaryDto> selectWatchedContents(Long memberId);
     void deleteWatchedContentById(Long contentId);
 
+    List<ReportDto> selectReportsByMe(Long memberId);
+
     // 신고
 //    List<ReportDto> selectReportsByMe(Long memberId);
     List<ReportDto> selectReportsAgainstMe(Long memberId);

@@ -4,21 +4,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ssd.springcooler.gachiwatch.domain.Genre;
 import ssd.springcooler.gachiwatch.domain.Platform;
-import ssd.springcooler.gachiwatch.dto.ProfileUpdateDto;
+import ssd.springcooler.gachiwatch.dto.*;
 import ssd.springcooler.gachiwatch.service.MemberService;
+import ssd.springcooler.gachiwatch.service.ReviewService;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/mypage")
-public class MypageController {
+public class MemberController {
 
     private final MemberService memberService;
+    private final ReviewService reviewService;
 
     @Autowired
-    public MypageController(MemberService memberService) {
+    public MemberController(MemberService memberService, ReviewService reviewService) {
         this.memberService = memberService;
+        this.reviewService = reviewService;
     }
 
     // 프로필 수정
@@ -39,8 +43,8 @@ public class MypageController {
 
     // 작성한 리뷰 목록 조회
     @GetMapping("/reviews")
-    public String getMyReviews(@RequestParam int userId, Model model) {
-        List<ReviewDto> reviewList = reviewService.getReviewsByUser(userId);
+    public String getMyReviews(@RequestParam int memberId, Model model) {
+        List<ReviewDto> reviewList = reviewService.getReviewsByUser(memberId);
         model.addAttribute("reviewList", reviewList);
         return "/mypage/review.jsp";
     }
@@ -93,7 +97,7 @@ public class MypageController {
     // 선호 장르 수정
     @PostMapping("/update")
     public String updateGenre(@RequestParam int memberId,
-                              @RequestParam List<GenreType> genreList,
+                              @RequestParam List<Genre> genreList,
                               Model model) {
         memberService.updatePreferredGenre(memberId, genreList);
         model.addAttribute("result", "success");
@@ -103,7 +107,7 @@ public class MypageController {
     // 신고 내역
     @GetMapping("/reports")
     public String getReports(@RequestParam int memberId, Model model) {
-        List<ReportReceivedDto> reportList = memberService.getReports(memberId);
+        List<ReportDto> reportList = memberService.getReports(memberId);
         model.addAttribute("reportList", reportList);
         return "/mypage/reports.jsp";
     }

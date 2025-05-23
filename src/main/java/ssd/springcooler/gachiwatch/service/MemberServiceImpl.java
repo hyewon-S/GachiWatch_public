@@ -8,10 +8,14 @@ import ssd.springcooler.gachiwatch.dto.*;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor -> 오류가 발생하는 듯 하여 주석 처리해두었습니다.
 public abstract class MemberServiceImpl implements MemberService {
 
     private final MemberDao memberDao;
+
+    protected MemberServiceImpl(MemberDao memberDao) {
+        this.memberDao = memberDao;
+    }
 
     /**
      * 회원가입 처리: 회원 기본정보, 선호 장르, 구독 OTT 등록

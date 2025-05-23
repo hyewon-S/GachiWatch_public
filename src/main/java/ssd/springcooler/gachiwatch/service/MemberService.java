@@ -1,5 +1,7 @@
 package ssd.springcooler.gachiwatch.service;
 
+import ssd.springcooler.gachiwatch.dto.*;
+
 import java.util.List;
 
 public interface MemberService {
@@ -33,10 +35,11 @@ public interface MemberService {
 
     /**
      * '봤어요' 콘텐츠 목록 조회
+     *
      * @param memberId 회원 ID
      * @return 내가 본 콘텐츠 목록
      */
-    List<ContentDto> getWatchedContents(Long memberId);
+    List<ContentSummaryDto> getWatchedContents(Long memberId);
 
     /**
      * '봤어요' 콘텐츠 개별 삭제
@@ -63,5 +66,5 @@ public interface MemberService {
      * @param memberId 회원 ID
      * @return 신고받은 내역 목록
      */
-    List<ReportReceivedDto> getReports(Long memberId);
+    List<ReportDto> getReports(Long memberId);
 }

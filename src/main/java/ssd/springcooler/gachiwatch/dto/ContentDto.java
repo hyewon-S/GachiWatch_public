@@ -7,9 +7,12 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class ContentSummaryDto { // 영화정보 간략하게 보여주기
+public class ContentDto {
+    //필드 추가 예정...
     private int contentId;
     private String title;
     private String thumbnailUrl;
     private double rating;
+    private String casts;
+    private String intro;
 }
