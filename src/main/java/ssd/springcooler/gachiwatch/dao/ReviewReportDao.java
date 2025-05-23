@@ -17,9 +17,6 @@ public interface ReviewReportDao {
     // 4. 리뷰 신고 조회
     ReviewReport getReportById(int reportId);
 
-    // 5. 특정 콘텐츠에 대한 모든 리뷰 신고 조회
-    List<ReviewReport> getReportsByContentId(int contentId);
-
-    // 6. 사용자의 모든 리뷰 신고 조회
+    // 5. 사용자의 모든 리뷰 신고 조회
     List<ReviewReport> getReportsByUserId(int userId);
 }

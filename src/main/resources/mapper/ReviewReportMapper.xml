@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- 일단 작성만 해둔 상태.. 미완성 -->
+<!-- 수정 완료 -->
 <mapper namespace="ssd.springcooler.gachiwatch.dao.mybatis.mapper.ReviewReportMapper">
 
     <!-- 신고 생성 -->
@@ -11,16 +11,14 @@
         report_id,
         review_id,
         member_id,
-        content_id,
-        reason,
-        report_date
+        substance,
+        review_report_date
         ) VALUES (
         #{reportId},
         #{reviewId},
         #{memberId},
-        #{contentId},
-        #{reason},
-        #{reportDate}
+        #{substance},
+        #{date}
         )
     </insert>
 
@@ -28,8 +26,8 @@
     <update id="updateReport" parameterType="ReviewReport">
         UPDATE review_report
         SET
-        reason = #{reason},
-        report_date = #{reportDate}
+        substance = #{substance},
+        review_report_date = #{date}
         WHERE report_id = #{reportId}
     </update>
 
@@ -46,18 +44,11 @@
         WHERE report_id = #{reportId}
     </select>
 
-    <!-- 콘텐츠 ID로 신고 리스트 조회 -->
-    <select id="getReportsByContentId" resultType="ReviewReport">
-        SELECT *
-        FROM review_report
-        WHERE content_id = #{contentId}
-    </select>
-
     <!-- 유저 ID로 신고 리스트 조회 -->
     <select id="getReportsByUserId" resultType="ReviewReport">
         SELECT *
         FROM review_report
-        WHERE member_id = #{userId}
+        WHERE member_id = #{memberId}
     </select>
 
 </mapper>
