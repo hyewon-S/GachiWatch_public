@@ -5,8 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import ssd.springcooler.gachiwatch.dto.LoginDto;
-import ssd.springcooler.gachiwatch.dto.MemberRegisterDto;
+import ssd.springcooler.gachiwatch.dao.MemberDao;
+import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
+import ssd.springcooler.gachiwatch.dto.*;
 
 @Repository
 public class MyBatisMemberDao implements MemberDao {
@@ -75,7 +76,7 @@ public class MyBatisMemberDao implements MemberDao {
     }
 
     @Override
-    public List<ContentDto> selectWatchedContents(Long memberId) {
+    public List<ContentSummaryDto> selectWatchedContents(Long memberId) {
         return memberMapper.selectWatchedContents(memberId);
     }
 
@@ -90,9 +91,7 @@ public class MyBatisMemberDao implements MemberDao {
     }
 
     @Override
-    public List<ReportReceivedDto> selectReportsAgainstMe(Long memberId) {
-        return memberMapper.selectReportsAgainstMe(memberId);
-    }
+    public List<ReportDto> selectReportsAgainstMe(Long memberId) { return memberMapper.selectReportsAgainstMe(memberId); }
 
     @Override
     public List<CrewDto> selectMyCrews(Long memberId) {
@@ -100,9 +99,7 @@ public class MyBatisMemberDao implements MemberDao {
     }
 
     @Override
-    public List<ContentDto> selectLikedContents(Long memberId) {
-        return memberMapper.selectLikedContents(memberId);
-    }
+    public List<ContentSummaryDto> selectLikedContents(Long memberId) { return memberMapper.selectLikedContents(memberId); }
 
     @Override
     public void deleteMemberById(Long memberId) {

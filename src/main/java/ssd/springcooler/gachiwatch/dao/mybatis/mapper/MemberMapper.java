@@ -47,5 +47,7 @@ public interface MemberMapper {
 
     // 회원 탈퇴
     void deleteMemberById(Long memberId);
+
+    List<ReportDto> selectReportsByMe(Long memberId);
 }
 
