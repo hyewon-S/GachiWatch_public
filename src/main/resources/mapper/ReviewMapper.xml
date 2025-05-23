@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- 일단 작성만 해둔 상태.. 미완성 -->
+<!-- 일단 완성 단, sql문 테스트 못해봄-->
 <mapper namespace="ssd.springcooler.gachiwatch.dao.mybatis.mapper.ReviewMapper">
 
     <!-- 리뷰 삽입 -->
@@ -11,14 +11,18 @@
         review_id,
         content_id,
         member_id,
+        substance,
         likes,
-        review_date
+        review_date,
+        score
         ) VALUES (
         #{reviewId},
         #{contentId},
         #{memberId},
+        #{substance},
         #{likes},
-        #{reviewDate}
+        #{date},
+        #{score}
         )
     </insert>
 
@@ -27,7 +31,9 @@
         UPDATE review
         SET
         likes = #{likes},
-        review_date = #{reviewDate}
+        review_date = #{reviewDate},
+        substance = #{substance},
+        score = #{score}
         WHERE review_id = #{reviewId}
     </update>
 
@@ -55,7 +61,7 @@
     <select id="getReviewsByUserId" resultType="Review">
         SELECT *
         FROM review
-        WHERE member_id = #{userId}
+        WHERE member_id = #{memberId}
     </select>
 
 </mapper>

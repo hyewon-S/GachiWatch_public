@@ -25,6 +25,6 @@ public interface ContentDao {
     void deleteContent(int id);
 
     // 7. 복합 조건 검색 (장르별, 플랫폼별, 콘텐츠 타입별, 정렬 조건)
-    List<Content> search(List<Genre> genre, List<Platform> platform,
+    List<Content> search(List<Integer> genre, List<Integer> platform,
                          String content_type, String range);
 }
