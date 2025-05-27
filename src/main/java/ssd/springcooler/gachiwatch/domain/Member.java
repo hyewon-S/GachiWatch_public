@@ -31,6 +31,7 @@ public class Member {
     private Gender gender; // 성별 (하나만 선택이라 list타입 할 필요 x)
     private LocalDate birthdate; // 생년월일
 
+
     @ElementCollection
     @CollectionTable(name = "member_subscribed_ott", joinColumns = @JoinColumn(name = "member_id"))
     @Column(name = "platform")
@@ -66,7 +67,12 @@ public class Member {
     )
     private List<Content> watchedContents = new ArrayList<>(); // 봤어요 콘텐츠 목록
 
-    @ManyToMany(mappedBy = "members")
+    @ManyToMany //(mappedBy = "members")
+    @JoinTable(
+            name = "member_crew",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "crew_id")
+    )
     private List<Crew> joinedCrews = new ArrayList<>(); // 참여중인 크루 목록
 
     // 기본 생성자
@@ -81,7 +87,7 @@ public class Member {
         this.gender = gender;
         this.birthdate = birthdate;
     }
-
+/*
     // Getter & Setter 어노테이션으로 대체
 
     // 프로필 이미지 수정
@@ -116,5 +122,5 @@ public class Member {
     public void deleteReviews(Review review) {
         reviews.remove(review);
     }
-
+*/
 }

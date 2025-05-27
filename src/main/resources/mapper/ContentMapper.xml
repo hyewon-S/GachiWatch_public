@@ -5,7 +5,7 @@
 <mapper namespace="ssd.springcooler.gachiwatch.dao.mybatis.mapper.ContentMapper">
 
     <!-- ResultMap for Content with genreIds -->
-    <resultMap id="contentResultMap" type="com.example.domain.Content">
+    <resultMap id="contentResultMap" type="ssd.springcooler.gachiwatch.domain.Content">
         <id property="contentId" column="content_id"/>
         <result property="title" column="title"/>
         <result property="intro" column="intro"/>
@@ -74,7 +74,7 @@
     </select>
 
     <!-- 5. updateContent -->
-    <update id="updateContent" parameterType="com.example.domain.Content">
+    <update id="updateContent" parameterType="ssd.springcooler.gachiwatch.domain.Content">
         UPDATE content
         SET
         title = #{title},

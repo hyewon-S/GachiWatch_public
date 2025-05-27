@@ -1,6 +1,7 @@
 package ssd.springcooler.gachiwatch.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.CrewChatDao;
 import ssd.springcooler.gachiwatch.dao.CrewDao;
 import ssd.springcooler.gachiwatch.dao.CrewJoinWaitingDao;
@@ -10,6 +11,7 @@ import ssd.springcooler.gachiwatch.domain.Member;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class CrewServiceImpl implements CrewFacade {
     @Autowired
     private CrewDao crewDao;

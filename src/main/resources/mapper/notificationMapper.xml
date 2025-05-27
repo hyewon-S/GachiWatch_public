@@ -4,20 +4,20 @@
     <cache/>
 
     <!-- Content 조인을 포함한 Notification resultMap --> <!--id로 검색해서 Content 객체를 조회하는 것이라면 조인을 사용해야함-->
-    <resultMap id="NotificationWithContentMap" type="Notification">
+    <resultMap id="NotificationWithContentMap" type="ssd.springcooler.gachiwatch.domain.Notification">
         <id property="notificationId" column="notification_id" />
         <result property="memberId" column="member_id" />
         <result property="sentAt" column="sent_date" />
         <result property="substance" column="substance" />
 
-        <association property="content" javaType="Content">
+        <association property="content" javaType="ssd.springcooler.gachiwatch.domain.Content">
             <id property="contentId" column="content_id" />
             <result property="title" column="title" />
         </association>
     </resultMap>
 
     <!-- 알림 생성 -->
-    <insert id="createNotification" parameterType="Notification">
+    <insert id="createNotification" parameterType="ssd.springcooler.gachiwatch.domain.Notification">
         INSERT INTO notification ( notification_id, member_id, content_id, sent_date, substance )
         VALUES (#{notificationId}, #{memberId}, #{content.contentId}, #{sentAt}, #{substance})
     </insert>

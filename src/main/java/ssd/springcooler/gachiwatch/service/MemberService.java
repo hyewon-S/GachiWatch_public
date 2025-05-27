@@ -21,7 +21,7 @@ public interface MemberService {
      */
     void login(LoginDto dto);
 
-    /**
+    /*
      * 프로필 정보 수정
      * @param memberId 회원 ID
      * @param dto 수정할 프로필 정보 DTO

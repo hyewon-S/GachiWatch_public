@@ -1,10 +1,16 @@
 package ssd.springcooler.gachiwatch.domain;//콘텐츠에 관한 정보
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Getter;
+
 import java.util.Date;
 import java.util.List;
 
+@Getter
+@Entity
 public class Content {
-	
+	@Id
 	private int contentId;
 	private String title;
 	private String intro;
