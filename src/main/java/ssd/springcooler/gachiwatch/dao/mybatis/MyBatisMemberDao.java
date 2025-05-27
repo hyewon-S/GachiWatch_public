@@ -10,7 +10,7 @@ import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
 import ssd.springcooler.gachiwatch.dto.*;
 
 @Repository
-public abstract class MyBatisMemberDao implements MemberDao {
+public class MyBatisMemberDao implements MemberDao {
 
     @Autowired
     private MemberMapper memberMapper;
@@ -18,6 +18,11 @@ public abstract class MyBatisMemberDao implements MemberDao {
     @Override
     public void insertMember(MemberRegisterDto dto) {
         memberMapper.insertMember(dto);
+    }
+
+    @Override
+    public void insertMemberGenres(int memberId, List<Long> genreIds) {
+        //구현 필요
     }
 
 //    @Override

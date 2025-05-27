@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 //@RequiredArgsConstructor -> 오류가 발생하는 듯 하여 주석 처리해두었습니다.
-public abstract class MemberServiceImpl implements MemberService {
+public class MemberServiceImpl implements MemberService {
 
     private final MemberDao memberDao;
 
@@ -50,6 +50,12 @@ public abstract class MemberServiceImpl implements MemberService {
     @Override
     public List<CrewDto> getMyCrews(int memberId) {
         return memberDao.selectMyCrews(memberId);
+    }
+
+    @Override
+    public List<ContentSummaryDto> getLikedContents(int memberId) {
+        //구현 필요
+        return null;
     }
 
     /**
@@ -100,5 +106,11 @@ public abstract class MemberServiceImpl implements MemberService {
     @Override
     public List<ReportDto> getReports(int memberId) {
         return memberDao.selectReportsAgainstMe(memberId);
+    }
+
+    @Override
+    public boolean deleteMember(int memberId) {
+        //구현 필요
+        return false;
     }
 }
