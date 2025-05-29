@@ -16,23 +16,51 @@ public class MybatisContentDao implements ContentDao {
     private ContentMapper contentMapper;
 
     @Override
-    public void createContent (List<Content> content) {
+    public void createContent (Content content) {
         contentMapper.createContent(content);
+        //여기에 장르랑 플랫폼 insert 차후에 합치기!!
     }
 
+    @Override
+    public void insertGenre (int contentId, List<Integer> gid) {
+        for (int genreId : gid) {
+            contentMapper.insertGenre(contentId, genreId);
+        }
+    }
+
+    @Override
+    public void insertPlatform (int contentId, List<Integer> pid) {
+        for (int platformId : pid) {
+            contentMapper.insertPlatform(contentId, platformId);
+        }
+    }
+
+    //장르랑 플랫폼은 따로 가져와서 주입
     @Override
     public List<Content> getContentList(List<Integer> ids) {
-        return contentMapper.getContentList(ids);
+        List<Content> contentList = contentMapper.getContentList(ids);
+        for (Content content : contentList) {
+            List<Integer> genres = contentMapper.getGenresByContentId(content.getContentId());
+            List<Integer> platforms = contentMapper.getPlatformsByContentId(content.getContentId());
+            content.setGenre(genres);
+            content.setPlatform(platforms);
+        }
+        return contentList;
     }
 
-    @Override
-    public List<Content> findByKeyword(String keyword) {
-        return contentMapper.findByKeyword(keyword);
-    }
+//    @Override 나중에 검색 기능 쓰게되면..
+//    public List<Content> findByKeyword(String keyword) {
+//        return contentMapper.findByKeyword(keyword);
+//    }
 
     @Override
     public Content findById(int id) {
-        return contentMapper.findById(id);
+        Content content = contentMapper.findById(id);
+        List<Integer> genres = contentMapper.getGenresByContentId(content.getContentId());
+        List<Integer> platforms = contentMapper.getPlatformsByContentId(content.getContentId());
+        content.setGenre(genres);
+        content.setPlatform(platforms);
+        return content;
     }
 
     @Override
