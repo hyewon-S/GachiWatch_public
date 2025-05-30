@@ -6,7 +6,7 @@
 <mapper namespace="ssd.springcooler.gachiwatch.dao.mybatis.mapper.ReviewReportMapper">
 
     <!-- 신고 생성 -->
-    <insert id="createReport" parameterType="ReviewReport">
+    <insert id="createReport" parameterType="ssd.springcooler.gachiwatch.domain.ReviewReport">
         INSERT INTO review_report (
         report_id,
         review_id,
@@ -23,7 +23,7 @@
     </insert>
 
     <!-- 신고 수정 -->
-    <update id="updateReport" parameterType="ReviewReport">
+    <update id="updateReport" parameterType="ssd.springcooler.gachiwatch.domain.ReviewReport">
         UPDATE review_report
         SET
         substance = #{substance},
@@ -38,14 +38,14 @@
     </delete>
 
     <!-- 신고 ID로 조회 -->
-    <select id="getReportById" resultType="ReviewReport">
+    <select id="getReportById" resultType="ssd.springcooler.gachiwatch.domain.ReviewReport">
         SELECT *
         FROM review_report
         WHERE report_id = #{reportId}
     </select>
 
     <!-- 유저 ID로 신고 리스트 조회 -->
-    <select id="getReportsByUserId" resultType="ReviewReport">
+    <select id="getReportsByUserId" resultType="ssd.springcooler.gachiwatch.domain.ReviewReport">
         SELECT *
         FROM review_report
         WHERE member_id = #{memberId}

@@ -5,7 +5,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import ssd.springcooler.gachiwatch.domain.Crew;
+import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/crew/view")
@@ -19,6 +23,11 @@ public class CrewViewController {
     @GetMapping
     public ModelAndView viewCrews() {
         ModelAndView mav = new ModelAndView();
+        mav.addObject("parties", List.of(
+                new Crew(new Member(), "이름", 3),
+                new Crew(new Member(), "이름2", 4)
+
+));
         return mav;
     }
 }

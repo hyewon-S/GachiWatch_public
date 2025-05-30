@@ -5,8 +5,8 @@
 
 <mapper namespace="com.example.mapper.MemberMapper">
 
-    <!-- 1. 회원가입 -->
-    <insert id="insertMember" parameterType="com.example.dto.MemberRegisterDto">
+    <!-- 1. 회원가입 -
+    <insert id="insertMember" parameterType="ssd.springcooler.gachiwatch.dto.MemberRegisterDto">
         INSERT INTO member (
         name, gender_id, birthDate, email, password, nickname,
         subscribedOTTs, preferedGenres, profileImage
@@ -14,10 +14,10 @@
         #{name}, #{genderId}, #{birthDate}, #{email}, #{password}, #{nickname},
         #{subscribedOtts}, #{preferredGenres}, #{profileImage}
         )
-    </insert>
+    </insert>-->
 
     <!-- 2. 이메일로 회원 조회 (로그인용) -->
-    <select id="findByEmail" parameterType="String" resultType="com.example.domain.Member">
+    <select id="findByEmail" parameterType="String" resultType="ssd.springcooler.gachiwatch.domain.Member">
         SELECT * FROM member WHERE email = #{email}
     </select>
 
@@ -41,15 +41,15 @@
         UPDATE member SET profileImage = #{profileImage} WHERE member_id = #{memberId}
     </update>
 
-    <!-- 7. 구독 중인 OTT 플랫폼 변경 -->
+    <!-- 7. 구독 중인 OTT 플랫폼 변경
     <update id="updateSubscribedOTTs" parameterType="map">
         UPDATE member SET subscribedOTTs = #{subscribedOTTs} WHERE member_id = #{memberId}
-    </update>
+    </update>-->
 
-    <!-- 8. 선호 장르 변경 -->
+    <!-- 8. 선호 장르 변경
     <update id="updatePreferredGenres" parameterType="map">
         UPDATE member SET preferedGenres = #{preferredGenres} WHERE member_id = #{memberId}
-    </update>
+    </update>-->
 
     <!-- 9. 회원 탈퇴 -->
     <delete id="deleteMember" parameterType="Long">
@@ -57,7 +57,7 @@
     </delete>
 
     <!-- 10. 내가 작성한 리뷰 전체 조회 -->
-    <select id="findReviewsByMemberId" parameterType="Long" resultType="com.example.domain.Review">
+    <select id="findReviewsByMemberId" parameterType="Long" resultType="ssd.springcooler.gachiwatch.domain.Review">
         SELECT * FROM review WHERE member_id = #{memberId}
     </select>
 
@@ -67,7 +67,7 @@
     </delete>
 
     <!-- 12. 내가 본 콘텐츠 전체 조회 -->
-    <select id="findWatchedContentsByMemberId" parameterType="Long" resultType="com.example.domain.Content">
+    <select id="findWatchedContentsByMemberId" parameterType="Long" resultType="ssd.springcooler.gachiwatch.domain.Content">
         SELECT c.*
         FROM watched_content wc
         JOIN content c ON wc.content_id = c.content_id
@@ -81,7 +81,7 @@
     </delete>
 
     <!-- 14. 내가 참여 중인 가치크루 조회 -->
-    <select id="findCrewsByMemberId" parameterType="Long" resultType="com.example.domain.Crew">
+    <select id="findCrewsByMemberId" parameterType="Long" resultType="ssd.springcooler.gachiwatch.domain.Crew">
         SELECT c.*
         FROM crew c
         JOIN crew_member cm ON c.crew_id = cm.crew_id
@@ -89,17 +89,18 @@
     </select>
 
     <!-- 15. 내가 좋아요한 콘텐츠 조회 -->
-    <select id="findLikedContentsByMemberId" parameterType="Long" resultType="com.example.domain.Content">
+    <select id="findLikedContentsByMemberId" parameterType="Long" resultType="ssd.springcooler.gachiwatch.domain.Content">
         SELECT c.*
         FROM content_like cl
         JOIN content c ON cl.content_id = c.content_id
         WHERE cl.member_id = #{memberId}
     </select>
 
-    <!-- 16. 내가 신고한 내역 조회 -->
+    <!-- 16. 내가 신고한 내역 조회 domain 패키지에 report 없어서 주석 처리
     <select id="findReportsByMemberId" parameterType="Long" resultType="com.example.domain.Report">
         SELECT * FROM report WHERE reporter_id = #{memberId}
     </select>
+-->
 
     <!-- 17. 내가 신고당한 내역 및 횟수 조회 -->
     <select id="findReportedCountAndList" parameterType="Long" resultMap="ReportedResultMap">
@@ -108,11 +109,12 @@
         WHERE reported_id = #{memberId}
     </select>
 
-    <resultMap id="ReportedResultMap" type="com.example.dto.ReportedDetailDto">
+    <resultMap id="ReportedResultMap" type="ssd.springcooler.gachiwatch.dto.ReportedDetailDto">
         <result property="reportId" column="report_id"/>
         <result property="reason" column="reason"/>
         <result property="reportedDate" column="reported_date"/>
         <result property="totalCount" column="total_count"/>
     </resultMap>
+
 
 </mapper>
