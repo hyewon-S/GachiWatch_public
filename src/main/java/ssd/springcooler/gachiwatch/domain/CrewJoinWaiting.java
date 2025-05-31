@@ -1,10 +1,28 @@
 package ssd.springcooler.gachiwatch.domain;
 
-import java.util.ArrayList;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
+@Entity
 public class CrewJoinWaiting {
+    @Id
+    @OneToOne
+    @JoinColumn(name = "crew_id")
     Crew crew;
-    ArrayList<Member> waitings = new ArrayList<Member>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "crew_join_waiting_member",
+            joinColumns = @JoinColumn(name = "crew_id"),
+            inverseJoinColumns = @JoinColumn(name = "member_id")
+    )
+    List<Member> waitings = new ArrayList<Member>();
 
     public boolean requestJoin(Member member) {
         return waitings.add(member);
@@ -27,7 +45,7 @@ public class CrewJoinWaiting {
     public void setCrew(Crew crew) {
         this.crew = crew;
     }
-    public ArrayList<Member> getWaitings() {
+    public List<Member> getWaitings() {
         return waitings;
     }
     public void setWaitings(ArrayList<Member> waitings) {
