@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gachi Watch - 파티 정보</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background-color: ivory;
+        }
+
+        header {
+            background-color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: purple;
+        }
+
+        .nav {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav button {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid #ccc;
+            background: #f4f4f4;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .main {
+            display: flex;
+            background-color: white;
+            border-radius: 20px;
+            margin: 2rem;
+            padding: 2rem;
+            gap: 2rem;
+        }
+
+        .party-info {
+            width: 40%;
+            border-right: 2px solid #eee;
+        }
+
+        .party-info img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+        }
+
+        .party-info .price {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .info-tag {
+            background: #eee;
+            display: inline-block;
+            margin: 0.2rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .chat-box {
+            flex-grow: 1;
+        }
+
+        .notice {
+            border: 1px solid #ccc;
+            padding: 0.8rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .chat-entry {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chat-entry img {
+            width: 30px;
+            margin-right: 0.5rem;
+        }
+
+        .chat-content {
+            background: #f1f1f1;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 0.6rem;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .send-button {
+            background: #7d4cd0;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+        }
+
+        .group-button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #222;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="/image/logo.png" alt="Gachi Watch" style="height:40px;">
+    <!--<div class="logo">Gachi Watch</div>-->
+    <div class="nav">
+        <div>Products</div>
+        <div>Solutions</div>
+        <div>Community</div>
+        <div>Resources</div>
+        <div>Pricing</div>
+        <div>Contact</div>
+        <button>Sign in</button>
+        <button>Register</button>
+    </div>
+</header>
+
+<div class="main">
+    <div class="party-info">
+        <h2 th:text="${crewDto.crewName}">파티 이름</h2>
+        <div class="price" th:text="${crewDto.payment}">17900원</div>
+        <br>
+        <div class="info-tag">인원 <span th:text="|${crewDto.currentPeople} / ${crewDto.maxMember}|">3 / 4</span></div>
+        <br>
+        <div class="info-tag">결제일 <span th:text="${crewDto.payDate}">매달 7일</span></div>
+        <br>
+        <!--<div class="info-tag">최소기간 <span th:text="${crewDto.minPeriod}">6개월</span></div>-->
+        <br>
+        <img src="/images/netflix.png" alt="Netflix" />
+        <button class="group-button">그룹 설정</button>
+    </div>
+
+    <div class="chat-box">
+        <div class="notice">
+            <strong>계좌번호 신한</strong> <span th:text="${crewDto.account}">01123456123456</span>
+        </div>
+
+        <div class="chat-entry">
+            <img src="/images/user-icon.png" alt="User" />
+            <div>
+                <div><strong>닉네임</strong></div>
+                <div class="chat-content">사용자가 입력한 채팅</div>
+            </div>
+        </div>
+
+        <form class="chat-input-container" th:action="@{/crew/crewpage/chat}" method="post">
+            <input class="chat-input" type="text" name="message" placeholder="채팅 입력..." />
+            <button class="send-button" type="submit">전송</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

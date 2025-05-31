@@ -4,13 +4,28 @@ import lombok.Getter;
 
 @Getter
 public enum Gender {
-    FEMALE("여성"),
-    MALE("남성"),
-    NO_INFO("선택 안함");
+    FEMALE(1),
+    MALE(2),
+    NO_INFO(3);
 
-    private final String label;
+    private final int code;
+    //private final String label;
 
-    Gender(String label) {
-        this.label = label;
+    Gender(int code/*, String label*/) {
+        this.code = code;
+        //this.label = label;
+    }
+
+    public static Gender fromCode(int code) {
+        for (Gender gender : values()) {
+            if (gender.code == code) {
+                return gender;
+            }
+        }
+        throw new IllegalArgumentException("Unknown Gender code: " + code);
+    }
+
+    public Integer getCode() {
+        return this.code;
     }
 }

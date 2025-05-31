@@ -1,6 +1,13 @@
 package ssd.springcooler.gachiwatch.dto;
 
 import lombok.*;
+import ssd.springcooler.gachiwatch.domain.Crew;
+import ssd.springcooler.gachiwatch.domain.CrewChat;
+import ssd.springcooler.gachiwatch.domain.Platform;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -8,8 +15,33 @@ import lombok.*;
 @Setter
 @Builder
 public class CrewDto {
-    private String crew_id;
-    private String platform;
-    private String payment;
-    private String pay_date;
+    private Optional<Optional<Crew>> crew;
+
+    private int crewId;
+    private String crewName;
+    private String crewDesc;
+    private Platform platform;
+    private int payment;
+    private Date payDate;
+    private int maxMember;
+    private String account;
+    private int currentPeople;
+
+    private Long captainId; // captain의 id만 전달
+    private List<Long> memberIds; // crew에 속한 member들의 id 리스트
+    private List<CrewChat> chatList;
+
+    public CrewDto(Optional<Crew> crew, List<CrewChat> chatList) {
+        this.crew = Optional.ofNullable(crew);
+        this.chatList = chatList;
+        this.currentPeople = maxMember;
+    }
+
+    public Object getCrew() {
+        return crew;
+    }
+
+    public Object getChatList() {
+        return chatList;
+    }
 }

@@ -21,11 +21,11 @@ public class CrewChatId implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date date;
+    private Date chat_date;
 
     public CrewChatId(Crew crew, Date date) {
         this.crew = crew;
-        this.date = date;
+        this.chat_date = date;
     }
 
     @Override
@@ -34,11 +34,11 @@ public class CrewChatId implements Serializable {
         if (!(o instanceof CrewChatId)) return false;
         CrewChatId that = (CrewChatId) o;
         return Objects.equals(crew, that.crew) &&
-                Objects.equals(date, that.date);
+                Objects.equals(chat_date, that.chat_date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(crew, date);
+        return Objects.hash(crew, chat_date);
     }
 }

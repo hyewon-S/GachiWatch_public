@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter // lombok 어노테이션 (모든 필드에 적용)
 @Entity
-@Table(name = "Member")
+//@Table(name = "Member")
 public class Member {
     @Id
     @SequenceGenerator(
@@ -18,8 +18,8 @@ public class Member {
             allocationSize = 1
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_gen")
-
-    private int memberId; // 멤버 고유 ID
+    @Column(name="member_id")
+    private Long memberId; // 멤버 고유 ID
 
     private String name; // 이름
     private String password; // 비밀번호
@@ -27,9 +27,10 @@ public class Member {
     private String nickname; // 닉네임
     private String profileImage; // 프로필 사진
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender; // 성별 (하나만 선택이라 list타입 할 필요 x)
-    private LocalDate birthdate; // 생년월일
+    @Enumerated(EnumType.ORDINAL)
+    //@Convert(converter = GenderConverter.class)
+    private Gender gender_id; // 성별 (하나만 선택이라 list타입 할 필요 x)
+    private LocalDate birth_date; // 생년월일
 
 
     @ElementCollection
@@ -84,8 +85,12 @@ public class Member {
         this.password = password;
         this.email = email;
         this.nickname = nickname;
-        this.gender = gender;
-        this.birthdate = birthdate;
+        this.gender_id = gender;
+        this.birth_date = birthdate;
+    }
+
+    public Object getMemberId() {
+        return memberId;
     }
 /*
     // Getter & Setter 어노테이션으로 대체

@@ -2,9 +2,12 @@ package ssd.springcooler.gachiwatch.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ssd.springcooler.gachiwatch.dto.CrewDto;
 import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
 
 @Controller
@@ -18,16 +21,25 @@ public class CrewPageController {
 
     @GetMapping
     public String getCrewPage() {
-        return "";
+        return "/crew/crewpage";
     }
 
     @GetMapping("/chat")
     public String getChats() {
-        return "";
+        return "/crew/crewpage";
     }
 
     @PostMapping("/chat")
     public String writeChat() {
-        return "";
+        return "/crew/crewpage";
+    }
+
+    @GetMapping("/{id}")
+    public String viewCrewPage(@PathVariable Long id, Model model) {
+        CrewDto crewDto = crewService.getCrewWithChat(id);
+        model.addAttribute("crewDto", crewDto);
+        //model.addAttribute("crew", dto.getCrew());
+        //model.addAttribute("chatMessages", dto.getChatList());
+        return "crew/crewpage";
     }
 }

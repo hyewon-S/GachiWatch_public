@@ -1,8 +1,6 @@
 package ssd.springcooler.gachiwatch.domain;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +11,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @Entity
+@Table(name = "CREWCHAT")
 public class CrewChat {
     @EmbeddedId
     private CrewChatId id;
@@ -21,6 +20,7 @@ public class CrewChat {
     //Crew crew;
     String chat;
     @ManyToOne
+    @JoinColumn(name = "member_id")
     Member member;
 
     public CrewChat(String chat) {

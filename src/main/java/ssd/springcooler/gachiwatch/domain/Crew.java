@@ -24,7 +24,7 @@ public class Crew {
     String crewName;
     String crewDesc;
     @Enumerated(EnumType.STRING)
-    Platform ott;
+    Platform platform;
     int payment;
     Date payDate;
     int maxMember;
@@ -36,13 +36,13 @@ public class Crew {
         this.maxMember = maxMember;
     }
 
-    public Crew(Member captain, String crewName, String crewDesc, Platform ott, int payment,
+    public Crew(Member captain, String crewName, String crewDesc, Platform platform, int payment,
                 Date payDate, int maxMember, String account) {
         super();
         this.captain = captain;
         this.crewName = crewName;
         this.crewDesc = crewDesc;
-        this.ott = ott;
+        this.platform = platform;
         this.payment = payment;
         this.payDate = payDate;
         this.maxMember = maxMember;
@@ -72,71 +72,7 @@ public class Crew {
         return crewMembers.remove(member);
     }
 
-    public Member getCaptain() {
-        return captain;
-    }
-
-    public void setCaptain(Member captain) {
-        this.captain = captain;
-    }
-
-    public ArrayList<Member> getCrewMembers() {
-        return crewMembers;
-    }
-
-    public String getCrewName() {
-        return crewName;
-    }
-
-    public void setCrewName(String crewName) {
-        this.crewName = crewName;
-    }
-
-    public String getCrewDesc() {
-        return crewDesc;
-    }
-
-    public void setCrewDesc(String crewDesc) {
-        this.crewDesc = crewDesc;
-    }
-
-    public Platform getOtt() {
-        return ott;
-    }
-
-    public void setOtt(Platform ott) {
-        this.ott = ott;
-    }
-
-    public int getPayment() {
-        return payment;
-    }
-
-    public void setPayment(int payment) {
-        this.payment = payment;
-    }
-
-    public Date getPayDate() {
-        return payDate;
-    }
-
-    public void setPayDate(Date payDate) {
-        this.payDate = payDate;
-    }
-
-    public int getMaxMember() {
-        return maxMember;
-    }
-
-    public void setMaxMember(int maxMember) {
-        this.maxMember = maxMember;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
+    public Object getCrewId() {
+        return crewId;
     }
 }
