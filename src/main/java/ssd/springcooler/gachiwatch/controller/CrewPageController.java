@@ -21,17 +21,17 @@ public class CrewPageController {
 
     @GetMapping
     public String getCrewPage() {
-        return "/crew/crewpage";
+        return "crew/crewpage";
     }
 
     @GetMapping("/chat")
     public String getChats() {
-        return "/crew/crewpage";
+        return "crew/crewpage";
     }
 
     @PostMapping("/chat")
     public String writeChat() {
-        return "/crew/crewpage";
+        return "crew/crewpage";
     }
 
     @GetMapping("/{id}")

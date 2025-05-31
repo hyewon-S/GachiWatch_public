@@ -3,6 +3,7 @@ package ssd.springcooler.gachiwatch.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ssd.springcooler.gachiwatch.dao.CrewChatDao;
 import ssd.springcooler.gachiwatch.dao.CrewDao;
 import ssd.springcooler.gachiwatch.dao.CrewJoinWaitingDao;
@@ -52,15 +53,13 @@ public class CrewServiceImpl implements CrewFacade {
         return new CrewDto(crew, chatList);
     }
 */
+    @Transactional
     public CrewDto getCrewWithChat(Long crewId) {
-        Optional<Crew> crew = crewRepository.findById(crewId);
-
-        if (crew == null) {
-            // 예외 던지기, 또는 null 반환, 또는 빈 객체 반환 등 원하는 처리
-            throw new EntityNotFoundException("Crew not found with id: " + crewId);
-        }
+        Optional<Crew> crew = crewRepository.findByCrewId(crewId);
 
         List<CrewChat> chatList = crewChatRepository.findById_Crew_CrewIdOrderByIdAsc(crewId);
+        System.out.println(crew);
+        System.out.println(crew.toString());
 
         return new CrewDto(crew, chatList);
     }

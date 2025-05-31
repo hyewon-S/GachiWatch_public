@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,14 +14,14 @@ import java.util.Date;
 public class Crew {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int crewId;
+    Long crewId;
 
     @ManyToOne
     @JoinColumn(name = "captain_id")
     Member captain;
 
     @ManyToMany(mappedBy = "joinedCrews")
-    ArrayList<Member> crewMembers = new ArrayList<Member>();
+    List<Member> crewMembers = new ArrayList<Member>();
     String crewName;
     String crewDesc;
     @Enumerated(EnumType.STRING)
@@ -72,7 +73,23 @@ public class Crew {
         return crewMembers.remove(member);
     }
 
-    public Object getCrewId() {
+    public Long getCrewId() {
         return crewId;
+    }
+
+    @Override
+    public String toString() {
+        return "Crew{" +
+                "crewId=" + crewId +
+                ", crewName='" + crewName + '\'' +
+                ", crewDesc='" + crewDesc + '\'' +
+                ", platform=" + platform +
+                ", payment=" + payment +
+                ", payDate=" + payDate +
+                ", maxMember=" + maxMember +
+                ", account='" + account + '\'' +
+                ", captain=" + (captain != null ? captain.getMemberId() : "null") +
+                //", crewMembersCount=" + (crewMembers != null ? crewMembers.size() : 0) +
+                '}';
     }
 }

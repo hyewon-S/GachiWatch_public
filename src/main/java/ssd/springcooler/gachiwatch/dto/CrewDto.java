@@ -5,6 +5,7 @@ import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.CrewChat;
 import ssd.springcooler.gachiwatch.domain.Platform;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +16,7 @@ import java.util.Optional;
 @Setter
 @Builder
 public class CrewDto {
-    private Optional<Optional<Crew>> crew;
+    private Optional<Crew> crew;
 
     private int crewId;
     private String crewName;
@@ -31,17 +32,33 @@ public class CrewDto {
     private List<Long> memberIds; // crew에 속한 member들의 id 리스트
     private List<CrewChat> chatList;
 
-    public CrewDto(Optional<Crew> crew, List<CrewChat> chatList) {
+    public CrewDto(Crew crew, List<CrewChat> chatList) {
         this.crew = Optional.ofNullable(crew);
+        this.chatList = new ArrayList<>(chatList); // Hibernate PersistentBag -> ArrayList로 안전하게 변환
+    }
+
+    public CrewDto(Crew crew, List<CrewChat> chatList, int maxMember) {
+        this.crew = Optional.ofNullable((crew));
         this.chatList = chatList;
         this.currentPeople = maxMember;
     }
+
+    public CrewDto(Optional<Crew> crew, List<CrewChat> chatList) {
+        this.crew = crew;
+        this.chatList = new ArrayList<>(chatList);
+    }
+    /*
+    public CrewDto(Crew crew, List<CrewChat> chatList) {
+        this.crew = crew;
+        this.chatList = chatList;
+    }
+    */
 
     public Object getCrew() {
         return crew;
     }
 
-    public Object getChatList() {
+    public List<CrewChat> getChatList() {
         return chatList;
     }
 }
