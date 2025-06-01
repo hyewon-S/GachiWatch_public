@@ -11,7 +11,7 @@ import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.*;
 
 @Repository
-public abstract class MyBatisMemberDao implements MemberDao {
+public class MyBatisMemberDao implements MemberDao {
 
     @Autowired
     private MemberMapper memberMapper;
@@ -116,9 +116,9 @@ public abstract class MyBatisMemberDao implements MemberDao {
         memberMapper.deleteMemberById(memberId);
     }
 
-//    @Override
-//    public String emailCheck(String email) {
-//        return "";
-//    }
+    @Override
+    public String emailCheck(String email) {
+        return "";
+    }
 }
 

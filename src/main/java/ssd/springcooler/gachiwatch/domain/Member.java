@@ -1,13 +1,17 @@
 package ssd.springcooler.gachiwatch.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter // lombok 어노테이션 (모든 필드에 적용)
 @Entity
 @Builder
@@ -79,17 +83,17 @@ public class Member {
     private List<Crew> joinedCrews = new ArrayList<>(); // 참여중인 크루 목록
 
     // 기본 생성자
-    public Member() {}
+//    public Member() {}
 
     // 사용자 지정 생성자
-    public Member(String name, String password, String email, String nickname, Gender gender, LocalDate birthdate) {
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.nickname = nickname;
-        this.gender = gender;
-        this.birthdate = birthdate;
-    }
+//    public Member(String name, String password, String email, String nickname, Gender gender, LocalDate birthdate) {
+//        this.name = name;
+//        this.password = password;
+//        this.email = email;
+//        this.nickname = nickname;
+//        this.gender = gender;
+//        this.birthdate = birthdate;
+//    }
 
     public Object getMemberId() {
         return memberId;

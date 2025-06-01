@@ -111,6 +111,12 @@ public class AccountController {
 
 
     // 로그인
+    @GetMapping("/login")
+    public String showLoginForm() {
+        return "account/login"; // 로그인 폼 보여주는 뷰 이름
+    }
+
+
     @PostMapping("/login")
     public String login(LoginDto loginDto,
                         HttpSession session,

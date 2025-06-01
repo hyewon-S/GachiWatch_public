@@ -7,6 +7,7 @@ import ssd.springcooler.gachiwatch.domain.Genre;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
 import ssd.springcooler.gachiwatch.dto.*;
+import ssd.springcooler.gachiwatch.repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +17,11 @@ import java.util.List;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberDao memberDao;
+    private final MemberRepository memberRepository;
 
-    protected MemberServiceImpl(MemberDao memberDao) {
+    protected MemberServiceImpl(MemberDao memberDao, MemberRepository memberRepository) {
         this.memberDao = memberDao;
+        this.memberRepository = memberRepository;
     }
 //    // 생성자 주입 (요즘 권장하는 방법)
 //    public MemberServiceImpl(MemberRepository memberRepository) {
@@ -65,7 +68,8 @@ public class MemberServiceImpl implements MemberService {
         // 비밀번호는 보통 여기서 암호화 해야 함 (예: BCrypt)
         // member.setPassword(passwordEncoder.encode(member.getPassword()));
 
-        memberDao.insertMember(member); // DB에 저장
+//        memberDao.insertMember(member); // DB에 저장
+        memberRepository.save(member).getMemberId();
     }
 
 
@@ -156,6 +160,7 @@ public class MemberServiceImpl implements MemberService {
     }
 }
 
+//// repository 사용
 //package ssd.springcooler.gachiwatch.service;
 //
 //import org.springframework.stereotype.Service;
