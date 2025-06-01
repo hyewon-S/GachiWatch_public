@@ -70,7 +70,7 @@ public class Member {
 
     @ManyToMany //(mappedBy = "members")
     @JoinTable(
-            name = "member_crew",
+            name = "joinedcrews",
             joinColumns = @JoinColumn(name = "member_id"),
             inverseJoinColumns = @JoinColumn(name = "crew_id")
     )

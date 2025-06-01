@@ -158,7 +158,7 @@
         <br>
         <div class="info-tag">인원 <span th:text="|${crewDto.currentPeople} / ${crewDto.crew.get().maxMember}|">3 / 4</span></div>
         <br>
-        <div class="info-tag">결제일 <span th:text="${crewDto.crew.get().payDate}">매달 7일</span></div>
+        <div class="info-tag">결제일 <span th:text="${#dates.format(crewDto.crew.get().payDate, 'MM/dd')}">매달 7일</span></div>
         <br>
         <!--<div class="info-tag">최소기간 <span th:text="${crewDto.minPeriod}">6개월</span></div>-->
         <br>
