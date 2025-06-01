@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface MemberService {
 
-    static String emailCheck(String email) {
-        return email;
-    }
+//    static String emailCheck(String email) {
+//        return email;
+//    }
 
     /**
      * 회원가입 처리
@@ -68,9 +68,11 @@ public interface MemberService {
 
     /**
      * '봤어요' 콘텐츠 개별 삭제
-     * @param contentId 콘텐츠 ID
      */
     void deleteWatchedContent(int contentId);
+
+//    void deleteWatchedContent(int memberId, int contentId);
+
 
     /**
      * 구독 중인 OTT 목록 수정

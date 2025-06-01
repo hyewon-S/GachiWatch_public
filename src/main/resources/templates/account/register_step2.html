@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>회원가입 - Step 2</title>
@@ -25,51 +25,87 @@
 <body>
 <div class="container">
     <h1>Gachi Watch<br>회원가입</h1>
+    <form id="signupForm" th:action="@{/account/register}" method="post" onsubmit="return handleSubmit();">
 
     <div class="form-group">
-        <label for="nickname">닉네임</label>
-        <input type="nickname" id="nickname" name="nickname" required>
-        <button type="button">중복 확인</button>
-    </div>
+            <label for="nickname">닉네임</label>
+            <input type="nickname" id="nickname" name="nickname" required>
+            <button type="button">중복 확인</button>
+        </div>
 
 
-    <p><strong>구독중인 OTT 서비스를 선택해주세요</strong></p>
-    <div class="ott-options">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/TVING_logo_2021.svg" alt="TVING">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Wavve_logo_2020.svg" alt="Wavve">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Watcha_Logo.svg" alt="Watcha">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png" alt="Prime Video" style="height: 30px;">
-    </div>
+        <p><strong>구독중인 OTT 서비스를 선택해주세요</strong></p>
+        <div class="ott-options">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/TVING_logo_2021.svg" alt="TVING">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Wavve_logo_2020.svg" alt="Wavve">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Watcha_Logo.svg" alt="Watcha">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png" alt="Prime Video" style="height: 30px;">
+        </div>
 
-    <p><strong>원하는 장르에 맞춰 추천해드릴게요</strong></p>
-    <div class="genre-options">
-        <button onclick="toggleSelect(this)">SF</button>
-        <button onclick="toggleSelect(this)">TV 영화</button>
-        <button onclick="toggleSelect(this)">가족</button>
-        <button onclick="toggleSelect(this)">공포</button>
-        <button onclick="toggleSelect(this)">다큐</button>
-        <button onclick="toggleSelect(this)">드라마</button>
-        <button onclick="toggleSelect(this)">로맨스</button>
-        <button onclick="toggleSelect(this)">모험</button>
-        <button onclick="toggleSelect(this)">미스터리</button>
-        <button onclick="toggleSelect(this)">범죄</button>
-        <button onclick="toggleSelect(this)">서부</button>
-        <button onclick="toggleSelect(this)">스릴러</button>
-        <button onclick="toggleSelect(this)">애니메이션</button>
-        <button onclick="toggleSelect(this)">액션</button>
-        <button onclick="toggleSelect(this)">역사</button>
-        <button onclick="toggleSelect(this)">음악</button>
-        <button onclick="toggleSelect(this)">전쟁</button>
-        <button onclick="toggleSelect(this)">코미디</button>
-        <button onclick="toggleSelect(this)">판타지</button>
-    </div>
+        <p><strong>원하는 장르에 맞춰 추천해드릴게요</strong></p>
+        <div class="genre-options">
+            <button onclick="toggleSelect(this)">SF</button>
+            <button onclick="toggleSelect(this)">TV 영화</button>
+            <button onclick="toggleSelect(this)">가족</button>
+            <button onclick="toggleSelect(this)">공포</button>
+            <button onclick="toggleSelect(this)">다큐</button>
+            <button onclick="toggleSelect(this)">드라마</button>
+            <button onclick="toggleSelect(this)">로맨스</button>
+            <button onclick="toggleSelect(this)">모험</button>
+            <button onclick="toggleSelect(this)">미스터리</button>
+            <button onclick="toggleSelect(this)">범죄</button>
+            <button onclick="toggleSelect(this)">서부</button>
+            <button onclick="toggleSelect(this)">스릴러</button>
+            <button onclick="toggleSelect(this)">애니메이션</button>
+            <button onclick="toggleSelect(this)">액션</button>
+            <button onclick="toggleSelect(this)">역사</button>
+            <button onclick="toggleSelect(this)">음악</button>
+            <button onclick="toggleSelect(this)">전쟁</button>
+            <button onclick="toggleSelect(this)">코미디</button>
+            <button onclick="toggleSelect(this)">판타지</button>
+        </div>
 
-    <!-- 서버로 보낼 실제 hidden 값 -->
-    <input type="hidden" name="subscribedOTTs" id="subscribedOTTs" />
-    <input type="hidden" name="preferredGenres" id="preferredGenres" />
+        <!-- 서버로 보낼 실제 hidden 값 -->
+        <input type="hidden" name="subscribedOTTs" id="subscribedOTTs" />
+        <input type="hidden" name="preferredGenres" id="preferredGenres" />
 
-    <button class="btn">회원가입</button>
+        <button class="btn">회원가입</button>
+    </form>
 </div>
+
+<script>
+    // OTT 선택 - 클릭 시 toggle + 저장
+    const ottImages = document.querySelectorAll('.ott-options img');
+    ottImages.forEach(img => {
+        img.addEventListener('click', () => {
+            img.classList.toggle('selected');
+        });
+    });
+
+    // 장르 선택 버튼 처리
+    const genreButtons = document.querySelectorAll('.genre-options button');
+    genreButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault(); // 버튼 submit 방지
+            btn.classList.toggle('selected');
+        });
+    });
+
+    // 제출 전 hidden 값 세팅
+    function handleSubmit() {
+        const selectedOTTs = Array.from(document.querySelectorAll('.ott-options img.selected'))
+            .map(img => img.alt); // alt에 있는 값으로 전송
+
+        const selectedGenres = Array.from(document.querySelectorAll('.genre-options button.selected'))
+            .map(btn => btn.textContent.trim());
+
+        document.getElementById('subscribedOTTs').value = selectedOTTs.join(',');
+        document.getElementById('preferredGenres').value = selectedGenres.join(',');
+
+        return true; // submit 계속 진행
+    }
+</script>
+
 </body>
 </html>

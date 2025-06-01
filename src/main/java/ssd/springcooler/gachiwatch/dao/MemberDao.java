@@ -2,11 +2,13 @@ package ssd.springcooler.gachiwatch.dao;
 
 import java.util.List;
 
+import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.*;
 
 public interface MemberDao {
     // 회원가입
-    void insertMember(MemberRegisterDto dto);
+//    void insertMember(MemberRegisterDto dto);
+    void insertMember(Member member);
 //    void insertMemberGenres(Long memberId, List<Long> genreIds);
 //    void insertMemberOtts(Long memberId, List<Long> ottIds);
 

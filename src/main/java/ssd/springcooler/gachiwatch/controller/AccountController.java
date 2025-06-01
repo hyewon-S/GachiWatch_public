@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ssd.springcooler.gachiwatch.domain.Genre;
 import ssd.springcooler.gachiwatch.domain.Platform;
 import ssd.springcooler.gachiwatch.dto.LoginDto;
@@ -12,9 +13,10 @@ import ssd.springcooler.gachiwatch.dto.MemberRegisterDto;
 import ssd.springcooler.gachiwatch.service.MemberService;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Controller
-@RequestMapping("/member")
+@RequestMapping("/account")
 public class AccountController {
 
     private final MemberService memberService;
@@ -45,56 +47,67 @@ public class AccountController {
 
 
         /** ✅ STEP1: 기본 정보 입력 화면 */
-        @GetMapping("/register/step1")
+        @GetMapping("/register_email_step1")
         public String registerStep1(Model model) {
             model.addAttribute("member", new MemberRegisterDto());
-            return "member/signup-step1"; // Thymeleaf 템플릿
+            return "account/register_email_step1"; // Thymeleaf 템플릿
         }
 
         /** ✅ STEP1 폼 전송 → STEP2로 이동 */
-        @PostMapping("/register/step2")
+        @PostMapping("/register_step2")
         public String registerStep2(@ModelAttribute("member") MemberRegisterDto dto, HttpSession session) {
             session.setAttribute("tempMember", dto); // 임시 저장
-            return "member/signup-step2"; // step2 화면으로 이동
+            return "account/register_step2"; // step2 화면으로 이동
         }
 
         /** ✅ STEP2에서 닉네임, ott, 장르 입력 받아 최종 회원가입 */
         @PostMapping("/register")
         public String registerFinal(@RequestParam String nickname,
-                                    @RequestParam String subscribedOtts,
+                                    @RequestParam String subscribedOTTs,
                                     @RequestParam String preferredGenres,
                                     HttpSession session,
-                                    Model model) {
+                                    RedirectAttributes redirectAttributes) {
+
             MemberRegisterDto dto = (MemberRegisterDto) session.getAttribute("tempMember");
             if (dto == null) {
-                return "redirect:/member/register/step1";
+                return "redirect:/account/register_email_step1";
             }
 
             dto.setNickname(nickname);
-            dto.setSubscribedOtts(Arrays.stream(subscribedOtts.split(","))
-                    .map(String::trim)
-                    .map(Platform::valueOf)
-                    .toList());
 
-            dto.setPreferredGenres(Arrays.stream(preferredGenres.split(","))
+            // OTT, Genre 문자열 → Enum 리스트 변환
+            List<Platform> ottList = Arrays.stream(subscribedOTTs.split(","))
                     .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .map(Platform::valueOf)
+                    .toList();
+
+            List<Genre> genreList = Arrays.stream(preferredGenres.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
                     .map(Genre::valueOf)
-                    .toList());
+                    .toList();
+
+            dto.setSubscribedOtts(ottList);
+            dto.setPreferredGenres(genreList);
 
             memberService.register(dto);
             session.removeAttribute("tempMember");
 
-            model.addAttribute("result", "success");
-            return "member/registerResult";
+            // ✅ 로그인 페이지로 redirect & JS alert 위한 플래그 전달
+            redirectAttributes.addFlashAttribute("registerSuccess", true);
+            return "redirect:/register_result";
         }
 
-        /** ✅ 이메일 중복 확인 (AJAX 요청용) */
-        @RequestMapping("/emailCheck")
-        @ResponseBody
-        public boolean emailCheck(@RequestParam("email") String email) {
-            String check = MemberService.emailCheck(email); // 주의: static method 아닌 이상 this.memberService 사용해야 함
-            return check != null;
-        }
+
+
+//    /** ✅ 이메일 중복 확인 (AJAX 요청용) */
+//        @RequestMapping("/emailCheck")
+//        @ResponseBody
+//        public boolean emailCheck(@RequestParam("email") String email) {
+//            String check = MemberService.emailCheck(email); // 주의: static method 아닌 이상 this.memberService 사용해야 함
+//            return check != null;
+//        }
 
 
     // 로그인

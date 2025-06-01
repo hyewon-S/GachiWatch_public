@@ -16,10 +16,13 @@ public class MemberRegisterDto { // 회원가입 요청 DTO
 
     private String name;
     private String gender;
-    private LocalDate birthDate;
+    private LocalDate birthdate;
     private String email;
     private String password;
+    private String confirmPassword;
     private String nickname;
+
+    // step2에서 추가될 데이터
     private List<Platform> subscribedOtts; // 예시로 스트리밍 서비스 정보를 저장
     private List<Genre> preferredGenres; // 선호 장르
 //    private String profileImage;

@@ -16,12 +16,17 @@
         )
     </insert>-->
 
-    <insert id="insert">
-        <![CDATA[
-	    insert into USER (EMAIL, PASSWORD, NICKNAME, PHONE_NUM)
-	    values (#{email}, #{password}, #{nickname}, #{phone_num})
-	    ]]>
+    <insert id="insertMember" parameterType="ssd.springcooler.gachiwatch.domain.Member">
+        INSERT INTO member (name, gender, birthdate, email, password, nickname)
+        VALUES (#{name}, #{gender}, #{birthdate}, #{email}, #{password}, #{nickname})
     </insert>
+
+<!--    <insert id="insert">-->
+<!--        <![CDATA[-->
+<!--	    insert into USER (EMAIL, PASSWORD, NICKNAME, PHONE_NUM)-->
+<!--	    values (#{email}, #{password}, #{nickname}, #{phone_num})-->
+<!--	    ]]>-->
+<!--    </insert>-->
 
     <!-- 이메일 중복버튼 구현을 위한 조회 쿼리문 -->
     <select id="email_check" resultType="String">
