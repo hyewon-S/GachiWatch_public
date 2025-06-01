@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Gachi Watch - 로그인</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: white;
+            border-radius: 20px;
+            padding: 50px 60px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        .logo img {
+            width: 180px;
+            margin-bottom: 30px;
+        }
+
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background-color: #000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .btn-login:hover {
+            background-color: #333;
+        }
+
+        .bottom-links {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .bottom-links a {
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .divider {
+            margin: 20px 0;
+            position: relative;
+            text-align: center;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background-color: #ccc;
+        }
+
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .divider span {
+            display: inline-block;
+            background-color: white;
+            padding: 0 10px;
+            color: #666;
+        }
+
+        .kakao-btn {
+            margin-top: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .kakao-btn img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="logo">
+        <img src="/images/gachiwatch_logo.png" alt="Gachi Watch 로고"> <!-- 실제 로고 경로로 바꿔 -->
+    </div>
+
+    <form th:action="@{/member/login}" method="post">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+
+        <button type="submit" class="btn-login">Sign In</button>
+
+        <!-- 로그인 실패 시 메시지 -->
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+    </form>
+
+    <div class="bottom-links">
+        계정이 없으신가요?
+        <a th:href="@{/account/register_email_step1}">회원가입</a>
+    </div>
+
+    <div class="divider"><span>OR</span></div>
+
+    <form th:action="@{/oauth2/authorization/kakao}" method="get">
+        <button type="submit" class="kakao-btn">
+            <img src="/images/kakao_login_medium.png" alt="카카오로 로그인"> <!-- 카카오 아이콘 경로로 바꿔 -->
+        </button>
+    </form>
+</div>
+</body>
+</html>

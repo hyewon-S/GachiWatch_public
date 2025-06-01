@@ -8,11 +8,16 @@ import java.util.List;
 
 public interface MemberService {
 
+    static String emailCheck(String email) {
+        return email;
+    }
+
     /**
      * 회원가입 처리
      * @param dto 회원가입 정보 DTO
      */
     void register(MemberRegisterDto dto);
+
 
     /**
      * 로그인 처리

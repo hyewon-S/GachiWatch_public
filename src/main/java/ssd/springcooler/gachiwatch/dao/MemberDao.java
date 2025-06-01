@@ -47,4 +47,6 @@ public interface MemberDao {
 
     // 회원 탈퇴
     void deleteMemberById(Long memberId);
+
+    String emailCheck(String email);
 }

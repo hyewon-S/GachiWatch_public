@@ -28,6 +28,7 @@ public class MemberServiceImpl implements MemberService {
 //        memberDao.insertMemberOtts(dto.getMemberId(), dto.getOttIds());
     }
 
+
     /**
      * 로그인 처리
      */
