@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 일단 완성 단, sql문 테스트 못해봄-->
+<mapper namespace="ssd.springcooler.gachiwatch.dao.mybatis.mapper.ReviewMapper">
+
+    <!-- 리뷰 삽입 -->
+    <insert id="insertReview" parameterType="ssd.springcooler.gachiwatch.domain.Review">
+        INSERT INTO review (
+        review_id,
+        content_id,
+        member_id,
+        substance,
+        likes,
+        review_date,
+        score
+        ) VALUES (
+        #{reviewId},
+        #{contentId},
+        #{memberId},
+        #{substance},
+        #{likes},
+        #{date},
+        #{score}
+        )
+    </insert>
+
+    <!-- 리뷰 수정 -->
+    <update id="updateReview" parameterType="ssd.springcooler.gachiwatch.domain.Review">
+        UPDATE review
+        SET
+        likes = #{likes},
+        review_date = #{reviewDate},
+        substance = #{substance},
+        score = #{score}
+        WHERE review_id = #{reviewId}
+    </update>
+
+    <!-- 리뷰 삭제 -->
+    <delete id="deleteReview">
+        DELETE FROM review
+        WHERE review_id = #{reviewId}
+    </delete>
+
+    <!-- ID로 리뷰 조회 -->
+    <select id="getReviewById" resultType="ssd.springcooler.gachiwatch.domain.Review">
+        SELECT *
+        FROM review
+        WHERE review_id = #{reviewId}
+    </select>
+
+    <!-- 콘텐츠 ID로 리뷰 리스트 조회 -->
+    <select id="getReviewsByContentId" resultType="ssd.springcooler.gachiwatch.domain.Review">
+        SELECT *
+        FROM review
+        WHERE content_id = #{contentId}
+    </select>
+
+    <!-- 유저 ID로 리뷰 리스트 조회 -->
+    <select id="getReviewsByUserId" resultType="ssd.springcooler.gachiwatch.domain.Review">
+        SELECT *
+        FROM review
+        WHERE member_id = #{memberId}
+    </select>
+
+</mapper>

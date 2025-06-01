@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.MemberMapper">
+
+    <!-- 1. 회원가입 -
+    <insert id="insertMember" parameterType="ssd.springcooler.gachiwatch.dto.MemberRegisterDto">
+        INSERT INTO member (
+        name, gender_id, birthDate, email, password, nickname,
+        subscribedOTTs, preferedGenres, profileImage
+        ) VALUES (
+        #{name}, #{genderId}, #{birthDate}, #{email}, #{password}, #{nickname},
+        #{subscribedOtts}, #{preferredGenres}, #{profileImage}
+        )
+    </insert>-->
+
+    <!-- 2. 이메일로 회원 조회 (로그인용) -->
+    <select id="findByEmail" parameterType="String" resultType="ssd.springcooler.gachiwatch.domain.Member">
+        SELECT * FROM member WHERE email = #{email}
+    </select>
+
+    <!-- 3. 닉네임 중복 확인 -->
+    <select id="existsByNickname" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM member WHERE nickname = #{nickname}
+    </select>
+
+    <!-- 4. 프로필 닉네임 변경 -->
+    <update id="updateNickname" parameterType="map">
+        UPDATE member SET nickname = #{nickname} WHERE member_id = #{memberId}
+    </update>
+
+    <!-- 5. 비밀번호 변경 -->
+    <update id="updatePassword" parameterType="map">
+        UPDATE member SET password = #{password} WHERE member_id = #{memberId}
+    </update>
+
+    <!-- 6. 프로필 이미지 변경 -->
+    <update id="updateProfileImage" parameterType="map">
+        UPDATE member SET profileImage = #{profileImage} WHERE member_id = #{memberId}
+    </update>
+
+    <!-- 7. 구독 중인 OTT 플랫폼 변경
+    <update id="updateSubscribedOTTs" parameterType="map">
+        UPDATE member SET subscribedOTTs = #{subscribedOTTs} WHERE member_id = #{memberId}
+    </update>-->
+
+    <!-- 8. 선호 장르 변경
+    <update id="updatePreferredGenres" parameterType="map">
+        UPDATE member SET preferedGenres = #{preferredGenres} WHERE member_id = #{memberId}
+    </update>-->
+
+    <!-- 9. 회원 탈퇴 -->
+    <delete id="deleteMember" parameterType="Long">
+        DELETE FROM member WHERE member_id = #{memberId}
+    </delete>
+
+    <!-- 10. 내가 작성한 리뷰 전체 조회 -->
+    <select id="findReviewsByMemberId" parameterType="Long" resultType="ssd.springcooler.gachiwatch.domain.Review">
+        SELECT * FROM review WHERE member_id = #{memberId}
+    </select>
+
+    <!-- 11. 리뷰 삭제 -->
+    <delete id="deleteReview" parameterType="Long">
+        DELETE FROM review WHERE review_id = #{reviewId}
+    </delete>
+
+    <!-- 12. 내가 본 콘텐츠 전체 조회 -->
+    <select id="findWatchedContentsByMemberId" parameterType="Long" resultType="ssd.springcooler.gachiwatch.domain.Content">
+        SELECT c.*
+        FROM watched_content wc
+        JOIN content c ON wc.content_id = c.content_id
+        WHERE wc.member_id = #{memberId}
+    </select>
+
+    <!-- 13. 내가 본 콘텐츠 삭제 -->
+    <delete id="deleteWatchedContent" parameterType="map">
+        DELETE FROM watched_content
+        WHERE member_id = #{memberId} AND content_id = #{contentId}
+    </delete>
+
+    <!-- 14. 내가 참여 중인 가치크루 조회 -->
+    <select id="findCrewsByMemberId" parameterType="Long" resultType="ssd.springcooler.gachiwatch.domain.Crew">
+        SELECT c.*
+        FROM crew c
+        JOIN crew_member cm ON c.crew_id = cm.crew_id
+        WHERE cm.member_id = #{memberId}
+    </select>
+
+    <!-- 15. 내가 좋아요한 콘텐츠 조회 -->
+    <select id="findLikedContentsByMemberId" parameterType="Long" resultType="ssd.springcooler.gachiwatch.domain.Content">
+        SELECT c.*
+        FROM content_like cl
+        JOIN content c ON cl.content_id = c.content_id
+        WHERE cl.member_id = #{memberId}
+    </select>
+
+    <!-- 16. 내가 신고한 내역 조회 domain 패키지에 report 없어서 주석 처리
+    <select id="findReportsByMemberId" parameterType="Long" resultType="com.example.domain.Report">
+        SELECT * FROM report WHERE reporter_id = #{memberId}
+    </select>
+-->
+
+    <!-- 17. 내가 신고당한 내역 및 횟수 조회 -->
+    <select id="findReportedCountAndList" parameterType="Long" resultMap="ReportedResultMap">
+        SELECT r.*, COUNT(*) OVER() as total_count
+        FROM report r
+        WHERE reported_id = #{memberId}
+    </select>
+
+    <resultMap id="ReportedResultMap" type="ssd.springcooler.gachiwatch.dto.ReportedDetailDto">
+        <result property="reportId" column="report_id"/>
+        <result property="reason" column="reason"/>
+        <result property="reportedDate" column="reported_date"/>
+        <result property="totalCount" column="total_count"/>
+    </resultMap>
+
+
+</mapper>

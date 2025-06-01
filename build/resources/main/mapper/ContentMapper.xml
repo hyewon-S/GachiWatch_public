@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- sql 문 점검 완료 -->
+<mapper namespace="ssd.springcooler.gachiwatch.dao.mybatis.mapper.ContentMapper">
+
+    <!-- ResultMap for Content with genreIds -->
+    <resultMap id="contentResultMap" type="ssd.springcooler.gachiwatch.domain.Content">
+        <id property="contentId" column="content_id"/>
+        <result property="title" column="title"/>
+        <result property="intro" column="intro"/>
+        <result property="cast" column="casts"/>
+        <result property="rate" column="rate"/>
+        <result property="uploadDate" column="upload_date"/>
+        <result property="contentType" column="content_type"/>
+        <result property="imgUrl" column="img_url"/>
+        <collection property="genre" ofType="int" column="genre_id"/>
+        <collection property="platform" ofType="int" column="platform_id"/>
+    </resultMap>
+
+    <!-- 1. createContent -->
+    <insert id="createContent" parameterType="list">
+        INSERT INTO content (content_id, title, intro, casts, rate, upload_date, content_type, img_url)
+        VALUES
+        <foreach collection="list" item="c" separator=",">
+            (#{c.contentId}, #{c.title}, #{c.intro}, #{c.cast}, #{c.rate}, #{c.uploadDate}, #{c.contentType}, #{c.imgUrl})
+        </foreach>
+
+        <!-- 2. 장르 삽입 -->
+        <foreach collection="list" item="c">
+            <foreach collection="c.genre" item="gid">
+                INSERT INTO content_genre (content_id, genre_id)
+                VALUES (#{c.contentId}, #{gid});
+            </foreach>
+        </foreach>
+
+        <!-- 3. 플랫폼 삽입 -->
+        <foreach collection="list" item="c">
+            <foreach collection="c.platform" item="pid">
+                INSERT INTO content_ott (content_id, platform_id)
+                VALUES (#{c.contentId}, #{pid});
+            </foreach>
+        </foreach>
+    </insert>
+
+    <!-- 2. getContentList -->
+    <select id="getContentList" parameterType="list" resultMap="contentResultMap">
+        SELECT c.*, cg.genre_id, co.platform_id
+        FROM content c
+        LEFT JOIN content_genre cg ON c.content_id = cg.content_id
+        LEFT JOIN content_ott co ON c.content_id = co.content_id
+        WHERE c.content_id IN
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <!-- 3. findByKeyword -->
+    <select id="findByKeyword" parameterType="string" resultMap="contentResultMap">
+        SELECT c.*, cg.genre_id, co.platform_id
+        FROM content c
+        LEFT JOIN content_genre cg ON c.content_id = cg.content_id
+        LEFT JOIN content_ott co ON c.content_id = co.content_id
+        WHERE LOWER(c.title) LIKE '%' || LOWER(#{keyword}) || '%'
+    </select>
+
+    <!-- 4. findById -->
+    <select id="findById" parameterType="int" resultMap="contentResultMap">
+        SELECT c.*, cg.genre_id, co.platform_id
+        FROM content c
+        LEFT JOIN content_genre cg ON c.content_id = cg.content_id
+        LEFT JOIN content_ott co ON c.content_id = co.content_id
+        WHERE c.content_id = #{id}
+    </select>
+
+    <!-- 5. updateContent -->
+    <update id="updateContent" parameterType="ssd.springcooler.gachiwatch.domain.Content">
+        UPDATE content
+        SET
+        title = #{title},
+        intro = #{intro},
+        casts = #{cast},
+        rate = #{rate},
+        upload_date = #{uploadDate},
+        content_type = #{contentType},
+        img_url = #{imgUrl}
+        WHERE content_id = #{contentId}
+    </update>
+
+    <!-- 6. deleteContent -->
+    <delete id="deleteContent" parameterType="int">
+        DELETE FROM content WHERE content_id = #{id}
+    </delete>
+
+    <!-- 7. search -->
+    <select id="search" resultMap="contentResultMap">
+        SELECT DISTINCT c.*, cg.genre_id, co.platform_id
+        FROM content c
+        LEFT JOIN content_genre cg ON c.content_id = cg.content_id
+        LEFT JOIN content_ott co ON c.content_id = co.content_id
+        WHERE 1=1
+        <if test="genre != null and genre.size() > 0">
+            AND cg.genre_id IN
+            <foreach collection="genre" item="g" open="(" close=")" separator=",">
+                #{g.genreId}
+            </foreach>
+        </if>
+        <if test="platform != null and platform.size() > 0">
+            AND co.platform_id IN
+            <foreach collection="platform" item="p" open="(" close=")" separator=",">
+                #{p.platformId}
+            </foreach>
+        </if>
+        <if test="content_type != null and content_type != ''">
+            AND c.content_type = #{content_type}
+        </if>
+
+        <!--밑에는 아직 사용할지 고민중... -->
+        <if test="range != null and range != ''">
+            <!-- 예: 최근 1개월 내 업로드된 콘텐츠 -->
+            AND c.upload_date >= SYSDATE - #{range}
+        </if>
+    </select>
+
+</mapper>
