@@ -54,7 +54,7 @@ public class CrewDto {
     }
     */
 
-    public Object getCrew() {
+    public Optional<Crew> getCrew() {
         return crew;
     }
 

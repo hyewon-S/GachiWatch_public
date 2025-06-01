@@ -9,6 +9,8 @@ import org.springframework.web.servlet.ModelAndView;
 import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/crew/update")
 public class CrewUpdateController {
@@ -20,8 +22,8 @@ public class CrewUpdateController {
 
     @GetMapping
     public String form(@ModelAttribute("crewReq") CrewCommand crewCommand, @RequestParam("crewId") String crewId) {
-        int cid = Integer.parseInt(crewId);
-        Crew crew = crewService.getCrew(cid);
+        Long cid = Long.parseLong(crewId);
+        Optional<Crew> crew = crewService.getCrew(cid);
         //crewCommand setting
         /* ... */
 
