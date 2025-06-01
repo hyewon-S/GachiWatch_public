@@ -110,5 +110,12 @@ public class MyBatisMemberDao implements MemberDao {
     public void deleteMemberById(Long memberId) {
         memberMapper.deleteMemberById(memberId);
     }
+
+    @Override
+    public String emailCheck(String email) {
+        //에러 해결 위해 자동으로 메소드 구현 추후 null
+        //Class 'MyBatisMemberDao' must either be declared abstract or implement abstract method 'emailCheck(String)' in 'MemberDao'
+        return null;
+    }
 }
 
