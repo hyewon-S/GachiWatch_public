@@ -6,6 +6,7 @@
     <div class="container">
         <script th:if="${registerSuccess}" xmlns:th="http://www.w3.org/1999/xhtml">
             alert("회원가입이 완료되었습니다.");
+            location.href = "/account/login";
         </script>
     </div>
 </body>

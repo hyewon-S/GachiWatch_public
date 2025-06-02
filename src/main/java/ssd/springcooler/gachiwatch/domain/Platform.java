@@ -17,4 +17,14 @@ public enum Platform {
         this.label = label;
     }
 
+    public static Platform fromDisplayName(String displayName) {
+        for (Platform p : Platform.values()) {
+            if (p.label.equals(displayName)) {
+                return p;
+            }
+        }
+        throw new IllegalArgumentException("Unknown platform display name: " + displayName);
+    }
+
+
 }

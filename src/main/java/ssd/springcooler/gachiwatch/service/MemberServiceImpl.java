@@ -53,6 +53,16 @@ public class MemberServiceImpl implements MemberService {
 //    }
     @Override
     public void register(MemberRegisterDto dto) {
+
+        // Gender 변환 안전하게
+        Gender gender;
+        try {
+            gender = Gender.valueOf(dto.getGender()); // 문자열이 "FEMALE" 이런 Enum 이름일 때
+        } catch (IllegalArgumentException e) {
+            // 혹은 코드값이라면
+            gender = Gender.fromCode(Integer.parseInt(dto.getGender()));
+        }
+
         // DTO → Entity 변환
         Member member = Member.builder()
                 .name(dto.getName())
@@ -69,7 +79,7 @@ public class MemberServiceImpl implements MemberService {
         // member.setPassword(passwordEncoder.encode(member.getPassword()));
 
 //        memberDao.insertMember(member); // DB에 저장
-        memberRepository.save(member).getMemberId();
+        memberRepository.save(member);
     }
 
 

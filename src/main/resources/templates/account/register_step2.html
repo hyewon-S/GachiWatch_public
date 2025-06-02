@@ -25,7 +25,7 @@
 <body>
 <div class="container">
     <h1>Gachi Watch<br>회원가입</h1>
-    <form id="signupForm" th:action="@{/account/register_step2}" method="post" onsubmit="return handleSubmit();">
+    <form id="signupForm" th:action="@{/account/register_result}" method="post" onsubmit="return handleSubmit();">
 
     <div class="form-group">
             <label for="nickname">닉네임</label>
@@ -37,10 +37,11 @@
         <p><strong>구독중인 OTT 서비스를 선택해주세요</strong></p>
         <div class="ott-options">
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/TVING_logo_2021.svg" alt="TVING">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Wavve_logo_2020.svg" alt="Wavve">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Watcha_Logo.svg" alt="Watcha">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png" alt="Prime Video" style="height: 30px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/TVING_logo_2021.svg" alt="Watcha">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Wavve_logo_2020.svg" alt="Disney">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Watcha_Logo.svg" alt="Apple">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png" alt="wavve" style="height: 30px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Watcha_Logo.svg" alt="Amazon">
         </div>
 
         <p><strong>원하는 장르에 맞춰 추천해드릴게요</strong></p>

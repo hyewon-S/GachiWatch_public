@@ -30,4 +30,12 @@ public enum Genre {
         this.label = label;
     }
 
+    public static Genre fromDisplayName(String displayName) {
+        for (Genre p : Genre.values()) {
+            if (p.label.equals(displayName)) {
+                return p;
+            }
+        }
+        throw new IllegalArgumentException("Unknown platform display name: " + displayName);
+    }
 }

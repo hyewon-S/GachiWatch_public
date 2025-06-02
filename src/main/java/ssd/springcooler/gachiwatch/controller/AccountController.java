@@ -61,7 +61,7 @@ public class AccountController {
         }
 
         /** ✅ STEP2에서 닉네임, ott, 장르 입력 받아 최종 회원가입 */
-        @PostMapping("/register")
+        @PostMapping("/register_result")
         public String registerFinal(@RequestParam String nickname,
                                     @RequestParam String subscribedOTTs,
                                     @RequestParam String preferredGenres,
@@ -79,13 +79,13 @@ public class AccountController {
             List<Platform> ottList = Arrays.stream(subscribedOTTs.split(","))
                     .map(String::trim)
                     .filter(s -> !s.isEmpty())
-                    .map(Platform::valueOf)
+                    .map(Platform::fromDisplayName)
                     .toList();
 
             List<Genre> genreList = Arrays.stream(preferredGenres.split(","))
                     .map(String::trim)
                     .filter(s -> !s.isEmpty())
-                    .map(Genre::valueOf)
+                    .map(Genre::fromDisplayName)
                     .toList();
 
             dto.setSubscribedOtts(ottList);
@@ -96,7 +96,12 @@ public class AccountController {
 
             // ✅ 로그인 페이지로 redirect & JS alert 위한 플래그 전달
             redirectAttributes.addFlashAttribute("registerSuccess", true);
-            return "redirect:/register_result";
+            return "redirect:/account/register_result";
+        }
+
+        @GetMapping("/register_result")
+        public String registerResultPage() {
+            return "account/register_result"; // ← templates/account/register_result.html
         }
 
 
@@ -127,7 +132,7 @@ public class AccountController {
             return "redirect:/main.jsp";
         } else {
             model.addAttribute("error", "로그인 실패");
-            return "/member/login";
+            return "/account/login";
         }
     }
 
