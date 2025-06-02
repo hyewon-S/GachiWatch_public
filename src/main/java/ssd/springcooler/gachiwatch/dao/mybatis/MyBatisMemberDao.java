@@ -41,7 +41,7 @@ public class MyBatisMemberDao implements MemberDao {
 //    }
 
     @Override
-    public LoginDto findByEmailAndPassword(LoginDto loginDto) {
+    public Member findByEmailAndPassword(LoginDto loginDto) {
         return memberMapper.findByEmailAndPassword(loginDto);
     }
 

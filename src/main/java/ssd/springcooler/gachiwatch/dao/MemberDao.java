@@ -15,7 +15,7 @@ public interface MemberDao {
     void insertMemberGenres(int memberId, List<Long> genreIds);
 
     // 로그인
-    LoginDto findByEmailAndPassword(LoginDto loginDto);
+    Member findByEmailAndPassword(LoginDto loginDto);
     LoginDto findByKakaoEmail(String email);
 
     // 프로필

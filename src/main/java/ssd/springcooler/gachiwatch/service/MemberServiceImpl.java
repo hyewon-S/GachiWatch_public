@@ -2,6 +2,7 @@ package ssd.springcooler.gachiwatch.service;
 
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.MemberDao;
+import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
 import ssd.springcooler.gachiwatch.domain.Gender;
 import ssd.springcooler.gachiwatch.domain.Genre;
 import ssd.springcooler.gachiwatch.domain.Member;
@@ -18,10 +19,12 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberDao memberDao;
     private final MemberRepository memberRepository;
+    private final MemberMapper memberMapper;
 
-    protected MemberServiceImpl(MemberDao memberDao, MemberRepository memberRepository) {
+    protected MemberServiceImpl(MemberDao memberDao, MemberRepository memberRepository, MemberMapper memberMapper) {
         this.memberDao = memberDao;
         this.memberRepository = memberRepository;
+        this.memberMapper = memberMapper;
     }
 //    // 생성자 주입 (요즘 권장하는 방법)
 //    public MemberServiceImpl(MemberRepository memberRepository) {
@@ -85,11 +88,18 @@ public class MemberServiceImpl implements MemberService {
 
     /**
      * 로그인 처리
+     *
+     * @return
      */
+//    @Override
+//    public void login(LoginDto dto) {
+//        memberDao.findByEmailAndPassword(dto);
+//    }
     @Override
-    public void login(LoginDto dto) {
-        memberDao.findByEmailAndPassword(dto);
+    public Member login(LoginDto loginDto) {
+        return memberMapper.findByEmailAndPassword(loginDto);
     }
+
 
     /**
      * 프로필 수정

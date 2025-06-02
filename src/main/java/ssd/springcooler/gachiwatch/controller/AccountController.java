@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ssd.springcooler.gachiwatch.domain.Genre;
+import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
 import ssd.springcooler.gachiwatch.dto.LoginDto;
 import ssd.springcooler.gachiwatch.dto.MemberRegisterDto;
@@ -126,21 +127,23 @@ public class AccountController {
     public String login(LoginDto loginDto,
                         HttpSession session,
                         Model model) {
-        memberService.login(loginDto);
-        if (loginDto != null) {
-            session.setAttribute("user", loginDto);
-            return "redirect:/main.jsp";
+        Member member = memberService.login(loginDto);
+
+        if (member != null) {
+            session.setAttribute("user", member);
+            return "redirect:/home/member_home"; // ← account 디렉토리 외부로 redirect
         } else {
             model.addAttribute("error", "로그인 실패");
-            return "/account/login";
+            return "account/login";
         }
     }
+
 
     // 로그아웃
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/main.jsp";
+        return "redirect:/home";
     }
 
     // 회원 탈퇴
@@ -148,6 +151,6 @@ public class AccountController {
     public String delete(@RequestParam int memberId, Model model) {
         boolean result = memberService.deleteMember(memberId);
         model.addAttribute("result", result ? "success" : "fail");
-        return "redirect:/main.jsp";
+        return "redirect:/home";
     }
 }

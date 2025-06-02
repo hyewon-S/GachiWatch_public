@@ -17,7 +17,7 @@ public interface MemberMapper {
     void insertMemberOtts(@Param("memberId") int memberId, @Param("ottIds") List<Long> ottIds);
 
     // 로그인
-    LoginDto findByEmailAndPassword(LoginDto loginDto);
+    Member findByEmailAndPassword(LoginDto loginDto);
     LoginDto findByKakaoEmail(String email);
 
     // 프로필

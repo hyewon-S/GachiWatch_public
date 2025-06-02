@@ -1,6 +1,7 @@
 package ssd.springcooler.gachiwatch.service;
 
 import ssd.springcooler.gachiwatch.domain.Genre;
+import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
 import ssd.springcooler.gachiwatch.dto.*;
 
@@ -23,8 +24,9 @@ public interface MemberService {
      * 로그인 처리
      *
      * @param dto 로그인 요청 DTO
+     * @return
      */
-    void login(LoginDto dto);
+    Member login(LoginDto loginDto);
 
     /*
      * 프로필 정보 수정
