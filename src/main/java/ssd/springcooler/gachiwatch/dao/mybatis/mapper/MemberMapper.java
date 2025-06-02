@@ -2,6 +2,7 @@ package ssd.springcooler.gachiwatch.dao.mybatis.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.repository.query.Param;
+import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.*;
 
 import java.util.List;
@@ -10,7 +11,8 @@ import java.util.List;
 public interface MemberMapper {
 
     // 회원가입
-    void insertMember(MemberRegisterDto dto);
+//    void insertMember(MemberRegisterDto dto);
+    void insertMember(Member member);
     void insertMemberGenres(@Param("memberId") int memberId, @Param("genreIds") List<Long> genreIds);
     void insertMemberOtts(@Param("memberId") int memberId, @Param("ottIds") List<Long> ottIds);
 

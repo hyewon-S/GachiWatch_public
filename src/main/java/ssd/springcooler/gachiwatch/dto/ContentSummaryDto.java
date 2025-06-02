@@ -12,4 +12,7 @@ public class ContentSummaryDto { // 영화정보 간략하게 보여주기
     private String title;
     private String thumbnailUrl;
     private double rating;
+
+    public ContentSummaryDto(int contentId, String title) {
+    }
 }

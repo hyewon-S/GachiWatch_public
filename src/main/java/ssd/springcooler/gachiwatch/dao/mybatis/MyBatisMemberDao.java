@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import ssd.springcooler.gachiwatch.dao.MemberDao;
 import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
+import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.*;
 
 @Repository
@@ -15,9 +16,13 @@ public class MyBatisMemberDao implements MemberDao {
     @Autowired
     private MemberMapper memberMapper;
 
+//    @Override
+//    public void insertMember(MemberRegisterDto dto) {
+//        memberMapper.insertMember(dto);
+//    }
     @Override
-    public void insertMember(MemberRegisterDto dto) {
-        memberMapper.insertMember(dto);
+    public void insertMember(Member member) {
+        memberMapper.insertMember(member);
     }
 
     @Override
@@ -113,9 +118,7 @@ public class MyBatisMemberDao implements MemberDao {
 
     @Override
     public String emailCheck(String email) {
-        //에러 해결 위해 자동으로 메소드 구현 추후 null
-        //Class 'MyBatisMemberDao' must either be declared abstract or implement abstract method 'emailCheck(String)' in 'MemberDao'
-        return null;
+        return "";
     }
 }
 

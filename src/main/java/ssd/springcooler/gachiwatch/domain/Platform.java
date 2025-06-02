@@ -7,7 +7,7 @@ public enum Platform {
     NETFLIX("넷플릭스"),
     WATCHA("왓챠"),
     DISNEY("디즈니+"),
-    TVING("티빙"),
+    APPLE("애플티비+"),
     WAVVE("웨이브"),
     AMAZON("아마존 프라임");
 
