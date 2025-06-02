@@ -27,6 +27,7 @@
         .logo {
             width: 150px;
             margin-right: 20px;
+            cursor: pointer;
         }
 
         .search-bar {
@@ -50,6 +51,7 @@
             margin-left: 15px;
             text-decoration: none;
             color: #333;
+            cursor: pointer;
         }
 
         .sign-in, .register {
@@ -106,16 +108,18 @@
 <body>
 <header class="main-header">
     <div class="logo-search">
+        <a th:href="@{/}">
         <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
+        </a>
         <input type="text" placeholder="콘텐츠, 키워드 입력" class="search-bar">
         <button class="search-button">Search</button>
     </div>
     <nav class="nav-menu">
-        <a href="#">통합 콘텐츠</a>
-        <a href="#">추천 콘텐츠</a>
-        <a href="#">공유 매칭</a>
-        <button class="sign-in">Sign in</button>
-        <button class="register">Register</button>
+        <a th:href="@{/account/login}">통합 콘텐츠</a> <!--비회원 메인 페이지에서는 상단바 버튼 눌러도 login하라는 페이지로 이동됨-->
+        <a th:href="@{/account/login}">추천 콘텐츠</a>
+        <a th:href="@{/account/login}">공유 매칭</a>
+        <a th:href="@{/account/login}"><button class="sign-in">Sign in</button></a>
+        <a th:href="@{/account/register_email_step1}"><button class="register">Register</button></a>
     </nav>
 </header>
 

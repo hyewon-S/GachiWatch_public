@@ -1,5 +1,4 @@
 package ssd.springcooler.gachiwatch.controller;
-
 import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -46,3 +45,4 @@ public String memberHome(Model model) {
 //    return "home/member_home";
 //}
 //
+

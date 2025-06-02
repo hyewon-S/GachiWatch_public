@@ -27,6 +27,7 @@
         .logo {
             width: 150px;
             margin-right: 20px;
+            cursor: pointer;
         }
 
         .search-bar {
@@ -50,6 +51,7 @@
             margin-left: 15px;
             text-decoration: none;
             color: #333;
+            cursor: pointer;
         }
 
         .logout, .profile-image {
@@ -145,17 +147,20 @@
 <body>
 <header class="main-header">
     <div class="logo-search">
-        <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
+        <a th:href="@{/}">
+            <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
+        </a>
         <input type="text" placeholder="콘텐츠, 키워드 입력" class="search-bar">
         <button class="search-button">Search</button>
     </div>
     <nav class="nav-menu">
-        <a href="#">통합 콘텐츠</a>
-        <a href="#">추천 콘텐츠</a>
-        <a href="#">공유 매칭</a>
-        <button class="logout">Logout</button>
+        <a th:href="@{/content/search}">통합 콘텐츠</a>
+        <a th:href="@{/content/recommend}">추천 콘텐츠</a>
+        <a th:href="@{/crew/view}">공유 매칭</a>
+        <a th:href="@{/account/logout}">
+            <button class="logout">Logout</button>
+        </a>
         <!-- 로그인 -> 홈화면 뷰 연결 위해 null-safe 처리 했습니다 -->
-<!--        <a th:href="@{/mypage}">-->
         <a th:if="${user != null}" th:href="@{/mypage}">
             <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
         </a>
