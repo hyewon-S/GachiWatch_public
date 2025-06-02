@@ -34,8 +34,11 @@ public class Member {
     private String profileImage; // 프로필 사진
 
     @Enumerated(EnumType.ORDINAL)
+    @Column(name="gender_id")
     //@Convert(converter = GenderConverter.class)
     private Gender gender; // 성별 (하나만 선택이라 list타입 할 필요 x)
+    @Temporal(TemporalType.DATE)
+    @Column(name="birth_date")
     private LocalDate birthdate; // 생년월일
 
 
