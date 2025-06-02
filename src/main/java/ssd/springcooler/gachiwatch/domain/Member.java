@@ -1,14 +1,20 @@
 package ssd.springcooler.gachiwatch.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter // lombok 어노테이션 (모든 필드에 적용)
 @Entity
+@Builder
 //@Table(name = "Member")
 public class Member {
     @Id
@@ -19,7 +25,7 @@ public class Member {
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_gen")
     @Column(name="member_id")
-    private Long memberId; // 멤버 고유 ID
+    private int memberId; // 멤버 고유 ID
 
     private String name; // 이름
     private String password; // 비밀번호
@@ -29,8 +35,8 @@ public class Member {
 
     @Enumerated(EnumType.ORDINAL)
     //@Convert(converter = GenderConverter.class)
-    private Gender gender_id; // 성별 (하나만 선택이라 list타입 할 필요 x)
-    private LocalDate birth_date; // 생년월일
+    private Gender gender; // 성별 (하나만 선택이라 list타입 할 필요 x)
+    private LocalDate birthdate; // 생년월일
 
 
     @ElementCollection
@@ -77,17 +83,17 @@ public class Member {
     private List<Crew> joinedCrews = new ArrayList<>(); // 참여중인 크루 목록
 
     // 기본 생성자
-    public Member() {}
+//    public Member() {}
 
     // 사용자 지정 생성자
-    public Member(String name, String password, String email, String nickname, Gender gender, LocalDate birthdate) {
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.nickname = nickname;
-        this.gender_id = gender;
-        this.birth_date = birthdate;
-    }
+//    public Member(String name, String password, String email, String nickname, Gender gender, LocalDate birthdate) {
+//        this.name = name;
+//        this.password = password;
+//        this.email = email;
+//        this.nickname = nickname;
+//        this.gender = gender;
+//        this.birthdate = birthdate;
+//    }
 
     public Object getMemberId() {
         return memberId;

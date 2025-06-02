@@ -9,6 +9,7 @@ import lombok.*;
 @Builder
 public class ProfileUpdateDto {
 
+    private int memberId;
     private String nickname;
     private String password;
     private String profileImage;
