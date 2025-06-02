@@ -2,6 +2,7 @@ package ssd.springcooler.gachiwatch.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -104,6 +105,26 @@ public class AccountController {
         public String registerResultPage() {
             return "account/register_result"; // ← templates/account/register_result.html
         }
+
+    @Value("${kakao.client_id}")
+    private String client_id;
+
+    @Value("${kakao.redirect_uri}")
+    private String redirect_uri;
+
+    @GetMapping("/register_kakao_step1")
+    public String kakaologin(Model model) {
+        String location = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="+client_id+"&redirect_uri="+redirect_uri;
+        model.addAttribute("location", location);
+
+        return "account/register_kakao_step1";
+    }
+
+    @GetMapping("/kakao/callback")
+    public String kakaoCallback(@RequestParam String code, HttpSession session) {
+        // code로 토큰 받고, 사용자 정보 받아서 세션에 저장
+        return "redirect:account/register_step2";
+    }
 
 
 
