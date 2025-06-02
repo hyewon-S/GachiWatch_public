@@ -39,6 +39,9 @@ dependencies {
 	implementation 'com.oracle.database.jdbc:ojdbc11'
 //	implementation files('libs/ojdbc11.jar')
 
+	//package okhttp3 does not exist 해결 위해 implmentation
+	implementation 'com.squareup.okhttp3:okhttp:4.12.0' // 최신 버전 확인 권장
+
 
 }
 
