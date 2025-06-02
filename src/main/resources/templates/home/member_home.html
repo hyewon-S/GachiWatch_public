@@ -160,7 +160,8 @@
         <a th:href="@{/account/logout}">
             <button class="logout">Logout</button>
         </a>
-        <a th:href="@{/mypage}">
+        <!-- 로그인 -> 홈화면 뷰 연결 위해 null-safe 처리 했습니다 -->
+        <a th:if="${user != null}" th:href="@{/mypage}">
             <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
         </a>
     </nav>
@@ -173,7 +174,9 @@
         <div class="carousel small-carousel">
             <button class="carousel-btn left">&lt;</button>
             <div class="carousel-track">
-                <div th:each="crew : ${crews}" style="text-align: center;">
+                <!-- 로그인 -> 홈화면 뷰 연결 위해 null-safe 처리 했습니다 -->
+<!--                <div th:each="crew : ${crews}" style="text-align: center;">-->
+                <div th:if="${crews != null}" th:each="crew : ${crews}">
                     <img th:src="@{'/image/' + ${crew.platform}}" alt="그룹 썸네일" class="group-thumbnail">
                     <div th:text="${crew.crewName}" alt="그룹 이름" class="group-name"></div>
                 </div>

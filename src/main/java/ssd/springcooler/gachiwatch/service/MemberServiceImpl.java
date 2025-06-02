@@ -2,6 +2,7 @@ package ssd.springcooler.gachiwatch.service;
 
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.MemberDao;
+import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
 import ssd.springcooler.gachiwatch.domain.Gender;
 import ssd.springcooler.gachiwatch.domain.Genre;
 import ssd.springcooler.gachiwatch.domain.Member;
@@ -18,10 +19,12 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberDao memberDao;
     private final MemberRepository memberRepository;
+    private final MemberMapper memberMapper;
 
-    protected MemberServiceImpl(MemberDao memberDao, MemberRepository memberRepository) {
+    protected MemberServiceImpl(MemberDao memberDao, MemberRepository memberRepository, MemberMapper memberMapper) {
         this.memberDao = memberDao;
         this.memberRepository = memberRepository;
+        this.memberMapper = memberMapper;
     }
 //    // 생성자 주입 (요즘 권장하는 방법)
 //    public MemberServiceImpl(MemberRepository memberRepository) {
@@ -53,6 +56,16 @@ public class MemberServiceImpl implements MemberService {
 //    }
     @Override
     public void register(MemberRegisterDto dto) {
+
+        // Gender 변환 안전하게
+        Gender gender;
+        try {
+            gender = Gender.valueOf(dto.getGender()); // 문자열이 "FEMALE" 이런 Enum 이름일 때
+        } catch (IllegalArgumentException e) {
+            // 혹은 코드값이라면
+            gender = Gender.fromCode(Integer.parseInt(dto.getGender()));
+        }
+
         // DTO → Entity 변환
         Member member = Member.builder()
                 .name(dto.getName())
@@ -69,17 +82,24 @@ public class MemberServiceImpl implements MemberService {
         // member.setPassword(passwordEncoder.encode(member.getPassword()));
 
 //        memberDao.insertMember(member); // DB에 저장
-        memberRepository.save(member).getMemberId();
+        memberRepository.save(member);
     }
 
 
     /**
      * 로그인 처리
+     *
+     * @return
      */
+//    @Override
+//    public void login(LoginDto dto) {
+//        memberDao.findByEmailAndPassword(dto);
+//    }
     @Override
-    public void login(LoginDto dto) {
-        memberDao.findByEmailAndPassword(dto);
+    public Member login(LoginDto loginDto) {
+        return memberMapper.findByEmailAndPassword(loginDto);
     }
+
 
     /**
      * 프로필 수정

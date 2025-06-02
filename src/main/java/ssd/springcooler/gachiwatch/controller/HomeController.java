@@ -1,35 +1,48 @@
 package ssd.springcooler.gachiwatch.controller;
-
+import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import ssd.springcooler.gachiwatch.domain.Crew;
+import ssd.springcooler.gachiwatch.domain.Member;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
-public class HomeController {//홈페이지 첫 메인화면 관련 컨트롤러
-    @GetMapping("/")
-    public String home(Model model, HttpSession session) {
-        Object user = session.getAttribute("loginUser");
+@RequestMapping("/home")
+public class HomeController {
 
-        // 예시 이미지 리스트를 전달. 실제로는 서비스에서 가져오도록 구현 가능
-        List<String> movieImages = List.of("movie1.jpg", "movie2.jpg", "movie3.jpg");
-        model.addAttribute("movieimages", movieImages);
-
-        if (user != null) {//로그인이 됐으면 회원용 메인 페이지로 이동
-            //model.addAttribute("crews", getSampleCrews()); //임의의 Crew값 넣어보기
-            model.addAttribute("user", user);
-            return "home/member_home"; //member_home.html로 이동(회원)
-        } else {
-            return "home/home"; // 첫 화면 home.html로 이동 (비회원)
-        }
-
-    }
-
-    //Content 실시간 트렌드 관련 코드 추가
-
-    //Content 최신 콘텐츠 관련 코드 추가
-
-    //검색 관련 코드 추가
+//    @GetMapping("/member_home")
+//    public String memberHome() {
+//        return "home/member_home";
+//    }
+@GetMapping("/member_home")
+public String memberHome(Model model) {
+    model.addText("user"); // 혹은 로그인한 사용자 넣어도 됨
+    model.addText("crews"); // 빈 리스트
+    model.addText("movieimages");
+    return "home/member_home";
 }
+
+}
+
+//@GetMapping("/home")
+//public String memberHome(Model model, HttpSession session) {
+//    // 예시: 세션에서 user 가져오기
+//    Member user = (Member) session.getAttribute("user");
+//    model.addAttribute("user", user);
+//
+//    // 예시: 크루 리스트, 영화 이미지 리스트 등 더미 데이터 넣어주기 또는 실제 서비스 호출
+//    List<Crew> crews = crewService.getCrewsByUser(user); // 예시 서비스
+//    model.addAttribute("crews", crews);
+//
+//    List<String> movieimages = movieService.getTrendingMovieImages(); // 예시 서비스
+//    model.addAttribute("movieimages", movieimages);
+//
+//    return "home/member_home";
+//}
+//
+
