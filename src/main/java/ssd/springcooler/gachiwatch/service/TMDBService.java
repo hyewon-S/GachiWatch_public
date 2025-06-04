@@ -6,8 +6,11 @@ import okhttp3 .OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.json.*;
+import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.domain.Content;
+import ssd.springcooler.gachiwatch.dto.TrendingContentDto;
 
+@Service
 public class TMDBService {
     private static final String API_KEY = "4ff777b6f68301ca1ed6a38a6d157461";
     private static final String REGION = "KR";
@@ -123,4 +126,30 @@ public class TMDBService {
             return response.body().string();
         }
     }
+
+    //비회원 메인페이지 "실시간 트렌드" 관련 코드
+    private static final String TMDB_TRENDING_URL = "https://api.themoviedb.org/3/trending/all/week?language=ko-KR&api_key=" + API_KEY;
+
+    public List<TrendingContentDto> getTrendingContents(int count) throws Exception {
+        List<TrendingContentDto> contents = new ArrayList<>();
+        String jsonResponse = readUrl(TMDB_TRENDING_URL);
+
+        JSONObject jsonObject = new JSONObject(jsonResponse);
+        JSONArray results = jsonObject.getJSONArray("results");
+
+        for (int i = 0; i < results.length() && contents.size() < count; i++) {
+            JSONObject obj = results.getJSONObject(i);
+            int id = obj.getInt("id");
+            String posterPath = obj.optString("poster_path", null);
+            String mediaType = obj.optString("media_type", "movie");
+
+            if (posterPath != null && !posterPath.isEmpty()) {
+                contents.add(new TrendingContentDto(id, posterPath, mediaType));
+            }
+        }
+
+        return contents;
+    }
+
+
 }
