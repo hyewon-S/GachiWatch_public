@@ -19,9 +19,15 @@ public class CrewPageController {
         this.crewService = crewService;
     }
 
+    /*
     @GetMapping
     public String getCrewPage() {
         return "crew/crewpage";
+    }
+*/
+    @RequestMapping
+    public String handle() {
+        return "redirect:/account/login";
     }
 
     @GetMapping("/chat")
