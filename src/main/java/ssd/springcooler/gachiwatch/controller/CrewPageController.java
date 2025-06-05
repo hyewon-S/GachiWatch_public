@@ -44,7 +44,7 @@ public class CrewPageController {
     public String viewCrewPage(@PathVariable Long id, Model model) {
         CrewDto crewDto = crewService.getCrewWithChat(id);
         model.addAttribute("crewDto", crewDto);
-        //model.addAttribute("crew", dto.getCrew());
+        model.addAttribute("crew", crewDto.getCrew());
         //model.addAttribute("chatMessages", dto.getChatList());
         return "crew/crewpage";
     }

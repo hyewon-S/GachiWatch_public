@@ -153,12 +153,12 @@
 
 <div class="main">
     <div class="party-info">
-        <h2 th:text="${crewDto.crew.get().crewName}">파티 이름</h2>
-        <div class="price" th:text="${crewDto.crew.get().payment}">17900원</div>
+        <h2 th:text="${crew.get().crewName}">파티 이름</h2>
+        <div class="price" th:text="${crew.get().payment}">17900원</div>
         <br>
-        <div class="info-tag">인원 <span th:text="|${crewDto.currentPeople} / ${crewDto.crew.get().maxMember}|">3 / 4</span></div>
+        <div class="info-tag">인원 <span th:text="|${crewDto.currentPeople} / ${crew.get().maxMember}|">3 / 4</span></div>
         <br>
-        <div class="info-tag">결제일 <span th:text="${#dates.format(crewDto.crew.get().payDate, 'MM/dd')}">매달 7일</span></div>
+        <div class="info-tag">결제일 <span th:text="${#dates.format(crew.get().payDate, 'MM/dd')}">매달 7일</span></div>
         <br>
         <!--<div class="info-tag">최소기간 <span th:text="${crewDto.minPeriod}">6개월</span></div>-->
         <br>
@@ -168,7 +168,7 @@
 
     <div class="chat-box">
         <div class="notice">
-            <strong>계좌번호 신한</strong> <span th:text="${crewDto.crew.get().account}">01123456123456</span>
+            <strong>계좌번호 신한</strong> <span th:text="${crew.get().account}">01123456123456</span>
         </div>
 
         <div class="chat-entry">
