@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>GACHIWATCH - 통합콘텐츠</title>
+    <!--<link rel="stylesheet" th:href="@{/css/style.css}">-->
+    <style>
+        body {
+           margin: 0;
+       }
+
+       .main-header {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           background: white;
+       }
+
+       .logo-search {
+           display: flex;
+           margin-left: 3%;
+           align-items: center;
+       }
+
+       .logo {
+           width: 170px;
+           margin-right: 20px;
+           cursor: pointer;
+       }
+
+       .search-bar {
+           width: 250px;
+           padding: 10px;
+           border-radius: 20px;
+           border: 1px solid #ccc;
+       }
+
+       .search-button {
+           margin-left: 10px;
+           padding: 10px 16px;
+           border-radius: 6px;
+           border: none;
+           background-color: #8E4BE2;
+           cursor: pointer;
+           font-size: 14px;
+           font-weight: bold;
+           color: white;
+       }
+
+       .nav-menu a {
+           margin-left: 15px;
+           text-decoration: none;
+           color: #333;
+           cursor: pointer;
+       }
+
+       .sign-in, .register {
+           padding: 6px 12px;
+           border-radius: 6px;
+           border: none;
+           cursor: pointer;
+       }
+
+       .sign-in {
+           background-color: #eee;
+       }
+
+       .register {
+           background-color: #8E4BE2;
+           font-weight: bold;
+           color: white;
+       }
+       .nav-menu {
+           margin-right: 3%;
+       }
+       .platforms img {
+           width: 50px;
+           margin-right: 1%;
+       }
+       .platforms {
+           margin-left: 2%;
+
+       }
+
+       .selected {
+           margin-right: 15px;
+           padding: 8px 20px;
+           border-radius: 6px;
+           border: none;
+           background-color: #eee;
+           cursor: pointer;
+           font-size: 14px;
+       }
+       main {
+           background-color: #9c6bd8;
+           margin-left: auto;
+           margin-right: auto;
+           width: 91%;
+           height: auto;
+           border-radius: 10px;
+           padding: 1%;
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+           gap: 16px;
+       }
+       .content {
+           background-color: rgb(246, 251, 255);
+           border-radius: 7px;
+           width: fit-content;
+           padding: 10px;
+           margin: 10px;
+           display: inline-block;
+       }
+       .content img {
+           width: 160px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+       }
+       h2 {
+           margin-left: 45%;
+       }
+    </style>
+</head>
+<body>
+<header class="main-header">
+    <div class="logo-search">
+        <a th:href="@{/}">
+            <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
+        </a>
+        <input type="text" placeholder="콘텐츠, 키워드 입력" class="search-bar">
+        <button class="search-button">Search</button>
+    </div>
+    <nav class="nav-menu"><!--이건 일단 비회원 ver -->
+        <a th:href="@{/account/login}">통합 콘텐츠</a>
+        <a th:href="@{/account/login}">추천 콘텐츠</a>
+        <a th:href="@{/account/login}">공유 매칭</a>
+        <a th:href="@{/account/login}"><button class="sign-in">Sign in</button></a>
+        <a th:href="@{/account/register_email_step1}"><button class="register">Register</button></a>
+    </nav>
+</header>
+
+<hr> <h2>통합 콘텐츠</h2>
+<section class="platforms">
+    &emsp;
+    <img th:src="@{/image/netflix.png}">
+    <img th:src="@{/image/watcher.png}">
+    <img th:src="@{/image/appletv.png}">
+    <img th:src="@{/image/wavve.png}">
+    <img th:src="@{/image/disney.png}">
+    <img th:src="@{/image/prime.png}"> <br><br>
+    &emsp;<button class="selected">TV 시리즈</button>
+    <button class="selected">영화</button>
+</section> <br>
+<main>
+    <div th:each="content : ${contentList}" class="content">
+        <img th:src="@{${content.thumbnailUrl}}" />
+        <br>&nbsp;<b th:text="${content.title}"></b>
+        <br>&nbsp;평점 <span th:text="${content.rating}"></span>
+    </div>
+</main>
+</body>
+</html>

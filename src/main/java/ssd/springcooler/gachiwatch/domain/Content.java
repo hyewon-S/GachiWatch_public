@@ -67,4 +67,12 @@ public class Content {
 
 	public void setPlatform(List<Integer> platforms) { this.platform = platforms;
 	}
+
+	public List<Integer> getGenre() {
+		return genre;
+	}
+
+	public List<Integer> getPlatform() {
+		return platform;
+	}
 }
