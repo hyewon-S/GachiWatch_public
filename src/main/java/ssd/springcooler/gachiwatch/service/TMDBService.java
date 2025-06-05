@@ -8,6 +8,7 @@ import okhttp3.Response;
 import org.json.*;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.domain.Content;
+import ssd.springcooler.gachiwatch.domain.Genre;
 import ssd.springcooler.gachiwatch.dto.TrendingContentDto;
 
 @Service
@@ -82,7 +83,8 @@ public class TMDBService {
             if (genresJson != null) {
                 for (int i = 0; i < genresJson.length(); i++) {
                     //genres.add(genresJson.getJSONObject(i).optString("name"));
-                    genres.add(genresJson.getJSONObject(i).optInt("id"));
+                    int genre_id = genresJson.getJSONObject(i).optInt("id");
+                    genres.add(mappingGenreId(genre_id));
                 }
             }
 
@@ -127,6 +129,32 @@ public class TMDBService {
         }
     }
 
+    private int mappingGenreId(int genreId) {
+        /*
+        Talk(10767) -> 가족
+        News(10763) -> 다큐멘터리
+        Reality(10764) -> 다큐멘터리
+        Soap(10766) -> 드라마
+        Kids(10762) -> 애니메이션
+        Action&Adventure(10759) -> 액션, 모험
+        War&Politics(10768) -> 전쟁
+        Sci-Fi&Fantasy(10765) -> 판타지, SF
+        */
+
+        Genre g;
+        g = switch (genreId) {
+            case 10767 -> Genre.fromDisplayName("가족");
+            case 10763, 10764 -> Genre.fromDisplayName("다큐멘터리");
+            case 10766 -> Genre.fromDisplayName("드라마");
+            case 10762 -> Genre.fromDisplayName("애니메이션");
+            case 10759 -> Genre.fromDisplayName("액션");
+            case 10768 -> Genre.fromDisplayName("전쟁");
+            case 10765 -> Genre.fromDisplayName("판타지");
+            default -> Genre.fromGenreId(genreId); //널 방지..
+        };
+        return g.getGenre_id();
+    }
+
     //비회원 메인페이지 "실시간 트렌드" 관련 코드
     private static final String TMDB_TRENDING_URL = "https://api.themoviedb.org/3/trending/all/week?language=ko-KR&api_key=" + API_KEY;
 
@@ -150,6 +178,4 @@ public class TMDBService {
 
         return contents;
     }
-
-
 }

@@ -30,4 +30,10 @@ public interface ContentMapper {
     void insertPlatform(@Param("contentId") int contentId, @Param("platformId") int platformId);
     List<Integer> getGenresByContentId(int contentId);
     List<Integer> getPlatformsByContentId(int contentId);
+
+    void deleteAllContents();
+    void deleteAllContentGenres();
+    void deleteAllContentOTTs();
+
+    List<Content> getAllContentList();
 }
