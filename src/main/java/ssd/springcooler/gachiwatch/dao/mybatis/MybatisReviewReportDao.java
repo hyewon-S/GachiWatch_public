@@ -34,11 +34,6 @@ public class MybatisReviewReportDao implements ReviewReportDao {
     }
 
     @Override
-    public List<ReviewReport> getReportsByContentId(int contentId) {
-        return reviewReportMapper.getReportsByContentId(contentId);
-    }
-
-    @Override
     public List<ReviewReport> getReportsByUserId(int userId) {
         return reviewReportMapper.getReportsByUserId(userId);
     }

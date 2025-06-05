@@ -1,30 +1,35 @@
 package ssd.springcooler.gachiwatch.service;
 
 import ssd.springcooler.gachiwatch.domain.Crew;
+import ssd.springcooler.gachiwatch.domain.CrewChat;
 import ssd.springcooler.gachiwatch.domain.Member;
+import ssd.springcooler.gachiwatch.dto.MemberDto;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface CrewFacade {
-    Crew getCrew(int crewId);
+    Optional<Crew> getCrew(Long crewId);
     List<Crew> getCrewList();
     //List<Crew> getCrewList(List<Platform> platforms);
 
-    Member getCaptain(int crewId);
-    List<Member> getMembers(int crewId);
+    Member getCaptain(Long crewId);
+    List<Member> getMembers(Long crewId);
 
     Crew createCrew(Crew crew);
     Crew updateCrew(Crew crew);
     boolean deleteCrew(Crew crew);
 
-    boolean makeApplication(int crewId, Member member);
-    boolean denyMember(int crewId, Member member);
-    boolean acceptMember(int crewId, Member member);
+    boolean makeApplication(Long crewId, Member member);
+    boolean denyMember(Long crewId, Member member);
+    boolean acceptMember(Long crewId, Member member);
 
-    boolean reportMember(int crewId, Member member, String reason);
-    boolean kickMember(int crewId, Member member);
+    boolean reportMember(Long crewId, Member member, String reason);
+    boolean kickMember(Long crewId, Member member);
 
-    List<String> getCrewChat(int crewId);
-    boolean insertCrewChat(int crewId, String chat, Date date);
+    List<CrewChat> getCrewChat(Long crewId);
+    boolean insertCrewChat(Long crewId, String chat, Date date);
+
+    List<Member> getCrewMembers(Long crewId);
 }

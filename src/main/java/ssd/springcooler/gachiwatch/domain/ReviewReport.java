@@ -4,9 +4,9 @@ import java.util.Date;
 
 public class ReviewReport {
 	private int reportId;
-	private Member reportMember; //신고한 사용자
-	private Review review; //신고된 리뷰
-	private String content; //신고 사유
+	private int memberId; //신고한 사용자
+	private int reviewId; //신고된 리뷰
+	private String substance; //신고 사유
 	private Date date; //신고 날짜
 	
 	public int getReportId() {
@@ -17,29 +17,27 @@ public class ReviewReport {
 		this.reportId = reportId;
 	}
 
-	public Member getReportMember() {
-		return reportMember;
+	public int getMemberId() {
+		return memberId;
 	}
 
-	public void setReportMember(Member reportMember) {
-		this.reportMember = reportMember;
+	public void setMemberId(int memberId) {
+		this.memberId = memberId;
 	}
 
-	public Review getReview() {
-		return review;
+	public int getReviewId() {
+		return reviewId;
 	}
 
-	public void setReview(Review review) {
-		this.review = review;
+	public void setReviewId(int reviewId) {
+		this.reviewId = reviewId;
 	}
 
-	public String getContent() {
-		return content;
+	public String getSubstance() {
+		return substance;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
-	}
+	public void setSubstance(String substance) { this.substance = substance; }
 
 	public Date getDate() {
 		return date;
@@ -51,6 +49,6 @@ public class ReviewReport {
 
 	@Override
 	public String toString() {
-		return "ID" + reportId + "content : " + content;
+		return "ID" + reportId + "content : " + substance;
 	}
 }

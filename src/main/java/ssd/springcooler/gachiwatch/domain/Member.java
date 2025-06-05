@@ -1,15 +1,21 @@
 package ssd.springcooler.gachiwatch.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter // lombok 어노테이션 (모든 필드에 적용)
 @Entity
-@Table(name = "Member")
+@Builder
+//@Table(name = "Member")
 public class Member {
     @Id
     @SequenceGenerator(
@@ -18,7 +24,7 @@ public class Member {
             allocationSize = 1
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_gen")
-
+    @Column(name="member_id")
     private int memberId; // 멤버 고유 ID
 
     private String name; // 이름
@@ -27,9 +33,14 @@ public class Member {
     private String nickname; // 닉네임
     private String profileImage; // 프로필 사진
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name="gender_id")
+    //@Convert(converter = GenderConverter.class)
     private Gender gender; // 성별 (하나만 선택이라 list타입 할 필요 x)
+    @Temporal(TemporalType.DATE)
+    @Column(name="birth_date")
     private LocalDate birthdate; // 생년월일
+
 
     @ElementCollection
     @CollectionTable(name = "member_subscribed_ott", joinColumns = @JoinColumn(name = "member_id"))
@@ -66,22 +77,31 @@ public class Member {
     )
     private List<Content> watchedContents = new ArrayList<>(); // 봤어요 콘텐츠 목록
 
-    @ManyToMany(mappedBy = "members")
+    @ManyToMany //(mappedBy = "members")
+    @JoinTable(
+            name = "joinedcrews",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "crew_id")
+    )
     private List<Crew> joinedCrews = new ArrayList<>(); // 참여중인 크루 목록
 
     // 기본 생성자
-    public Member() {}
+//    public Member() {}
 
     // 사용자 지정 생성자
-    public Member(String name, String password, String email, String nickname, Gender gender, LocalDate birthdate) {
-        this.name = name;
-        this.password = password;
-        this.email = email;
-        this.nickname = nickname;
-        this.gender = gender;
-        this.birthdate = birthdate;
-    }
+//    public Member(String name, String password, String email, String nickname, Gender gender, LocalDate birthdate) {
+//        this.name = name;
+//        this.password = password;
+//        this.email = email;
+//        this.nickname = nickname;
+//        this.gender = gender;
+//        this.birthdate = birthdate;
+//    }
 
+    public Object getMemberId() {
+        return memberId;
+    }
+/*
     // Getter & Setter 어노테이션으로 대체
 
     // 프로필 이미지 수정
@@ -116,5 +136,5 @@ public class Member {
     public void deleteReviews(Review review) {
         reviews.remove(review);
     }
-
+*/
 }

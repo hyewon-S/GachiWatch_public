@@ -8,17 +8,13 @@
 
     <!-- 1. 좋아요 추가 -->
     <insert id="addReviewLike">
-        INSERT INTO review_like (review_id, member_id, content_id, liked)
-        VALUES (#{reviewId}, #{memberId}, #{contentId}, TRUE)
+        INSERT INTO review_like (review_id, member_id, content_id)
+        VALUES (#{reviewId}, #{memberId}, #{contentId})
     </insert>
 
-    <!-- 2. 좋아요 상태 업데이트 (예: 취소 또는 다시 누름) -->
+    <!-- 2. 좋아요 상태 업데이트  -->
     <update id="updateReviewLike">
-        UPDATE review_like
-        SET liked = NOT liked
-        WHERE review_id = #{reviewId}
-        AND member_id = #{memberId}
-        AND content_id = #{contentId}
+        <!--(사용할 일이 없을 것 같음..) -->
     </update>
 
     <!-- 3. 좋아요 삭제 -->
@@ -35,7 +31,7 @@
         FROM review_like
         WHERE review_id = #{reviewId}
         AND content_id = #{contentId}
-        AND liked = TRUE
+        AND member_id = #{memberId}
     </select>
 
 </mapper>

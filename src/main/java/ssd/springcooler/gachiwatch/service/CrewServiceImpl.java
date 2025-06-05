@@ -1,15 +1,25 @@
 package ssd.springcooler.gachiwatch.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ssd.springcooler.gachiwatch.dao.CrewChatDao;
 import ssd.springcooler.gachiwatch.dao.CrewDao;
 import ssd.springcooler.gachiwatch.dao.CrewJoinWaitingDao;
 import ssd.springcooler.gachiwatch.domain.Crew;
+import ssd.springcooler.gachiwatch.domain.CrewChat;
 import ssd.springcooler.gachiwatch.domain.Member;
+import ssd.springcooler.gachiwatch.dto.CrewDto;
+import ssd.springcooler.gachiwatch.dto.MemberDto;
+import ssd.springcooler.gachiwatch.repository.CrewChatRepository;
+import ssd.springcooler.gachiwatch.repository.CrewMemberRepository;
+import ssd.springcooler.gachiwatch.repository.CrewRepository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+@Service
 public class CrewServiceImpl implements CrewFacade {
     @Autowired
     private CrewDao crewDao;
@@ -18,8 +28,18 @@ public class CrewServiceImpl implements CrewFacade {
     @Autowired
     private CrewChatDao chatDao;
 
-    public Crew getCrew(int crewId) {
-        return crewDao.getCrew(crewId);
+    @Autowired
+    private CrewRepository crewRepository;
+
+    @Autowired
+    private CrewChatRepository crewChatRepository;
+
+    @Autowired
+    private CrewMemberRepository crewMemberRepository;
+
+
+    public Optional<Crew> getCrew(Long crewId) {
+        return crewRepository.findByCrewId(crewId);
     }
     public List<Crew> getCrewList() {
         return crewDao.getCrewList();
@@ -29,12 +49,32 @@ public class CrewServiceImpl implements CrewFacade {
         return crewDao.getCrewList(platforms);
     }
     */
+/*
+    public CrewDto getCrewWithChat(Long crewId) {
+        Crew crew = crewRepository.findByCrewId(crewId);
+        List<CrewChat> chatList = crewChatRepository.findById_Crew_CrewIdOrderByIdAsc(crewId);
 
-    public Member getCaptain(int crewId) {
-        return crewDao.getCaptain(crewId);
+        return new CrewDto(crew, chatList);
     }
-    public List<Member> getMembers(int crewId) {
-        return crewDao.getMembers(crewId);
+*/
+    @Transactional
+    public CrewDto getCrewWithChat(Long crewId) {
+        Optional<Crew> crew = crewRepository.findByCrewId(crewId);
+
+        List<CrewChat> chatList = crewChatRepository.findById_Crew_CrewIdOrderByIdAsc(crewId);
+        System.out.println(crew);
+        System.out.println(crew.toString());
+
+        return new CrewDto(crew, chatList);
+    }
+
+    public Member getCaptain(Long crewId) {
+        //return crewDao.getCaptain(crewId);
+        return null;
+    }
+    public List<Member> getMembers(Long crewId) {
+        //return crewDao.getMembers(crewId);
+        return null;
     }
 
     public Crew createCrew(Crew crew) {
@@ -47,31 +87,41 @@ public class CrewServiceImpl implements CrewFacade {
         return crewDao.deleteCrew(crew);
     }
 
-    public boolean makeApplication(int crewId, Member member) {
-        return waitingDao.insertMember(crewId, member);
+    public boolean makeApplication(Long crewId, Member member) {
+        //return waitingDao.insertMember(crewId, member);
+        return true;
     }
-    public boolean denyMember(int crewId, Member member) {
-        return waitingDao.deleteMember(crewId, member);
-    }
-
-    public boolean acceptMember(int crewId, Member member) {
-        crewDao.insertMember(crewId, member);
-        waitingDao.deleteMember(crewId, member);
+    public boolean denyMember(Long crewId, Member member) {
+        //return waitingDao.deleteMember(crewId, member);
         return true;
     }
 
-    public boolean reportMember(int crewId, Member member, String reason) {
+    public boolean acceptMember(Long crewId, Member member) {
+        //crewDao.insertMember(crewId, member);
+        //waitingDao.deleteMember(crewId, member);
+        return true;
+    }
+
+    public boolean reportMember(Long crewId, Member member, String reason) {
         //신고내용 db에 추가
         return true;
     }
-    public boolean kickMember(int crewId, Member member) {
-        return crewDao.deleteMember(crewId, member);
+    public boolean kickMember(Long crewId, Member member) {
+        //return crewDao.deleteMember(crewId, member);
+        return true;
     }
 
-    public List<String> getCrewChat(int crewId) {
-        return chatDao.getChat(crewId);
+    public List<CrewChat> getCrewChat(Long crewId) {
+        return crewChatRepository.findById_Crew_CrewIdOrderByIdAsc(crewId);
     }
-    public boolean insertCrewChat(int crewId, String chat, Date date){
-        return chatDao.insertChat(crewId, chat, date);
+    public boolean insertCrewChat(Long crewId, String chat, Date date){
+        //return chatDao.insertChat(crewId, chat, date);
+        return true;
     }
+
+    @Override
+    public List<Member> getCrewMembers(Long crewId) {
+        return crewMemberRepository.findAllByCrewId(crewId);
+    }
+
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import ssd.springcooler.gachiwatch.dao.MemberDao;
 import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
+import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.*;
 
 @Repository
@@ -15,23 +16,32 @@ public class MyBatisMemberDao implements MemberDao {
     @Autowired
     private MemberMapper memberMapper;
 
+//    @Override
+//    public void insertMember(MemberRegisterDto dto) {
+//        memberMapper.insertMember(dto);
+//    }
     @Override
-    public void insertMember(MemberRegisterDto dto) {
-        memberMapper.insertMember(dto);
+    public void insertMember(Member member) {
+        memberMapper.insertMember(member);
     }
 
     @Override
-    public void insertMemberGenres(Long memberId, List<Long> genreIds) {
-        memberMapper.insertMemberGenres(memberId, genreIds);
+    public void insertMemberGenres(int memberId, List<Long> genreIds) {
+        //구현 필요
     }
 
-    @Override
-    public void insertMemberOtts(Long memberId, List<Long> ottIds) {
-        memberMapper.insertMemberOtts(memberId, ottIds);
-    }
+//    @Override
+//    public void insertMemberGenres(int memberId, List<Long> genreIds) {
+//        memberMapper.insertMemberGenres(memberId, genreIds);
+//    }
+//
+//    @Override
+//    public void insertMemberOtts(int memberId, List<Long> ottIds) {
+//        memberMapper.insertMemberOtts(memberId, ottIds);
+//    }
 
     @Override
-    public LoginDto findByEmailAndPassword(LoginDto loginDto) {
+    public Member findByEmailAndPassword(LoginDto loginDto) {
         return memberMapper.findByEmailAndPassword(loginDto);
     }
 
@@ -41,8 +51,8 @@ public class MyBatisMemberDao implements MemberDao {
     }
 
     @Override
-    public void updateProfile(Long memberId, ProfileUpdateDto dto) {
-        memberMapper.updateProfile(memberId, dto);
+    public void updateProfile(ProfileUpdateDto dto) {
+        memberMapper.updateProfile(dto);
     }
 
     @Override
@@ -56,12 +66,12 @@ public class MyBatisMemberDao implements MemberDao {
     }
 
     @Override
-    public void deleteMemberOtts(Long memberId) {
+    public void deleteMemberOtts(int memberId) {
         memberMapper.deleteMemberOtts(memberId);
     }
 
     @Override
-    public void deleteMemberGenres(Long memberId) {
+    public void deleteMemberGenres(int memberId) {
         memberMapper.deleteMemberGenres(memberId);
     }
 
@@ -76,12 +86,12 @@ public class MyBatisMemberDao implements MemberDao {
     }
 
     @Override
-    public List<ContentSummaryDto> selectWatchedContents(Long memberId) {
+    public List<ContentSummaryDto> selectWatchedContents(int memberId) {
         return memberMapper.selectWatchedContents(memberId);
     }
 
     @Override
-    public void deleteWatchedContentById(Long contentId) {
+    public void deleteWatchedContentById(int contentId) {
         memberMapper.deleteWatchedContentById(contentId);
     }
 
@@ -91,10 +101,10 @@ public class MyBatisMemberDao implements MemberDao {
     }
 
     @Override
-    public List<ReportDto> selectReportsAgainstMe(Long memberId) { return memberMapper.selectReportsAgainstMe(memberId); }
+    public List<ReportDto> selectReportsAgainstMe(int memberId) { return memberMapper.selectReportsAgainstMe(memberId); }
 
     @Override
-    public List<CrewDto> selectMyCrews(Long memberId) {
+    public List<CrewDto> selectMyCrews(int memberId) {
         return memberMapper.selectMyCrews(memberId);
     }
 
@@ -104,6 +114,11 @@ public class MyBatisMemberDao implements MemberDao {
     @Override
     public void deleteMemberById(Long memberId) {
         memberMapper.deleteMemberById(memberId);
+    }
+
+    @Override
+    public String emailCheck(String email) {
+        return "";
     }
 }
 

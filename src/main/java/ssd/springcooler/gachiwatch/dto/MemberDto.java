@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class MemberResponseDto {
+public class MemberDto {
 
     private Long memberId;
     private String name;

@@ -1,0 +1,103 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #e0e0e0;
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: white;
+}
+
+.logo-search {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    width: 150px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.search-bar {
+    width: 250px;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+}
+
+.search-button {
+    margin-left: 10px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: none;
+    background-color: #eee;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.nav-menu a, .sign-in, .register {
+    margin-left: 15px;
+    text-decoration: none;
+    color: #333;
+    cursor: pointer;
+}
+
+.sign-in, .register {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.sign-in {
+    background-color: #eee;
+}
+
+.register {
+    background-color: black;
+    color: white;
+}
+
+.carousel-section {
+    margin: 40px;
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.carousel {
+    display: flex;
+    align-items: center;
+}
+
+.carousel-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 5px;
+    width: 100%;
+    scroll-snap-type: x mandatory;
+}
+
+.carousel-track > div {
+    scroll-snap-align: start;
+}
+
+.content-thumbnail {
+    width: 180px;
+    height: 120px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.carousel-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}

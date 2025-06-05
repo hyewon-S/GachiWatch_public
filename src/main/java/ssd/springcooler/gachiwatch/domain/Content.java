@@ -1,97 +1,70 @@
 package ssd.springcooler.gachiwatch.domain;//콘텐츠에 관한 정보
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Date;
 import java.util.List;
 
+@Getter
+@Entity
+@Setter
 public class Content {
-	
+	@Id
 	private int contentId;
 	private String title;
 	private String intro;
-	private List<Integer> genre;
-	private String cast; //출연진
-	private List<Integer> platform;
-	private double rate; //평점
-	private Date uploadDate; //업로드 날짜
+	private String cast;
+	private Double rate;
+	private String uploadDate;
 	private String contentType;
 	private String imgUrl;
-	
-	//getters & setters
-	
-	public int getContentId() {
-		return contentId;
-	}
+	private List<Integer> genre;
+	private List<Integer> platform;
 
-	public void setContentId(int contentId) {
-		this.contentId = contentId;
-	}
+	public Content() {}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
+	//Mapper 때문에 필요함...
+	public Content(int id, String title, String overview, String casts, double rating, String releaseDate, String contentType, String imageUrl) {
+		this.contentId = id;
 		this.title = title;
+		this.intro = overview;
+		this.cast = casts;
+		this.rate = rating;
+		this.uploadDate = releaseDate;
+		this.contentType = contentType;
+		this.imgUrl = imageUrl;
 	}
 
-	public String getIntro() {
-		return intro;
-	}
+	//TMDB API 불려올때 필요함..
+	public Content(int id, String title, String overview, List<Integer> genres, String string, List<Integer> platforms, double rating, String releaseDate, String imageUrl, String type) {
+		this.title = title;
+		this.intro = overview;
+		this.genre = genres;
+		this.cast = string;
+		this.rate = rating;
+		this.uploadDate = releaseDate;
+		imgUrl = imageUrl;
+		platform = platforms;
+		contentId = id;
+		contentType = type;
+    }
 
-	public void setIntro(String intro) {
-		this.intro = intro;
-	}
 
-	public List<Integer> getGenre() {
-		return genre;
-	}
-
-	public void setGenre(List<Integer> genre) {
-		this.genre = genre;
-	}
-
-	public String getCast() {
-		return cast;
-	}
-
-	public void setCast(String cast) {
-		this.cast = cast;
-	}
-
-	public List<Integer> getPlatform() {
-		return platform;
-	}
-
-	public void setPlatform(List<Integer> platform) {
-		this.platform = platform;
-	}
-
-	public double getRate() {
-		return rate;
-	}
-
-	public void setRate(double rate) {
-		this.rate = rate;
-	}
-
-	public Date getUploadDate() {
-		return uploadDate;
-	}
-
-	public void setUploadDate(Date uploadDate) {
-		this.uploadDate = uploadDate;
-	}
-
-	public void setContentType(String contentType) { this.contentType = contentType; }
-
-	public String getContentType() { return contentType; }
-
-	public String getImgUrl() { return imgUrl; }
-
-	public void setImgUrl(String imgUrl) { this.imgUrl = imgUrl; }
-	
 	@Override
 	public String toString() {
-		return "contentID : " + contentId + " title: " + title;
+		return "title: " + title + "intro : " + intro + "\ncast : " + cast + ", rate : " + rate +
+				", uploadDate : " + uploadDate +  ", contentType : " + contentType + ", genre : " + genre + "platform : " + platform + "\n";
+	}
+
+	public int getContentId() { return contentId;
+	}
+
+	public void setGenre(List<Integer> genres) { this.genre = genres;
+	}
+
+	public void setPlatform(List<Integer> platforms) { this.platform = platforms;
 	}
 }

@@ -1,9 +1,11 @@
 package ssd.springcooler.gachiwatch.dao.mybatis.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import ssd.springcooler.gachiwatch.domain.Review;
 
 import java.util.List;
 
+@Mapper
 public interface ReviewMapper {
 
     void insertReview(Review review);

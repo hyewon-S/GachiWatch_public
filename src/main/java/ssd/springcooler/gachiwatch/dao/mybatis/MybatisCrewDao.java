@@ -1,6 +1,7 @@
 package ssd.springcooler.gachiwatch.dao.mybatis;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import ssd.springcooler.gachiwatch.dao.CrewDao;
 import ssd.springcooler.gachiwatch.dao.mybatis.mapper.CrewMapper;
 import ssd.springcooler.gachiwatch.domain.Crew;
@@ -9,7 +10,7 @@ import ssd.springcooler.gachiwatch.domain.Platform;
 
 import java.util.List;
 
-
+@Repository
 public class MybatisCrewDao implements CrewDao {
     @Autowired
     private CrewMapper crewMapper;
