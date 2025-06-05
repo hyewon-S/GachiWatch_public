@@ -15,6 +15,7 @@ import ssd.springcooler.gachiwatch.repository.CrewChatRepository;
 import ssd.springcooler.gachiwatch.repository.CrewMemberRepository;
 import ssd.springcooler.gachiwatch.repository.CrewRepository;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -61,9 +62,8 @@ public class CrewServiceImpl implements CrewFacade {
     public CrewDto getCrewWithChat(Long crewId) {
         Optional<Crew> crew = crewRepository.findByCrewId(crewId);
 
-        List<CrewChat> chatList = crewChatRepository.findById_Crew_CrewIdOrderByIdAsc(crewId);
-        System.out.println(crew);
-        System.out.println(crew.toString());
+        List<CrewChat> chatList = crewChatRepository.findByIdCrewId(crewId);
+        System.out.println("CrewServiceImple getCrewWithChat test " + chatList);
 
         return new CrewDto(crew, chatList);
     }
@@ -112,7 +112,7 @@ public class CrewServiceImpl implements CrewFacade {
     }
 
     public List<CrewChat> getCrewChat(Long crewId) {
-        return crewChatRepository.findById_Crew_CrewIdOrderByIdAsc(crewId);
+        return crewChatRepository.findByIdCrewId(crewId);
     }
     public boolean insertCrewChat(Long crewId, String chat, Date date){
         //return chatDao.insertChat(crewId, chat, date);

@@ -11,21 +11,55 @@ import java.util.Date;
 import java.util.Objects;
 
 @Embeddable
-@Getter
-@Setter
+@Access(AccessType.FIELD)
+//@Getter
+//@Setter
 @NoArgsConstructor
 public class CrewChatId implements Serializable {
-    @ManyToOne
-    @JoinColumn(name = "crew_id", nullable = false)
-    private Crew crew;
+//    @ManyToOne
+//    @JoinColumn(name = "crew_id", nullable = false)
+//    private Crew crew;
+//
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Column(nullable = false)
+//    private Date chat_date;
+//
+//    public CrewChatId(Crew crew, Date date) {
+//        this.crew = crew;
+//        this.chat_date = date;
+//    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (!(o instanceof CrewChatId)) return false;
+//        CrewChatId that = (CrewChatId) o;
+//        return Objects.equals(crew, that.crew) &&
+//                Objects.equals(chat_date, that.chat_date);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(crew, chat_date);
+//    }
+@Column(name = "crew_id", nullable = false)
+private Long crewId;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
-    private Date chat_date;
+    @Column(nullable = false, name = "chat_date")
+    private Date chatDate;
 
-    public CrewChatId(Crew crew, Date date) {
-        this.crew = crew;
-        this.chat_date = date;
+    public Date getChatDate() {
+        return chatDate;
+    }
+
+    public void setChatDate(Date chatDate) {
+        this.chatDate = chatDate;
+    }
+
+    public CrewChatId(Long crewId, Date chatDate) {
+        this.crewId = crewId;
+        this.chatDate = chatDate;
     }
 
     @Override
@@ -33,12 +67,12 @@ public class CrewChatId implements Serializable {
         if (this == o) return true;
         if (!(o instanceof CrewChatId)) return false;
         CrewChatId that = (CrewChatId) o;
-        return Objects.equals(crew, that.crew) &&
-                Objects.equals(chat_date, that.chat_date);
+        return Objects.equals(crewId, that.crewId) &&
+                Objects.equals(chatDate, that.chatDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(crew, chat_date);
+        return Objects.hash(crewId, chatDate);
     }
 }

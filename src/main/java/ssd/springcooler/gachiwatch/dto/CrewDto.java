@@ -45,7 +45,7 @@ public class CrewDto {
 
     public CrewDto(Optional<Crew> crew, List<CrewChat> chatList) {
         this.crew = crew;
-        this.chatList = new ArrayList<>(chatList);
+        this.chatList = chatList;
     }
     /*
     public CrewDto(Crew crew, List<CrewChat> chatList) {
@@ -58,7 +58,4 @@ public class CrewDto {
         return crew;
     }
 
-    public List<CrewChat> getChatList() {
-        return chatList;
-    }
 }
