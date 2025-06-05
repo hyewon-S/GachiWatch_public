@@ -118,7 +118,13 @@ body {
     display: flex;
     overflow-x: auto;
     scroll-behavior: smooth;
-    gap: 20px;
+    gap: 5px;
+    width: 100%;
+    scroll-snap-type: x mandatory;
+}
+
+.carousel-track > div {
+    scroll-snap-align: start;
 }
 
 .content-thumbnail {

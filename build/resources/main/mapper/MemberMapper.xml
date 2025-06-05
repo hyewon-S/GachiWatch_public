@@ -3,7 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.mapper.MemberMapper">
+<mapper namespace="ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper">
+
 
     <!-- 1. 회원가입 -
     <insert id="insertMember" parameterType="ssd.springcooler.gachiwatch.dto.MemberRegisterDto">
@@ -43,9 +44,16 @@
     </select>
 
     <!-- 2. 이메일로 회원 조회 (로그인용) -->
-    <select id="findByEmail" parameterType="String" resultType="ssd.springcooler.gachiwatch.domain.Member">
-        SELECT * FROM member WHERE email = #{email}
+<!--    <select id="findByEmail" parameterType="String" resultType="ssd.springcooler.gachiwatch.domain.Member">-->
+<!--        SELECT * FROM member WHERE email = #{email}-->
+<!--    </select>-->
+    <select id="findByEmailAndPassword"
+            parameterType="ssd.springcooler.gachiwatch.dto.LoginDto"
+            resultType="ssd.springcooler.gachiwatch.domain.Member">
+        SELECT * FROM member
+        WHERE email = #{email} AND password = #{password}
     </select>
+
 
     <!-- 3. 닉네임 중복 확인 -->
     <select id="existsByNickname" parameterType="String" resultType="int">

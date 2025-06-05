@@ -60,6 +60,30 @@
         WHERE content_id = #{id}
     </select>
 
+    <delete id="deleteAllContents">
+        DELETE FROM content
+    </delete>
+
+    <delete id="deleteAllContentGenres">
+        DELETE FROM content_genre
+    </delete>
+
+    <delete id="deleteAllContentOTTs">
+        DELETE FROM content_ott
+    </delete>
+
+    <select id="getAllContentList" resultType="ssd.springcooler.gachiwatch.domain.Content">
+        SELECT
+        content_id AS contentId,
+        title,
+        intro,
+        casts AS cast,
+        rate,
+        upload_date AS uploadDate,
+        content_type AS contentType,
+        img_url AS imgUrl
+        FROM content
+    </select>
 
 
 </mapper>
