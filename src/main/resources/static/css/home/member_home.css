@@ -128,8 +128,8 @@ body {
 }
 
 .content-thumbnail {
-    width: 180px;
-    height: 120px;
+    width: 165px;
+    height: 247px;
     border-radius: 10px;
     object-fit: cover;
 }
