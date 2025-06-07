@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.mybatis.MybatisContentDao;
 import ssd.springcooler.gachiwatch.domain.Content;
+import ssd.springcooler.gachiwatch.dto.ContentDto;
 import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
 
 import java.util.ArrayList;
@@ -57,8 +58,14 @@ public class ContentService {
         List<Content> contentList = contentDao.getAllContentList();
         List<ContentSummaryDto> contentSummary = new ArrayList<ContentSummaryDto>();
         for(Content cS : contentList) {
-            contentSummary.add(new ContentSummaryDto(cS.getTitle(), cS.getImgUrl(), cS.getRate()));
+            contentSummary.add(new ContentSummaryDto(cS.getContentId(), cS.getTitle(), cS.getImgUrl(), cS.getRate()));
         }
         return contentSummary;
+    }
+
+    public ContentDto getContentDetail(int contentId) {
+        Content content = contentDao.findById(contentId);
+        ContentDto contentDto = new ContentDto(content.getContentId(), content.getTitle(), content.getImgUrl(), content.getRate(), "casts", content.getIntro());
+        return contentDto;
     }
 }
