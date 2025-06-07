@@ -38,6 +38,12 @@ public class CrewManageController {
         return "";
     }
 
+    @RequestMapping
+    public String handle() {
+        //로그인 화면으로 보내기
+        return "redirect:/account/login";
+    }
+
     @GetMapping("{crewId}")
     public String showManagePage(@PathVariable Long crewId, Model model) {
         Optional<Crew> crewOpt = crewService.getCrew(crewId);
@@ -65,7 +71,7 @@ public class CrewManageController {
 */
         model.addAttribute("crew", crew);
         model.addAttribute("members", members);
-        //model.addAttribute("formattedPayDate", formattedPayDate);
+
         return "crew/manage";
     }
 
