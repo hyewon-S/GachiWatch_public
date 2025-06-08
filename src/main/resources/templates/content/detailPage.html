@@ -1,0 +1,167 @@
+<!DOCTYPE html> <!--그냥 테스트용!!!!!!! 완전 미완성 ---->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${contentInfo.title + ' - GACHIWATCH'}">GACHIWATCH - 디테일 정보</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+         body {
+            margin: 0;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 20px;
+        }
+
+        .logo-search {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 150px;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            width: 250px;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+        }
+
+        .search-button {
+            margin-left: 10px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: none;
+            background-color: #eee;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav-menu a, .sign-in, .register, .logout, .profile-image  {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .sign-in, .register {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .sign-in {
+            background-color: #eee;
+        }
+
+        .logout, .profile-image {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .register {
+            background-color: black;
+            color: white;
+        }
+
+         .logout {
+            background-color: #eee;
+        }
+
+        .nav-menu {
+            margin-right: 3%;
+        }
+
+        .content_info {
+            padding-left: 10%;
+            padding-top: 3%;
+            padding-bottom: 3%;
+            background-color: #f0e4ff;
+            display: flex;
+            align-items: center
+        }
+        .content_info img {
+            width: 300px;
+        }
+        .content_text {
+            margin-top: auto;
+            margin-bottom: auto;
+            margin-left: 5%;
+            margin-right: 10%;
+
+        }
+        .content_text h4, p {
+            display: inline;
+        }
+
+        img.icon {
+            width: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+    <div class="logo-search">
+        <a th:href="@{/}">
+        <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
+        </a>
+        <input type="text" placeholder="콘텐츠, 키워드 입력" class="search-bar">
+        <button class="search-button">Search</button>
+    </div>
+    <nav class="nav-menu">
+        <a th:href="${isLoggedIn} ? (@{/content/search}) : (@{/account/login})" >통합 콘텐츠</a>
+        <a th:href="${isLoggedIn} ? (@{/content/recommend}) : (@{/account/login})">추천 콘텐츠</a>
+        <a th:href="${isLoggedIn} ? (@{/crew/view}) : (@{/account/login})">공유 매칭</a>
+        <!-- 로그인 안했다면 -->
+        <a th:unless="${isLoggedIn}" th:href="@{/account/login}"><button class="sign-in">Sign in</button></a>
+        <a th:unless="${isLoggedIn}" th:href="@{/account/register_email_step1}"><button class="register">Register</button></a>
+
+        <!-- 로그인 했다면 -->
+        <a th:if="${isLoggedIn}" th:href="@{/account/logout}"><button class="logout">Logout</button></a>
+        <!-- 아래는 나중에 다시 구현
+        <a th:if="${isLoggedIn}" th:href="@{/mypage}">
+            <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
+        </a> -->
+    </nav>
+</header>
+<main>
+
+    <div class="content_info">
+        <img th:src="@{${contentInfo.thumbnailUrl}}">
+        <div class="content_text">
+           <h1 th:text="${contentInfo.title}"></h1>
+            <p th:text="${contentInfo.uploadDate}">📅날짜</p>▪️🌟<p th:text="${contentInfo.rating}"></p><br><br>
+            <!-- 찜하기를 누르지 않았을때, 또는 비회원일때 -->
+            <img th:src="@{/image/icon/icon-heart-black.png}" class="icon"> &nbsp;&nbsp;
+            <!-- 봤어요 안했을때, 또는 비회원일때 -->
+            <img th:src="@{/image/icon/icon-eye.png}" class="icon">
+           <br><br>
+           <h4>개요</h4><br>
+        <p th:text="${contentInfo.intro}"></p><br><br>
+           <h4>출연진</h4><br>
+            <p th:text="${contentInfo.casts}"></p><br><br>
+            <h4>장르</h4><br>
+            <p th:text="${contentInfo.genres}"></p><br><br>
+            <h4>플랫폼</h4><br>
+            <p th:text="${contentInfo.platforms}"></p><br><br>
+        </div>
+    </div>
+
+    <div class="content_review">
+        <h1>리뷰입니닷</h1>
+        ⭐⭐⭐⭐⭐
+    </div>
+</main>
+</body>
+</html>
