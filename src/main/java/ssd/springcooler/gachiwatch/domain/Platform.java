@@ -21,7 +21,7 @@ public enum Platform {
 
     public static Platform fromDisplayName(String displayName) {
         for (Platform p : Platform.values()) {
-            if (p.label.equals(displayName)) {
+            if (p.label.equalsIgnoreCase(displayName)) {
                 return p;
             }
         }

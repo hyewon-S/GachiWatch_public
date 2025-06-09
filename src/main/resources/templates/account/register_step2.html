@@ -15,6 +15,14 @@
         .genre-options button.selected {
             background-color: purple; color: white;
         }
+
+        .ott-options img.selected {
+            border: 3px solid purple;
+            border-radius: 8px;
+            opacity: 0.8;
+            /* 원하는 스타일로 바꿔도 돼 */
+        }
+
     </style>
     <script>
         function toggleSelect(elem) {
@@ -36,35 +44,35 @@
 
         <p><strong>구독중인 OTT 서비스를 선택해주세요</strong></p>
         <div class="ott-options">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/TVING_logo_2021.svg" alt="Watcha">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Wavve_logo_2020.svg" alt="Disney">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Watcha_Logo.svg" alt="Apple">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.png" alt="wavve" style="height: 30px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Watcha_Logo.svg" alt="Amazon">
+            <img src="/static/image/netflix.png" alt="Netflix" data-value="넷플릭스">
+            <img src="/static/image/watcha.png" alt="Watcha" data-value="왓챠">
+            <img src="/static/image/disney.png" alt="Disney" data-value="디즈니+">
+            <img src="/static/image/appletv.png" alt="Apple" data-value="애플티비+">
+            <img src="/static/image/wavve.png" alt="wavve" data-value="웨이브" style="height: 30px;">
+            <img src="/static/image/prime.png" alt="Amazon" data-value="아마존 프라임">
         </div>
 
         <p><strong>원하는 장르에 맞춰 추천해드릴게요</strong></p>
         <div class="genre-options">
-            <button onclick="toggleSelect(this)">SF</button>
-            <button onclick="toggleSelect(this)">TV 영화</button>
-            <button onclick="toggleSelect(this)">가족</button>
-            <button onclick="toggleSelect(this)">공포</button>
-            <button onclick="toggleSelect(this)">다큐</button>
-            <button onclick="toggleSelect(this)">드라마</button>
-            <button onclick="toggleSelect(this)">로맨스</button>
-            <button onclick="toggleSelect(this)">모험</button>
-            <button onclick="toggleSelect(this)">미스터리</button>
-            <button onclick="toggleSelect(this)">범죄</button>
-            <button onclick="toggleSelect(this)">서부</button>
-            <button onclick="toggleSelect(this)">스릴러</button>
-            <button onclick="toggleSelect(this)">애니메이션</button>
-            <button onclick="toggleSelect(this)">액션</button>
-            <button onclick="toggleSelect(this)">역사</button>
-            <button onclick="toggleSelect(this)">음악</button>
-            <button onclick="toggleSelect(this)">전쟁</button>
-            <button onclick="toggleSelect(this)">코미디</button>
-            <button onclick="toggleSelect(this)">판타지</button>
+            <button type="button" onclick="toggleSelect(this)">SF</button>
+            <button type="button" onclick="toggleSelect(this)">TV 영화</button>
+            <button type="button" onclick="toggleSelect(this)">가족</button>
+            <button type="button" onclick="toggleSelect(this)">공포</button>
+            <button type="button" onclick="toggleSelect(this)">다큐</button>
+            <button type="button" onclick="toggleSelect(this)">드라마</button>
+            <button type="button" onclick="toggleSelect(this)">로맨스</button>
+            <button type="button" onclick="toggleSelect(this)">모험</button>
+            <button type="button" onclick="toggleSelect(this)">미스터리</button>
+            <button type="button" onclick="toggleSelect(this)">범죄</button>
+            <button type="button" onclick="toggleSelect(this)">서부</button>
+            <button type="button" onclick="toggleSelect(this)">스릴러</button>
+            <button type="button" onclick="toggleSelect(this)">애니메이션</button>
+            <button type="button" onclick="toggleSelect(this)">액션</button>
+            <button type="button" onclick="toggleSelect(this)">역사</button>
+            <button type="button" onclick="toggleSelect(this)">음악</button>
+            <button type="button" onclick="toggleSelect(this)">전쟁</button>
+            <button type="button" onclick="toggleSelect(this)">코미디</button>
+            <button type="button" onclick="toggleSelect(this)">판타지</button>
         </div>
 
         <!-- 서버로 보낼 실제 hidden 값 -->
@@ -88,24 +96,29 @@
     const genreButtons = document.querySelectorAll('.genre-options button');
     genreButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
-            e.preventDefault(); // 버튼 submit 방지
+            e.preventDefault(); // 버튼 submit 막기
             btn.classList.toggle('selected');
         });
     });
 
     // 제출 전 hidden 값 세팅
     function handleSubmit() {
-        const selectedOTTs = Array.from(document.querySelectorAll('.ott-options img.selected'))
-            .map(img => img.alt); // alt에 있는 값으로 전송
+    const selectedOTTs = Array.from(document.querySelectorAll('.ott-options img.selected'))
+        .map(img => img.dataset.value); // data-value 값
 
-        const selectedGenres = Array.from(document.querySelectorAll('.genre-options button.selected'))
-            .map(btn => btn.textContent.trim());
+    const selectedGenres = Array.from(document.querySelectorAll('.genre-options button.selected'))
+        .map(btn => btn.textContent.trim());
 
-        document.getElementById('subscribedOTTs').value = selectedOTTs.join(',');
-        document.getElementById('preferredGenres').value = selectedGenres.join(',');
-
-        return true; // submit 계속 진행
+    if(selectedOTTs.length === 0){
+        alert('적어도 하나 이상의 OTT를 선택해주세요!');
+        return false;
     }
+
+    document.getElementById('subscribedOTTs').value = selectedOTTs.join(',');
+    document.getElementById('preferredGenres').value = selectedGenres.join(',');
+
+    return true;
+}
 </script>
 
 </body>

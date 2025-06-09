@@ -3,15 +3,13 @@ package ssd.springcooler.gachiwatch.service;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.MemberDao;
 import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
-import ssd.springcooler.gachiwatch.domain.Gender;
-import ssd.springcooler.gachiwatch.domain.Genre;
-import ssd.springcooler.gachiwatch.domain.Member;
-import ssd.springcooler.gachiwatch.domain.Platform;
+import ssd.springcooler.gachiwatch.domain.*;
 import ssd.springcooler.gachiwatch.dto.*;
 import ssd.springcooler.gachiwatch.repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 //@RequiredArgsConstructor -> 오류가 발생하는 듯 하여 주석 처리해두었습니다.
@@ -60,11 +58,44 @@ public class MemberServiceImpl implements MemberService {
         // Gender 변환 안전하게
         Gender gender;
         try {
-            gender = Gender.valueOf(dto.getGender()); // 문자열이 "FEMALE" 이런 Enum 이름일 때
+            gender = Gender.valueOf(dto.getGender()); // "FEMALE", "MALE", "NO_INFO" 이런 이름일 때
         } catch (IllegalArgumentException e) {
-            // 혹은 코드값이라면
-            gender = Gender.fromCode(Integer.parseInt(dto.getGender()));
+            // 문자열이 숫자인지 체크해서 숫자면 fromCode 호출, 아니면 NO_INFO로 기본 처리
+            String genderStr = dto.getGender();
+            if (genderStr != null && genderStr.matches("\\d+")) {
+                gender = Gender.fromCode(Integer.parseInt(genderStr));
+            } else {
+                gender = Gender.NO_INFO;  // 알 수 없는 값은 NO_INFO로 처리
+            }
         }
+
+
+        // String → Platform enum 변환 (예외 잡고 null 필터링)
+        List<Platform> platformList = dto.getSubscribedOtts().stream()
+                .map(name -> {
+                    try {
+//                        return Platform.fromDisplayName(String.valueOf(name));
+                        return Platform.valueOf(String.valueOf(name)); // ← 여기 수정!
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("[경고] 올바르지 않은 플랫폼 이름: " + name);
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toList();
+
+        // String → Genre enum 변환 (예외 처리도 넣어줘)
+        List<Genre> genreList = dto.getPreferredGenres().stream()
+                .map(name -> {
+                    try {
+                        return Genre.fromDisplayName(String.valueOf(name));
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("[경고] 올바르지 않은 장르 이름: " + name);
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .toList();
 
         // DTO → Entity 변환
         Member member = Member.builder()
@@ -72,18 +103,40 @@ public class MemberServiceImpl implements MemberService {
                 .email(dto.getEmail())
                 .password(dto.getPassword())
                 .nickname(dto.getNickname())
-                .gender(Gender.valueOf(dto.getGender())) // Enum 변환 주의!
+                .gender(gender)  // 위에서 변환한 값 사용
                 .birthdate(dto.getBirthdate())
-                .subscribedOTTs(dto.getSubscribedOtts() != null ? dto.getSubscribedOtts() : new ArrayList<>())
-                .preferredGenres(dto.getPreferredGenres() != null ? dto.getPreferredGenres() : new ArrayList<>())
+                .subscribedOTTs(platformList)
+                .preferredGenres(genreList)
+
+//                .subscribedOTTs(dto.getSubscribedOtts() != null ? dto.getSubscribedOtts() : new ArrayList<>())
+//                .preferredGenres(dto.getPreferredGenres() != null ? dto.getPreferredGenres() : new ArrayList<>())
                 .build();
 
-        // 비밀번호는 보통 여기서 암호화 해야 함 (예: BCrypt)
+
+//        // 플랫폼 매핑
+//        platformList.forEach(platform -> {
+//            Member_Platform mp = Member_Platform.builder()
+//                    .member(member)
+//                    .platform(platform)
+//                    .build();
+//            member.getSubscribedOTTs().add(mp);
+//        });
+//
+//        // 장르 매핑
+//        genreList.forEach(genre -> {
+//            Member_Genre mg = Member_Genre.builder()
+//                    .member(member)
+//                    .genre(genre)
+//                    .build();
+//            member.getPreferredGenres().add(mg);
+//        });
+
+        // 비밀번호 암호화도 잊지 말기!
         // member.setPassword(passwordEncoder.encode(member.getPassword()));
 
-//        memberDao.insertMember(member); // DB에 저장
         memberRepository.save(member);
     }
+
 
 
     /**
