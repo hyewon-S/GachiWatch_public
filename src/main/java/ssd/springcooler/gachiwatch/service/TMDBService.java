@@ -1,5 +1,7 @@
 package ssd.springcooler.gachiwatch.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import okhttp3 .OkHttpClient;
@@ -9,6 +11,7 @@ import org.json.*;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.domain.Content;
 import ssd.springcooler.gachiwatch.domain.Genre;
+import ssd.springcooler.gachiwatch.dto.LatestMovieDto;
 import ssd.springcooler.gachiwatch.dto.TrendingContentDto;
 
 @Service
@@ -178,4 +181,32 @@ public class TMDBService {
 
         return contents;
     }
+
+    // 비회원 메인페이지 "최신 영화" 관련 코드
+    public List<LatestMovieDto> getLatestMovies(int count) throws Exception {
+        List<LatestMovieDto> latestMovies = new ArrayList<>();
+
+        // 오늘 날짜 문자열 생성 (yyyy-MM-dd 포맷)
+        String today = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
+
+        // discover API 최신 영화 20개, release_date <= today 조건 추가
+        String url = String.format(
+                "https://api.themoviedb.org/3/discover/movie?api_key=%s&language=ko-KR&sort_by=release_date.desc&region=KR&release_date.lte=%s&page=1",
+                API_KEY, today);
+
+        JSONObject response = new JSONObject(readUrl(url));
+        JSONArray results = response.getJSONArray("results");
+
+        for (int i = 0; i < results.length() && latestMovies.size() < count; i++) {
+            JSONObject movie = results.getJSONObject(i);
+            int id = movie.getInt("id");
+            String posterPath = movie.optString("poster_path", null);
+            if (posterPath != null && !posterPath.isEmpty()) {
+                latestMovies.add(new LatestMovieDto(id, posterPath));
+            }
+        }
+
+        return latestMovies;
+    }
+
 }

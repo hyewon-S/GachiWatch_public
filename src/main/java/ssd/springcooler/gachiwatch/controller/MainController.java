@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import ssd.springcooler.gachiwatch.dto.LatestMovieDto;
 import ssd.springcooler.gachiwatch.dto.TrendingContentDto;
 import ssd.springcooler.gachiwatch.service.TMDBService;
 
@@ -27,6 +28,9 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
         try {
             List<TrendingContentDto> trending = tmdbService.getTrendingContents(20);
             model.addAttribute("trendingContents", trending);
+
+            List<LatestMovieDto> movie = tmdbService.getLatestMovies(20);
+            model.addAttribute("latestMovieContents", movie);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -41,9 +45,6 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
 
     }
 
-    //Content 실시간 트렌드 관련 코드 추가
-
-    //Content 최신 콘텐츠 관련 코드 추가
 
     //검색 관련 코드 추가
 
