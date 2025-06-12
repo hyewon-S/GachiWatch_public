@@ -54,6 +54,13 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private List<Genre> preferredGenres = new ArrayList<>(); // // 선호 장르 리스트
 
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Member_Platform> subscribedOTTs = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Member_Genre> preferredGenres = new ArrayList<>();
+
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     //Review 클래스에서는 이렇게 설정돼 있어야 함
     //@ManyToOne

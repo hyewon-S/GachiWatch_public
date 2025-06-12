@@ -14,16 +14,16 @@
            justify-content: space-between;
            align-items: center;
            background: white;
+           padding: 20px;
        }
 
        .logo-search {
            display: flex;
-           margin-left: 3%;
            align-items: center;
        }
 
        .logo {
-           width: 170px;
+           width: 150px;
            margin-right: 20px;
            cursor: pointer;
        }
@@ -40,36 +40,44 @@
            padding: 10px 16px;
            border-radius: 6px;
            border: none;
-           background-color: #8E4BE2;
+           background-color: #eee;
            cursor: pointer;
            font-size: 14px;
-           font-weight: bold;
-           color: white;
        }
 
-       .nav-menu a {
+       .nav-menu a, .sign-in, .register, .logout, .profile-image {
            margin-left: 15px;
            text-decoration: none;
            color: #333;
            cursor: pointer;
        }
-
        .sign-in, .register {
-           padding: 6px 12px;
-           border-radius: 6px;
-           border: none;
-           cursor: pointer;
-       }
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
 
-       .sign-in {
-           background-color: #eee;
-       }
+        .sign-in {
+            background-color: #eee;
+        }
 
-       .register {
-           background-color: #8E4BE2;
-           font-weight: bold;
-           color: white;
-       }
+        .register {
+            background-color: black;
+            color: white;
+        }
+
+        .logout, .profile-image {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .logout {
+            background-color: #eee;
+        }
+
        .nav-menu {
            margin-right: 3%;
        }
@@ -92,7 +100,7 @@
            font-size: 14px;
        }
        main {
-           background-color: #9c6bd8;
+           background-color: #C6C9FF;
            margin-left: auto;
            margin-right: auto;
            width: 91%;
@@ -111,14 +119,28 @@
            margin: 10px;
            display: inline-block;
        }
+
        .content img {
            width: 160px;
             margin-top: 10px;
             margin-bottom: 5px;
             border-radius: 10px;
        }
+
        h2 {
            margin-left: 45%;
+       }
+       .content a {
+            text-decoration-line: none;
+            color: black;
+            font-weight: bold;
+       }
+       .content a:visited {
+            color: black;
+       }
+
+       .content a:hover {
+            color: #C6C9FF;
        }
     </style>
 </head>
@@ -131,12 +153,20 @@
         <input type="text" placeholder="콘텐츠, 키워드 입력" class="search-bar">
         <button class="search-button">Search</button>
     </div>
-    <nav class="nav-menu"><!--이건 일단 비회원 ver -->
-        <a th:href="@{/account/login}">통합 콘텐츠</a>
-        <a th:href="@{/account/login}">추천 콘텐츠</a>
-        <a th:href="@{/account/login}">공유 매칭</a>
-        <a th:href="@{/account/login}"><button class="sign-in">Sign in</button></a>
-        <a th:href="@{/account/register_email_step1}"><button class="register">Register</button></a>
+    <nav class="nav-menu">
+        <a th:href="${isLoggedIn} ? (@{/content/search}) : (@{/account/login})" >통합 콘텐츠</a>
+        <a th:href="${isLoggedIn} ? (@{/content/recommend}) : (@{/account/login})">추천 콘텐츠</a>
+        <a th:href="${isLoggedIn} ? (@{/crew/view}) : (@{/account/login})">공유 매칭</a>
+        <!-- 로그인 안했다면 -->
+        <a th:unless="${isLoggedIn}" th:href="@{/account/login}"><button class="sign-in">Sign in</button></a>
+        <a th:unless="${isLoggedIn}" th:href="@{/account/register_email_step1}"><button class="register">Register</button></a>
+
+        <!-- 로그인 했다면 -->
+        <a th:if="${isLoggedIn}" th:href="@{/account/logout}"><button class="logout">Logout</button></a>
+        <!-- 아래는 나중에 다시 구현
+        <a th:if="${isLoggedIn}" th:href="@{/mypage}">
+            <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
+        </a> -->
     </nav>
 </header>
 
@@ -154,8 +184,9 @@
 </section> <br>
 <main>
     <div th:each="content : ${contentList}" class="content">
-        <img th:src="@{${content.thumbnailUrl}}" />
-        <br>&nbsp;<b th:text="${content.title}"></b>
+        <a th:href="@{/content/detail(contentId=${content.contentId})}"><img th:src="@{${content.thumbnailUrl}}" /></a>
+        <br>&nbsp;
+        <a th:href="@{/content/detail(contentId=${content.contentId})}"><b th:text="${content.title}"></b></a>
         <br>&nbsp;평점 <span th:text="${content.rating}"></span>
     </div>
 </main>

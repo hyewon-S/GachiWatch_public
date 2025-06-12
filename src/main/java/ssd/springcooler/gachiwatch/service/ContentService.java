@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.mybatis.MybatisContentDao;
 import ssd.springcooler.gachiwatch.domain.Content;
+import ssd.springcooler.gachiwatch.domain.Genre;
+import ssd.springcooler.gachiwatch.domain.Platform;
+import ssd.springcooler.gachiwatch.dto.ContentDto;
 import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
 
 import java.util.ArrayList;
@@ -57,8 +60,23 @@ public class ContentService {
         List<Content> contentList = contentDao.getAllContentList();
         List<ContentSummaryDto> contentSummary = new ArrayList<ContentSummaryDto>();
         for(Content cS : contentList) {
-            contentSummary.add(new ContentSummaryDto(cS.getTitle(), cS.getImgUrl(), cS.getRate()));
+            contentSummary.add(new ContentSummaryDto(cS.getContentId(), cS.getTitle(), cS.getImgUrl(), String.format("%.1f", cS.getRate())));
         }
         return contentSummary;
+    }
+
+    public ContentDto getContentDetail(int contentId) {
+        Content content = contentDao.findById(contentId);
+        List<String> genres = new ArrayList<>();
+        for (int gId : content.getGenre()) {
+            genres.add(Genre.fromGenreId(gId).getLabel());
+        }
+
+        List<String> platforms = new ArrayList<>();
+        for(int pId : content.getPlatform()) {
+            platforms.add(Platform.fromPlatformId(pId).getLabel());
+        }
+        return new ContentDto(content.getContentId(), content.getTitle(), content.getImgUrl(), String.format("%.1f", content.getRate()),
+                content.getUploadDate().substring(0, 10), content.getCast(), content.getIntro(), genres, platforms);
     }
 }
