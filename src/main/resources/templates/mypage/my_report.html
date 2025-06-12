@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>신고 내역</title>
+    <style>
+        body {
+          font-family: sans-serif;
+          margin: 0;
+          background-color: #f5f5f5;
+        }
+
+        .container {
+          max-width: 800px;
+          margin: 3rem auto;
+          background-color: white;
+          border: 3px solid #339DFF;
+          border-radius: 24px;
+          padding: 2rem 2.5rem;
+        }
+
+        .header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 2rem;
+        }
+
+        .back-button {
+          font-size: 1.5rem;
+          margin-right: 1rem;
+          cursor: pointer;
+        }
+
+        .title {
+          font-size: 1.6rem;
+          font-weight: bold;
+        }
+
+        .report-count {
+          color: #888;
+          font-weight: 600;
+          margin-bottom: 1.2rem;
+          margin-left: 2rem;
+        }
+
+        .divider {
+          border-bottom: 1px solid #ddd;
+          margin-bottom: 1.5rem;
+        }
+
+        .report-item {
+          display: flex;
+          align-items: flex-start;
+          margin-bottom: 1rem;
+          color: #333;
+          font-size: 1rem;
+        }
+
+        .report-item i {
+          font-style: normal;
+          margin-right: 0.5rem;
+          color: #555;
+        }
+
+        .report-text {
+          line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="back-button" onclick="location.href='/mypage'">←</div>
+        <div class="title">신고</div>
+    </div>
+
+    <div class="report-count" th:text="'누적 횟수 ' + ${reportList.size()} + '회'">누적 횟수 0회</div>
+    <div class="divider"></div>
+
+    <div th:each="report : ${reportList}" class="report-item">
+        <i>ⓘ</i>
+        <div class="report-text" th:text="${#temporals.format(report.date, 'yyyy.MM.dd')} + '에 ' + ${report.reason} + ' 의 사유로 신고가 접수되었습니다.'">
+            2025.03.17에 욕설 의 사유로 신고가 접수되었습니다.
+        </div>
+    </div>
+</div>
+</body>
+</html>

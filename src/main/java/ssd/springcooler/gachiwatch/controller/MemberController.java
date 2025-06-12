@@ -85,7 +85,7 @@ public class MemberController {
     }
 
     // 구독중인 OTT 수정
-    @PostMapping("/platform/update")
+    @PostMapping("/mypage/my_subscribed_ott")
     public String updateOtt(@RequestParam int memberId,
                             @RequestParam List<Platform> ottList,
                             Model model) {
@@ -95,7 +95,7 @@ public class MemberController {
     }
 
     // 선호 장르 수정
-    @PostMapping("/update")
+    @PostMapping("/mypage/my_preferred_genre")
     public String updateGenre(@RequestParam int memberId,
                               @RequestParam List<Genre> genreList,
                               Model model) {

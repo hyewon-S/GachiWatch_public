@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>작성한 리뷰</title>
+    <style>
+        body {
+          font-family: sans-serif;
+          background-color: #f9f9f9;
+          margin: 0;
+          padding: 0;
+        }
+        .back-button {
+          font-size: 2rem;
+          padding: 1rem 2rem;
+          cursor: pointer;
+          display: inline-block;
+        }
+        .header {
+          text-align: center;
+          font-size: 1.8rem;
+          font-weight: bold;
+          margin-top: 1rem;
+        }
+        .toolbar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1rem 2rem;
+        }
+        .delete-button {
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: 1.5rem;
+        }
+        .sort-select {
+          padding: 0.5rem;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+        }
+        .review-list {
+          padding: 0 2rem;
+        }
+        .review-card {
+          display: flex;
+          background: white;
+          border-radius: 12px;
+          box-shadow: 0 0 5px rgba(0,0,0,0.1);
+          padding: 1rem;
+          margin-bottom: 1rem;
+          align-items: center;
+        }
+        .review-image {
+          width: 80px;
+          height: 110px;
+          border-radius: 8px;
+          background: #ddd;
+          margin-right: 1rem;
+        }
+        .review-content {
+          flex: 1;
+        }
+        .review-title {
+          font-weight: bold;
+          font-size: 1.1rem;
+          margin-bottom: 0.3rem;
+        }
+        .review-text {
+          color: #666;
+          font-size: 0.95rem;
+        }
+        .rating-badge {
+          background-color: #800080;
+          color: white;
+          padding: 0.3rem 0.6rem;
+          border-radius: 999px;
+          font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+          gap: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+<div class="back-button" onclick="location.href='/mypage'">&#x2190;</div>
+<div class="header">작성한 리뷰</div>
+
+<div class="toolbar">
+    <button class="delete-button" title="리뷰 삭제"><span>&#128465;</span></button>
+    <select class="sort-select">
+        <option>평점 높은 순</option>
+        <option>평점 낮은 순</option>
+    </select>
+</div>
+
+<div class="review-list">
+    <div class="review-card">
+        <div class="review-image"></div>
+        <div class="review-content">
+            <div class="review-title">제목</div>
+            <div class="review-text">리뷰 내용....<br/>리뷰 내용....<br/>리뷰 내용....</div>
+        </div>
+        <div class="rating-badge">
+            <span>&#11088;</span>
+            <span>5.0</span>
+        </div>
+    </div>
+
+    <div class="review-card">
+        <div class="review-image"></div>
+        <div class="review-content">
+            <div class="review-title">제목</div>
+            <div class="review-text">리뷰 내용....<br/>리뷰 내용....<br/>리뷰 내용....</div>
+        </div>
+        <div class="rating-badge">
+            <span>&#11088;</span>
+            <span>4.5</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
