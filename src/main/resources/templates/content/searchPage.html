@@ -154,7 +154,7 @@
         <button class="search-button">Search</button>
     </div>
     <nav class="nav-menu">
-        <a th:href="${isLoggedIn} ? (@{/content/search}) : (@{/account/login})" >통합 콘텐츠</a>
+        <a th:href="@{/content/search}" >통합 콘텐츠</a>
         <a th:href="${isLoggedIn} ? (@{/content/recommend}) : (@{/account/login})">추천 콘텐츠</a>
         <a th:href="${isLoggedIn} ? (@{/crew/view}) : (@{/account/login})">공유 매칭</a>
         <!-- 로그인 안했다면 -->
@@ -174,7 +174,7 @@
 <section class="platforms">
     &emsp;
     <img th:src="@{/image/netflix.png}">
-    <img th:src="@{/image/watcher.png}">
+    <img th:src="@{/image/watcha.png}">
     <img th:src="@{/image/appletv.png}">
     <img th:src="@{/image/wavve.png}">
     <img th:src="@{/image/disney.png}">
