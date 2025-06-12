@@ -6,8 +6,27 @@
     <link rel="stylesheet" href="/css/crew/manage.css" />
 </head>
 <body>
-<header>
-    <h1>Gachi Watch</h1>
+
+<header class="main-header">
+    <div class="logo-search">
+        <a th:href="@{/}">
+            <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
+        </a>
+        <input type="text" placeholder="콘텐츠, 키워드 입력" class="search-bar">
+        <button class="search-button">Search</button>
+    </div>
+    <nav class="nav-menu">
+        <a th:href="@{/content/search}">통합 콘텐츠</a>
+        <a th:href="@{/content/recommend}">추천 콘텐츠</a>
+        <a th:href="@{/crew/view}">공유 매칭</a>
+        <a th:href="@{/account/logout}">
+            <button class="logout">Logout</button>
+        </a>
+        <!-- 로그인 -> 홈화면 뷰 연결 위해 null-safe 처리 했습니다 -->
+        <a th:if="${user != null}" th:href="@{/mypage}">
+            <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
+        </a>
+    </nav>
 </header>
 
 <main class="crew-page">

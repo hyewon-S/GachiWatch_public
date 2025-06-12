@@ -155,3 +155,74 @@ header {
     padding: 4px 6px;
     border-radius: 6px;
 }
+
+
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: white;
+        }
+
+        .logo-search {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 150px;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            width: 250px;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+        }
+
+        .search-button {
+            margin-left: 10px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: none;
+            background-color: #eee;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav-menu a, .logout, .profile-image {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .logout, .profile-image {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .logout {
+            background-color: #eee;
+        }
+
+        .profile-image {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-left: 15px;
+            border: 1px solid #ccc;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .profile-image:hover {
+            box-shadow: 0 0 0 2px #4285f4;
+        }

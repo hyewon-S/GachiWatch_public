@@ -132,13 +132,84 @@
             cursor: pointer;
         }
 
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: white;
+        }
+
+        .logo-search {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 150px;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            width: 250px;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+        }
+
+        .search-button {
+            margin-left: 10px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: none;
+            background-color: #eee;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav-menu a, .logout, .profile-image {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .logout, .profile-image {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .logout {
+            background-color: #eee;
+        }
+
+        .profile-image {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-left: 15px;
+            border: 1px solid #ccc;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .profile-image:hover {
+            box-shadow: 0 0 0 2px #4285f4;
+        }
+
+
     </style>
 </head>
 <body>
-
+<!--
 <header>
     <img src="/image/logo.png" alt="Gachi Watch" style="height:40px;">
-    <!--<div class="logo">Gachi Watch</div>-->
+
     <div class="nav">
         <div>Products</div>
         <div>Solutions</div>
@@ -149,6 +220,29 @@
         <button>Sign in</button>
         <button>Register</button>
     </div>
+</header>
+-->
+
+<header class="main-header">
+    <div class="logo-search">
+        <a th:href="@{/}">
+            <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
+        </a>
+        <input type="text" placeholder="콘텐츠, 키워드 입력" class="search-bar">
+        <button class="search-button">Search</button>
+    </div>
+    <nav class="nav-menu">
+        <a th:href="@{/content/search}">통합 콘텐츠</a>
+        <a th:href="@{/content/recommend}">추천 콘텐츠</a>
+        <a th:href="@{/crew/view}">공유 매칭</a>
+        <a th:href="@{/account/logout}">
+            <button class="logout">Logout</button>
+        </a>
+        <!-- 로그인 -> 홈화면 뷰 연결 위해 null-safe 처리 했습니다 -->
+        <a th:if="${user != null}" th:href="@{/mypage}">
+            <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
+        </a>
+    </nav>
 </header>
 
 <div class="main">
