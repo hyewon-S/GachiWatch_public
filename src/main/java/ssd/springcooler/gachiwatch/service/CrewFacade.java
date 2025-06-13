@@ -17,7 +17,7 @@ public interface CrewFacade {
     Member getCaptain(Long crewId);
     List<Member> getMembers(Long crewId);
 
-    Crew createCrew(Crew crew);
+    Crew createCrew(Crew crew, Member captain);
     Crew updateCrew(Crew crew);
     boolean deleteCrew(Crew crew);
 

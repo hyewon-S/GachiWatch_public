@@ -10,12 +10,10 @@ import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.CrewChat;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.CrewDto;
-import ssd.springcooler.gachiwatch.dto.MemberDto;
 import ssd.springcooler.gachiwatch.repository.CrewChatRepository;
 import ssd.springcooler.gachiwatch.repository.CrewMemberRepository;
 import ssd.springcooler.gachiwatch.repository.CrewRepository;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -77,8 +75,10 @@ public class CrewServiceImpl implements CrewFacade {
         return null;
     }
 
-    public Crew createCrew(Crew crew) {
-        return crewDao.insertCrew(crew);
+    public Crew createCrew(Crew crew, Member captain) {
+        crew.setCaptain(captain);
+        crewRepository.save(crew);
+        return crew;
     }
     public Crew updateCrew(Crew crew) {
         return crewDao.updateCrew(crew);

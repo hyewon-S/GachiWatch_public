@@ -99,5 +99,7 @@ public interface MemberService {
 
     boolean deleteMember(int memberId);
 
+    Member getMember(int memberId);
+
 //    LoginDto login(String email, String password);
 }

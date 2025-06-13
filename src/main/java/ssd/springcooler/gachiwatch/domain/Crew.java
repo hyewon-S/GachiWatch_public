@@ -3,6 +3,7 @@ package ssd.springcooler.gachiwatch.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +14,9 @@ import java.util.List;
 @Entity
 public class Crew {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "crew_seq_gen")
+    @SequenceGenerator(name = "crew_seq_gen", sequenceName = "CREW_SEQ", allocationSize = 1)
+    @Column(name = "crew_id")
     Long crewId;
 
     @ManyToOne
@@ -27,6 +30,7 @@ public class Crew {
     @Enumerated(EnumType.STRING)
     Platform platform;
     int payment;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     Date payDate;
     int maxMember;
     String account;
@@ -52,6 +56,10 @@ public class Crew {
 
     public Crew() {
 
+    }
+
+    public int getCurrentCount() {
+        return crewMembers.size();
     }
 
     public int calcPayFee() {
