@@ -37,7 +37,7 @@ public class ContentController {
     }
 
     @GetMapping("/detail")
-    public String detail(@RequestParam("contentId") int contentId, Model model, HttpSession session) {
+    public String detail(@RequestParam("contentId") int contentId, Model model, HttpSession session) throws Exception {
         Object user = session.getAttribute("user");
 
         if(user != null) { //로그인 했음
@@ -50,7 +50,13 @@ public class ContentController {
             model.addAttribute("isLoggedIn", false);
         }
 
-        model.addAttribute("contentInfo", contentService.getContentDetail(contentId));
+
+        ContentDto contentInfo = contentService.getContentDetail(contentId);
+        if(contentInfo == null) { //content가 현재 DB에 없음
+            contentInfo = contentService.getContentInfo(contentId);
+        }
+        model.addAttribute("contentInfo", contentInfo);
+
         return "content/detailPage"; //여기서 review 쪽으로 redirect 한번 해줄것
     }
 

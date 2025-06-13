@@ -76,16 +76,37 @@ public class ContentService {
 
     public ContentDto getContentDetail(int contentId) {
         Content content = contentDao.findById(contentId);
+        if(content != null) {
+            List<String> genres = new ArrayList<>();
+            for (int gId : content.getGenre()) {
+                genres.add(Genre.fromGenreId(gId).getLabel());
+            }
+
+            List<String> platforms = new ArrayList<>();
+            for (int pId : content.getPlatform()) {
+                platforms.add(Platform.fromPlatformId(pId).getLabel());
+            }
+            return new ContentDto(content.getContentId(), content.getTitle(), content.getImgUrl(), String.format("%.1f", content.getRate()),
+                    content.getUploadDate().substring(0, 10), content.getCast(), content.getIntro(), genres, platforms);
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ContentDto getContentInfo(int contentId) throws Exception {
+        List<Content> oneContent = tmdbService.getDetailedInfo("movie", List.of(contentId));
+        contentDao.createContent(oneContent);
         List<String> genres = new ArrayList<>();
-        for (int gId : content.getGenre()) {
+        for (int gId : oneContent.get(0).getGenre()) {
             genres.add(Genre.fromGenreId(gId).getLabel());
         }
-
         List<String> platforms = new ArrayList<>();
-        for(int pId : content.getPlatform()) {
+        for(int pId : oneContent.get(0).getPlatform()) {
             platforms.add(Platform.fromPlatformId(pId).getLabel());
+            System.out.println(oneContent.get(0).getPlatform());
         }
-        return new ContentDto(content.getContentId(), content.getTitle(), content.getImgUrl(), String.format("%.1f", content.getRate()),
-                content.getUploadDate().substring(0, 10), content.getCast(), content.getIntro(), genres, platforms);
+        return new ContentDto(oneContent.get(0).getContentId(), oneContent.get(0).getTitle(), oneContent.get(0).getImgUrl(), String.format("%.1f", oneContent.get(0).getRate()),
+                oneContent.get(0).getUploadDate().substring(0, 10), oneContent.get(0).getCast(), oneContent.get(0).getIntro(), genres, platforms);
     }
 }

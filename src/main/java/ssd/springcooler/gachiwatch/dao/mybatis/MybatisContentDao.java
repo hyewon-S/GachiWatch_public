@@ -73,10 +73,12 @@ public class MybatisContentDao implements ContentDao {
     @Override
     public Content findById(int id) {
         Content content = contentMapper.findById(id);
-        List<Integer> genres = contentMapper.getGenresByContentId(content.getContentId());
-        List<Integer> platforms = contentMapper.getPlatformsByContentId(content.getContentId());
-        content.setGenre(genres);
-        content.setPlatform(platforms);
+        if(content != null) {
+            List<Integer> genres = contentMapper.getGenresByContentId(id);
+            List<Integer> platforms = contentMapper.getPlatformsByContentId(id);
+            content.setGenre(genres);
+            content.setPlatform(platforms);
+        }
         return content;
     }
 

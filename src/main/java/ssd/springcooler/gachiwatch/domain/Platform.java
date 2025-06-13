@@ -9,7 +9,8 @@ public enum Platform {
     DISNEY("디즈니+", 337),
     APPLE("애플티비+", 350),
     WAVVE("웨이브", 356),
-    AMAZON("아마존 프라임", 119);
+    AMAZON("아마존 프라임", 119),
+    NULL("현재 제공되는 플랫폼 없음", 0);
 
     private final String label;
     private final int platformId;
