@@ -1,13 +1,11 @@
 package ssd.springcooler.gachiwatch.dao.mybatis.mapper;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import ssd.springcooler.gachiwatch.domain.Content;
-import ssd.springcooler.gachiwatch.domain.Genre;
-import ssd.springcooler.gachiwatch.domain.Platform;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface ContentMapper {
@@ -36,4 +34,6 @@ public interface ContentMapper {
     void deleteAllContentOTTs();
 
     List<Content> getAllContentList();
+
+    List<Integer> findAllContentIds();
 }

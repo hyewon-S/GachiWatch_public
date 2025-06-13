@@ -7,9 +7,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ssd.springcooler.gachiwatch.dto.ContentDto;
+import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
 import ssd.springcooler.gachiwatch.service.ContentService;
 
 import java.security.Principal;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 @RequestMapping("/content")
@@ -26,7 +30,9 @@ public class ContentController {
         } else {
             model.addAttribute("isLoggedIn", false);
         }
-        model.addAttribute("contentList", contentService.getContentSummary());
+        List<ContentSummaryDto> contentList = contentService.getContentSummary();
+        Collections.shuffle(contentList);
+        model.addAttribute("contentList", contentList);
         return "content/searchPage";
     }
 
@@ -43,6 +49,7 @@ public class ContentController {
         } else {
             model.addAttribute("isLoggedIn", false);
         }
+
         model.addAttribute("contentInfo", contentService.getContentDetail(contentId));
         return "content/detailPage"; //여기서 review 쪽으로 redirect 한번 해줄것
     }
@@ -53,7 +60,7 @@ public class ContentController {
                                             @RequestParam boolean isLiked,
                                             Principal principal) {
         System.out.println("contentId는 : " + contentId);
-        System.out.println("memberId는 : " + memberId); //이게 계속 0으로 뜨는데.. 왜지
+        System.out.println("memberId는 : " + memberId); //이게 계속 0으로 뜨는데.. 왜지???
         System.out.println("isLike는" + isLiked);
 
         return ResponseEntity.ok().build();
@@ -65,7 +72,7 @@ public class ContentController {
                                                Principal principal) {
         System.out.println("contentId는 : " + contentId);
         System.out.println("memberId는 : " + memberId);
-        System.out.println("isLike는 : " + isWatched);
+        System.out.println("isWatched는 : " + isWatched);
 
         return ResponseEntity.ok().build();
     }
@@ -74,6 +81,13 @@ public class ContentController {
     //자정마다 실행됨!
     @Scheduled(cron = "0 0 0 * * *")
     public String insert(Model model) {
+        contentService.insertNewContent(50, 50);
+        return "content/searchPage";
+    }
+
+    //uri로도 콘텐츠 insert 가능
+    @GetMapping("/insert")
+    public String insertByURI(Model model) {
         contentService.insertNewContent(50, 50);
         return "content/searchPage";
     }

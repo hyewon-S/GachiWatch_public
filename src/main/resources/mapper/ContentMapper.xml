@@ -85,5 +85,9 @@
         FROM content
     </select>
 
+    <select id="findAllContentIds" resultType="int">
+        SELECT content_id
+        FROM content
+    </select>
 
 </mapper>

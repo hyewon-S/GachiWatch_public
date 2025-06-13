@@ -1,9 +1,8 @@
 package ssd.springcooler.gachiwatch.dao;
 import ssd.springcooler.gachiwatch.domain.Content;
-import ssd.springcooler.gachiwatch.domain.Genre;
-import ssd.springcooler.gachiwatch.domain.Platform;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ContentDao {
     // 1. 콘텐츠 정보 DB에 저장
@@ -34,4 +33,6 @@ public interface ContentDao {
     void deleteAllContents();
 
     List<Content> getAllContentList();
+
+    List<Integer> findAllContentIds();
 }
