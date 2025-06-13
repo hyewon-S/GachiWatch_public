@@ -1,9 +1,9 @@
-<!DOCTYPE html> <!--그냥 테스트용!!!!!!! 완전 미완성 ---->
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="${contentInfo.title + ' - GACHIWATCH'}">GACHIWATCH - 디테일 정보</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+
     <style>
          body {
             margin: 0;
@@ -295,7 +295,7 @@
             <img th:src="@{/image/icon/full-star.png}" width=40px>
             <img th:src="@{/image/icon/full-star.png}" width=40px>
             <br><br>
-            <a th:if="${isLoggedIn}" th:href="@{/review/create}">
+            <a th:if="${isLoggedIn}" th:href="@{/review/form(contentId=${contentInfo.contentId})}">
                 <input type="button" value="리뷰 작성하기">
             </a>
             <a th:unless="${isLoggedIn}" th:href="@{/account/login}">
