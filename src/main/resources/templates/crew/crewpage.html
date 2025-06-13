@@ -132,67 +132,159 @@
             cursor: pointer;
         }
 
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: white;
+        }
+
+        .logo-search {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            width: 150px;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            width: 250px;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+        }
+
+        .search-button {
+            margin-left: 10px;
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: none;
+            background-color: #eee;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav-menu a, .logout, .profile-image {
+            margin-left: 15px;
+            text-decoration: none;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .logout, .profile-image {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .logout {
+            background-color: #eee;
+        }
+
+        .profile-image {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-left: 15px;
+            border: 1px solid #ccc;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .profile-image:hover {
+            box-shadow: 0 0 0 2px #4285f4;
+        }
+
+
     </style>
 </head>
 <body>
-
-<header>
-    <img src="/image/logo.png" alt="Gachi Watch" style="height:40px;">
-    <!--<div class="logo">Gachi Watch</div>-->
-    <div class="nav">
-        <div>Products</div>
-        <div>Solutions</div>
-        <div>Community</div>
-        <div>Resources</div>
-        <div>Pricing</div>
-        <div>Contact</div>
-        <button>Sign in</button>
-        <button>Register</button>
+<header class="main-header">
+    <div class="logo-search">
+        <a th:href="@{/}">
+            <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
+        </a>
+        <input type="text" placeholder="콘텐츠, 키워드 입력" class="search-bar">
+        <button class="search-button">Search</button>
     </div>
+    <nav class="nav-menu">
+        <a th:href="@{/content/search}">통합 콘텐츠</a>
+        <a th:href="@{/content/recommend}">추천 콘텐츠</a>
+        <a th:href="@{/crew/view}">공유 매칭</a>
+        <a th:href="@{/account/logout}">
+            <button class="logout">Logout</button>
+        </a>
+        <!-- 로그인 -> 홈화면 뷰 연결 위해 null-safe 처리 했습니다 -->
+        <a th:if="${user != null}" th:href="@{/mypage}">
+            <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
+        </a>
+    </nav>
 </header>
 
 <div class="main">
-    <div class="party-info">
-        <h2 th:text="${crew.get().crewName}">파티 이름</h2>
-        <div class="price" th:text="${crew.get().payment}">17900원</div>
-        <br>
-        <div class="info-tag">인원 <span th:text="|${crewDto.currentPeople} / ${crew.get().maxMember}|">3 / 4</span></div>
-        <br>
-        <div class="info-tag">결제일 <span th:text="${#dates.format(crew.get().payDate, 'MM/dd')}">매달 7일</span></div>
-        <br>
-        <!--<div class="info-tag">최소기간 <span th:text="${crewDto.minPeriod}">6개월</span></div>-->
-        <br>
-        <img src="/image/netflix.png" alt="Netflix" />
-        <button class="group-button">그룹 설정</button>
-    </div>
-
-    <div class="chat-box">
-        <div class="notice">
-            <strong>계좌번호 신한</strong> <span th:text="${crew.get().account}">01123456123456</span>
+        <div class="party-info">
+            <h2 th:text="${crew.crewName}">파티 이름</h2>
+            <div class="price" th:text="${crew.payment}">17900원</div>
+            <br>
+            <div class="info-tag">인원 <span th:text="|${crew.getCurrentCount()} / ${crew.maxMember}|">3 / 4</span></div>
+            <br>
+            <div class="info-tag">결제일 <span th:text="${#dates.format(crew.payDate, 'MM/dd')}">매달 7일</span></div>
+            <br>
+            <!--<div class="info-tag">최소기간 <span th:text="${crewDto.minPeriod}">6개월</span></div>-->
+            <br>
+            <img src="/image/netflix.png" alt="Netflix" />
+            <button class="group-button">그룹 설정</button>
         </div>
 
-        <div th:each="chat : ${chatList}" class="chat-entry">
-            <!--<img src="/images/user-icon.png" alt="User" />-->
-            <div>
-                <div><strong th:text="${chat.member.nickname}">닉네임</strong></div>
-                <div class="chat-content" th:text="${chat.chat}">사용자가 입력한 채팅</div>
+        <div class="chat-box">
+            <div class="notice">
+                <strong>계좌번호 신한</strong> <span th:text="${crew.account}">01123456123456</span>
             </div>
-        </div>
 
-        <div class="chat-entry">
-            <!--<img src="/images/user-icon.png" alt="User" />-->
-            <div>
-                <div><strong>닉네임</strong></div>
-                <div class="chat-content">사용자가 입력한 채팅</div>
+            <div id="chat-container" style="height: 300px; overflow-y: auto; padding: 10px;">
+                <div th:each="chat : ${chatList}" class="chat-entry">
+                    <!--<img src="/images/user-icon.png" alt="User" />-->
+                    <div>
+                        <div><strong th:text="${chat.member.nickname}">닉네임</strong></div>
+                        <div class="chat-content" th:text="${chat.chat}">사용자가 입력한 채팅</div>
+                    </div>
+                </div>
             </div>
+            <!--
+            <div class="chat-entry">
+                <img src="/images/user-icon.png" alt="User" />
+                <div>
+                    <div><strong>닉네임</strong></div>
+                    <div class="chat-content">사용자가 입력한 채팅</div>
+                </div>
+            </div>
+    -->
+            <form class="chat-input-container" th:action="@{/crew/crewpage/chat}" method="post">
+                <input class="chat-input" type="text" name="message" placeholder="채팅 입력..." />
+                <button class="send-button" type="submit">전송</button>
+            </form>
         </div>
 
-        <form class="chat-input-container" th:action="@{/crew/crewpage/chat}" method="post">
-            <input class="chat-input" type="text" name="message" placeholder="채팅 입력..." />
-            <button class="send-button" type="submit">전송</button>
-        </form>
-    </div>
+
+
 </div>
+<script>
+    function scrollToBottom() {
+        const container = document.getElementById("chat-container");
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }
 
+    // 페이지 로드 후 자동 스크롤
+    window.onload = scrollToBottom;
+</script>
 </body>
 </html>

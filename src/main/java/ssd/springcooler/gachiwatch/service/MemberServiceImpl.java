@@ -231,6 +231,11 @@ public class MemberServiceImpl implements MemberService {
         //구현 필요
         return false;
     }
+
+    @Override
+    public Member getMember(int memberId) {
+        return memberRepository.findById(memberId).get();
+    }
 }
 
 //// repository 사용
