@@ -1,11 +1,14 @@
 package ssd.springcooler.gachiwatch.controller;
-import ch.qos.logback.core.model.Model;
+//import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.Member;
+
+import org.springframework.ui.Model;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,13 +22,23 @@ public class HomeController {
 //    public String memberHome() {
 //        return "home/member_home";
 //    }
-@GetMapping("/member_home")
-public String memberHome(Model model) {
-    model.addText("user"); // 혹은 로그인한 사용자 넣어도 됨
-    model.addText("crews"); // 빈 리스트
-    model.addText("movieimages");
-    return "home/member_home";
-}
+//@GetMapping("/member_home")
+//public String memberHome(Model model) {
+//    model.addText("user"); // 혹은 로그인한 사용자 넣어도 됨
+//    model.addText("crews"); // 빈 리스트
+//    model.addText("movieimages");
+//    return "home/member_home";
+//}
+
+    @GetMapping("/member_home")
+    public String memberHome(Model model, HttpSession session) {
+        Member user = (Member) session.getAttribute("user");
+        model.addAttribute("user", user);  // ← 이게 핵심
+        model.addAttribute("crews"); // 빈 리스트
+        model.addAttribute("movieimages");
+        return "home/member_home";
+    }
+
 
 }
 

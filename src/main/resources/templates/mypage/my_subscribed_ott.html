@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTT 수정</title>
+    <style>
+        body {
+          font-family: sans-serif;
+          background-color: #f5f5f5;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+        }
+        .container {
+          width: 90%;
+          max-width: 800px;
+          background: white;
+          border-radius: 20px;
+          padding: 2rem;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          position: relative;
+        }
+        .back-button {
+          font-size: 1.5rem;
+          cursor: pointer;
+          position: absolute;
+          top: 1.5rem;
+          left: 1.5rem;
+        }
+        .section-title {
+          text-align: center;
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin-bottom: 2rem;
+        }
+        .ott-options {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 1.5rem;
+          margin-bottom: 2rem;
+        }
+        .ott-button img {
+          width: 60px;
+          height: 60px;
+          border-radius: 12px;
+          border: 3px solid transparent;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .ott-button.selected img {
+          border-color: #6a0dad;
+          opacity: 1;
+        }
+        .save-btn {
+          display: block;
+          width: 100%;
+          padding: 1rem;
+          background-color: #333;
+          color: white;
+          border: none;
+          border-radius: 12px;
+          font-size: 1.1rem;
+          cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<form class="container" method="post" th:action="@{/mypage/setting/ott}" th:object="${userOTTGenreSettingDto}" onsubmit="return handleSubmit()">
+    <div class="back-button" onclick="location.href='/mypage'">←</div>
+    <div class="section-title">구독중인 서비스</div>
+    <div class="ott-options">
+        <div th:each="ott : ${ottList}" th:classappend="${#lists.contains(userOTTGenreSettingDto.ottList, ott)} ? 'ott-button selected' : 'ott-button'">
+            <input type="checkbox" th:value="${ott}" name="ottList" th:checked="${#lists.contains(userOTTGenreSettingDto.ottList, ott)}" hidden />
+            <img th:src="@{/images/{img}(img=${ott.toLowerCase() + '.png'})}" th:alt="${ott}" onclick="toggleSelect(this)">
+        </div>
+    </div>
+    <button type="submit" class="save-btn">저장</button>
+</form>
+
+<script>
+    function toggleSelect(imgElement) {
+      const parent = imgElement.closest('.ott-button');
+      const checkbox = parent.querySelector('input[type="checkbox"]');
+      parent.classList.toggle('selected');
+      checkbox.checked = !checkbox.checked;
+    }
+
+    function handleSubmit() {
+      // 저장 후 마이페이지로 이동 (폼 서버 처리 후 이동)
+      setTimeout(() => {
+        window.location.href = "/mypage";
+      }, 100);
+      return true;
+    }
+</script>
+</body>
+</html>

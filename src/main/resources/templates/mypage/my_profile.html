@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>프로필 수정</title>
+    <style>
+        body {
+          font-family: sans-serif;
+          background-color: #f5f5f5;
+          margin: 0;
+        }
+
+        .container {
+          max-width: 500px;
+          margin: 3rem auto;
+          background: white;
+          padding: 2.5rem;
+          border-radius: 30px;
+        }
+
+        .header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 2rem;
+        }
+
+        .back-button {
+          font-size: 1.5rem;
+          margin-right: 1rem;
+          cursor: pointer;
+        }
+
+        h2 {
+          text-align: center;
+          margin-bottom: 2rem;
+        }
+
+        .profile-img {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 1rem;
+        }
+
+        .profile-img img {
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        .change-btn {
+          display: block;
+          margin: 0 auto 2rem auto;
+          padding: 0.5rem 1rem;
+          border: none;
+          background: #eee;
+          border-radius: 8px;
+          cursor: pointer;
+        }
+
+        .form-input {
+          width: 100%;
+          padding: 0.8rem;
+          margin-bottom: 1rem;
+          border-radius: 8px;
+          border: 1px solid #ccc;
+        }
+
+        .submit-btn {
+          width: 100%;
+          padding: 0.9rem;
+          background-color: #333;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-size: 1rem;
+          cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="back-button" onclick="location.href='/mypage'">←</div>
+        <h2 style="flex-grow: 1; text-align: center;">프로필 수정</h2>
+    </div>
+
+    <form th:action="@{/mypage/profile/update}" method="post" enctype="multipart/form-data">
+        <div class="profile-img">
+            <img th:src="@{${profileImageUrl}}" id="preview-img" alt="프로필 이미지">
+        </div>
+        <input type="file" name="profileImage" id="profileImageInput" accept="image/*" style="display:none;" onchange="previewImage(event)">
+        <button type="button" class="change-btn" onclick="document.getElementById('profileImageInput').click()">프로필 사진 변경</button>
+
+        <input type="text" name="nickname" th:placeholder="${currentNickname}" class="form-input">
+        <input type="password" name="password" placeholder="비밀번호 변경" class="form-input">
+
+        <button type="submit" class="submit-btn">저장</button>
+    </form>
+</div>
+
+<script>
+    function previewImage(event) {
+      const reader = new FileReader();
+      reader.onload = function(){
+        document.getElementById('preview-img').src = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+</body>
+</html>

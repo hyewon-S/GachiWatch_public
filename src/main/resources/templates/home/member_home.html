@@ -153,7 +153,7 @@
 <body>
 <header class="main-header">
     <div class="logo-search">
-        <a th:href="@{/}">
+        <a th:href="@{/home/member_home}">
             <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
         </a>
         <input type="text" placeholder="콘텐츠, 키워드 입력" class="search-bar">
@@ -167,11 +167,13 @@
             <button class="logout">Logout</button>
         </a>
         <!-- 로그인 -> 홈화면 뷰 연결 위해 null-safe 처리 했습니다 -->
-        <a th:if="${user != null}" th:href="@{/mypage}">
+        <a th:if="${user != null}" th:href="@{/mypage/mypage}">
             <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
         </a>
     </nav>
 </header>
+<!--로그인 정보 잘 넘어왔는지 확인할때 사용-->
+<!--<h1 th:text="${user}">유저 정보 없음</h1>-->
 
 <main class="content">
     <!-- 내그룹 -->

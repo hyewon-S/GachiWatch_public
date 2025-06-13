@@ -5,10 +5,9 @@ import org.springframework.stereotype.Repository;
 import ssd.springcooler.gachiwatch.dao.ContentDao;
 import ssd.springcooler.gachiwatch.dao.mybatis.mapper.ContentMapper;
 import ssd.springcooler.gachiwatch.domain.Content;
-import ssd.springcooler.gachiwatch.domain.Genre;
-import ssd.springcooler.gachiwatch.domain.Platform;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class MybatisContentDao implements ContentDao {
@@ -74,10 +73,12 @@ public class MybatisContentDao implements ContentDao {
     @Override
     public Content findById(int id) {
         Content content = contentMapper.findById(id);
-        List<Integer> genres = contentMapper.getGenresByContentId(content.getContentId());
-        List<Integer> platforms = contentMapper.getPlatformsByContentId(content.getContentId());
-        content.setGenre(genres);
-        content.setPlatform(platforms);
+        if(content != null) {
+            List<Integer> genres = contentMapper.getGenresByContentId(id);
+            List<Integer> platforms = contentMapper.getPlatformsByContentId(id);
+            content.setGenre(genres);
+            content.setPlatform(platforms);
+        }
         return content;
     }
 
@@ -102,5 +103,10 @@ public class MybatisContentDao implements ContentDao {
     @Override
     public List<Content> search(List<Integer> genre, List<Integer> platform, String content_type, String range) {
         return contentMapper.search(genre, platform, content_type, range);
+    }
+
+    @Override
+    public List<Integer> findAllContentIds() {
+        return contentMapper.findAllContentIds();
     }
 }

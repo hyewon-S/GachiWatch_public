@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>나의 가치클럽</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+          font-family: sans-serif;
+          background-color: #f5f5f5;
+          margin: 0;
+          padding: 0;
+        }
+        .wrapper {
+          max-width: 1100px;
+          margin: 2rem auto;
+          padding: 1rem;
+        }
+        .header {
+          display: flex;
+          align-items: center;
+          margin-bottom: 2rem;
+        }
+        .back-button {
+          font-size: 1.5rem;
+          margin-right: 1rem;
+          cursor: pointer;
+        }
+        .title {
+          font-size: 1.8rem;
+          font-weight: bold;
+        }
+
+        .club-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 2rem;
+        }
+
+        .club-card {
+          background-color: white;
+          border-radius: 20px;
+          padding: 1.5rem;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          cursor: pointer;
+          transition: transform 0.2s;
+        }
+
+        .club-card:hover {
+          transform: translateY(-3px);
+        }
+
+        .club-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 1rem;
+        }
+
+        .platform-img {
+          width: 60px;
+          height: 60px;
+          border-radius: 14px;
+          object-fit: cover;
+        }
+
+        .club-name {
+          font-size: 1.2rem;
+          font-weight: bold;
+        }
+
+        .club-price {
+          font-size: 1.1rem;
+          margin-bottom: 1rem;
+        }
+
+        .club-info-tag {
+          display: inline-block;
+          background-color: #eee;
+          color: #333;
+          padding: 0.3rem 0.7rem;
+          border-radius: 12px;
+          font-size: 0.85rem;
+          margin-right: 0.4rem;
+          margin-bottom: 0.4rem;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <div class="back-button" onclick="location.href='/mypage'">←</div>
+        <div class="title">나의 가치클럽</div>
+    </div>
+
+    <div class="club-grid">
+        <div th:each="crew : ${crewList}" class="club-card"
+             th:onclick="|location.href='@{/crew/detail/{id}(id=${crew.id})}'|">
+
+            <div class="club-top">
+                <div>
+                    <div class="club-name" th:text="${crew.name}">크루 이름</div>
+                    <div class="club-price" th:text="${crew.price + '원'}">17900원</div>
+                </div>
+                <img class="platform-img" th:src="@{/images/{img}(img=${crew.platform.toLowerCase() + '.png'})}" th:alt="${crew.platform}">
+            </div>
+
+            <div class="club-tags">
+                <div class="club-info-tag" th:text="'인원 ' + ${crew.currentMembers} + ' / ' + ${crew.maxMembers}">인원 3/4</div>
+                <div class="club-info-tag" th:text="'결제일 매달 ' + ${crew.payDate} + '일'">결제일 매달 7일</div>
+                <div class="club-info-tag" th:text="'최소기간 ' + ${crew.minPeriod}">최소기간 6개월</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

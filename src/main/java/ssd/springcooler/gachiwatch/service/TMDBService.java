@@ -117,6 +117,9 @@ public class TMDBService {
                     }
                 }
             }
+            else {
+                platforms.add(0);
+            }
 
             Content c = new Content(id, title, overview, genres, cast.toString(), platforms, rating, releaseDate, imageUrl, type);
             list.add(c);

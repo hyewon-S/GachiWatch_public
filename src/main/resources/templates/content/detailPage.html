@@ -1,9 +1,9 @@
-<!DOCTYPE html> <!--그냥 테스트용!!!!!!! 완전 미완성 ---->
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="${contentInfo.title + ' - GACHIWATCH'}">GACHIWATCH - 디테일 정보</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+
     <style>
          body {
             margin: 0;
@@ -107,8 +107,117 @@
 
         img.icon {
             width: 40px;
+            cursor: pointer;
+        }
+
+        .content_review {
+            padding-left: 10%;
+            padding-top: 3%;
+            padding-bottom: 3%;
+        }
+        .content_review h1 {
+            text-decoration: underline;
+        }
+        .content_review p {
+            font-size: 50px;
+            font-weight: bold;
+        }
+        .my_review {
+            background-color: #ebebeb;
+            padding: 2%;
+            padding-right: 8%;
+            display: inline-block;
+
+        }
+        .my_review input {
+           background-color: #C6C9FF;
+           padding: 12px 32px;
+           border: none;
+           border-radius: 20px;
+           font-size: 16px;
+           font-weight: bold;
+           cursor: pointer;
+        }
+        .my_review p {
+            font-weight: bold;
+            font-size: large;
         }
     </style>
+    <script>
+
+        function toggleHeart(contentId, memberId) {
+            const icon = document.getElementById("heart-icon");
+            const isRed = icon.src.includes("icon-heart-red.png");
+
+            // 아이콘 바꾸기
+            if (isRed) {
+                icon.src = "/image/icon/icon-heart-black.png";
+                updateContentLike(contentId, memberId, false);
+                alert("찜하기가 취소 되었습니다.");
+            } else {
+                icon.src = "/image/icon/icon-heart-red.png";
+                updateContentLike(contentId, memberId, true);
+                alert("찜하기가 되었습니다.");
+            }
+        }
+
+        function updateContentLike(contentId, memberId, isLiked) {
+            fetch("/content/likeUpdate", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    contentId: contentId,
+                    memberId: memberId,
+                    isLiked: isLiked
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    alert("서버 오류로 좋아요 상태를 저장하지 못했습니다.");
+                }
+            })
+            .catch(error => {
+                alert("통신 오류 발생: " + error.message);
+            });
+        }
+
+        function toggleEye(contentId, memberId) {
+            const icon = document.getElementById("eye-icon");
+            const isEyes = icon.src.includes("icon-eye.png");
+
+            // 아이콘 바꾸기
+            if (isEyes) {
+                icon.src = "/image/icon/icon-hidden.png";
+                updateContentWatched(contentId, memberId, false);
+                alert("봤어요가 취소 되었습니다.");
+
+            } else {
+                icon.src = "/image/icon/icon-eye.png";
+                updateContentWatched(contentId, memberId, true);
+                alert("봤어요에 추가 되었습니다.");
+            }
+        }
+
+        function updateContentWatched(contentId, memberId, isWatched) {
+            fetch("/content/watchedUpdate", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    contentId: contentId,
+                    memberId: memberId,
+                    isWatched: isWatched
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    alert("서버 오류로 좋아요 상태를 저장하지 못했습니다.");
+                }
+            })
+            .catch(error => {
+                alert("통신 오류 발생: " + error.message);
+            });
+        }
+    </script>
 </head>
 <body>
     <header class="main-header">
@@ -120,7 +229,7 @@
         <button class="search-button">Search</button>
     </div>
     <nav class="nav-menu">
-        <a th:href="${isLoggedIn} ? (@{/content/search}) : (@{/account/login})" >통합 콘텐츠</a>
+        <a th:href="@{/content/search}" >통합 콘텐츠</a>
         <a th:href="${isLoggedIn} ? (@{/content/recommend}) : (@{/account/login})">추천 콘텐츠</a>
         <a th:href="${isLoggedIn} ? (@{/crew/view}) : (@{/account/login})">공유 매칭</a>
         <!-- 로그인 안했다면 -->
@@ -142,11 +251,27 @@
         <div class="content_text">
            <h1 th:text="${contentInfo.title}"></h1>
             <p th:text="${contentInfo.uploadDate}">📅날짜</p>▪️🌟<p th:text="${contentInfo.rating}"></p><br><br>
-            <!-- 찜하기를 누르지 않았을때, 또는 비회원일때 -->
-            <img th:src="@{/image/icon/icon-heart-black.png}" class="icon"> &nbsp;&nbsp;
-            <!-- 봤어요 안했을때, 또는 비회원일때 -->
-            <img th:src="@{/image/icon/icon-eye.png}" class="icon">
+
+            <!-- 좋아요 버튼 -->
+            <img id="heart-icon" th:if="${isLoggedIn}"
+                 th:src="@{${heartUrl}}" th:attr="onclick=|toggleHeart(${contentInfo.contentId}, ${session.user.memberId})|"
+                 class="icon" />
+
+            <img th:unless="${isLoggedIn}"
+                 th:src="@{/image/icon/icon-heart-black.png}" onclick="alert('로그인이 필요합니다.')"
+                 class="icon" />
+            &nbsp;&nbsp;
+
+            <!--봤어요 버튼 -->
+            <img id="eye-icon" th:if="${isLoggedIn}"
+                 th:src="@{${eyeUrl}}" th:attr="onclick=|toggleEye(${contentInfo.contentId}, ${session.user.memberId})|"
+                 class="icon" />
+
+            <img th:unless="${isLoggedIn}"
+                 th:src="@{/image/icon/icon-hidden.png}" onclick="alert('로그인이 필요합니다.')"
+                 class="icon" />
            <br><br>
+
            <h4>개요</h4><br>
         <p th:text="${contentInfo.intro}"></p><br><br>
            <h4>출연진</h4><br>
@@ -159,8 +284,24 @@
     </div>
 
     <div class="content_review">
-        <h1>리뷰입니닷</h1>
-        ⭐⭐⭐⭐⭐
+        <h1>&nbsp;리뷰&nbsp;</h1>
+        <img th:src="@{/image/icon/full-star.png}" width=60px>
+        <p>&emsp;8.5</p><br><br> <hr>
+        <div class="my_review">
+            <p>내가 쓴 리뷰</p><br>
+            <img th:src="@{/image/icon/full-star.png}" width=40px>
+            <img th:src="@{/image/icon/full-star.png}" width=40px>
+            <img th:src="@{/image/icon/full-star.png}" width=40px>
+            <img th:src="@{/image/icon/full-star.png}" width=40px>
+            <img th:src="@{/image/icon/full-star.png}" width=40px>
+            <br><br>
+            <a th:if="${isLoggedIn}" th:href="@{/review/form(contentId=${contentInfo.contentId})}">
+                <input type="button" value="리뷰 작성하기">
+            </a>
+            <a th:unless="${isLoggedIn}" th:href="@{/account/login}">
+                <input type="button" value="리뷰 작성하기" onclick="alert('로그인이 필요합니다.')">
+            </a>
+        </div>
     </div>
 </main>
 </body>
