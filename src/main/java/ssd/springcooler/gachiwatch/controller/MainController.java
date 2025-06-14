@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.Member;
+import ssd.springcooler.gachiwatch.dto.ForMeContentDto;
 import ssd.springcooler.gachiwatch.dto.LatestMovieDto;
 import ssd.springcooler.gachiwatch.dto.TrendingContentDto;
+import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
 import ssd.springcooler.gachiwatch.service.TMDBService;
 
 import java.util.List;
@@ -48,6 +50,10 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
 
                 // List<String> movieimages = recommendationService.getRecommendedImages(loginUser);
                 // model.addAttribute("movieimages", movieimages);
+
+                //나를 위한 추천 (통합 및 수정 필요) -> null값이 전달 되는 것 같음
+                 List<ForMeContentDto> formecontents = tmdbService.getForMeContents(20, loginUser.getPreferredGenres() /*수정필요*/);
+                 model.addAttribute("formecontents", formecontents);
             } else {
                 List<LatestMovieDto> movie = tmdbService.getLatestMovies(20);
                 model.addAttribute("latestMovieContents", movie);
