@@ -1,4 +1,4 @@
-package ssd.springcooler.gachiwatch.controller;
+//package ssd.springcooler.gachiwatch.controller;
 //import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Controller
-@RequestMapping("/home")
-public class HomeController {
+//@Controller
+//@RequestMapping("/home")
+//public class HomeController {
 
 //    @GetMapping("/member_home")
 //    public String memberHome() {
@@ -30,17 +30,17 @@ public class HomeController {
 //    return "home/member_home";
 //}
 
-    @GetMapping("/member_home")
-    public String memberHome(Model model, HttpSession session) {
-        Member user = (Member) session.getAttribute("user");
-        model.addAttribute("user", user);  // ← 이게 핵심
-        model.addAttribute("crews"); // 빈 리스트
-        model.addAttribute("movieimages");
-        return "home/member_home";
-    }
-
-
-}
+//    @GetMapping("/home")
+//    public String memberHome(Model model, HttpSession session) {
+//        Member user = (Member) session.getAttribute("user");
+//        model.addAttribute("user", user);  // ← 이게 핵심
+//        model.addAttribute("crews"); // 빈 리스트
+//        model.addAttribute("movieimages");
+//        return "home/home";
+//    }
+//
+//
+//}
 
 //@GetMapping("/home")
 //public String memberHome(Model model, HttpSession session) {

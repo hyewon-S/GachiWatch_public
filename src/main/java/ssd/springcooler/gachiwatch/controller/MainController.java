@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import ssd.springcooler.gachiwatch.domain.Crew;
+import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.LatestMovieDto;
 import ssd.springcooler.gachiwatch.dto.TrendingContentDto;
 import ssd.springcooler.gachiwatch.service.TMDBService;
@@ -13,6 +16,7 @@ import java.util.List;
 
 
 @Controller
+
 public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러 HomeController
     private final TMDBService tmdbService;
 
@@ -22,27 +26,39 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
     }
 
     @GetMapping("/")
+    public String redirectToHome() {
+        return "redirect:/home";
+    }
+
+    @GetMapping("/home")
     public String home(Model model, HttpSession session) {
-        Object user = session.getAttribute("loginUser");
+        Object user = session.getAttribute("user");
+        model.addAttribute("user", user);
 
         try {
             List<TrendingContentDto> trending = tmdbService.getTrendingContents(20);
             model.addAttribute("trendingContents", trending);
 
-            List<LatestMovieDto> movie = tmdbService.getLatestMovies(20);
-            model.addAttribute("latestMovieContents", movie);
+            if (user != null) {
+                Member loginUser = (Member) user;
+
+                // Crew 및 추천 콘텐츠 서비스 활성화 시 아래 코드 사용
+                // List<Crew> crews = crewService.getCrewsByUser(loginUser);
+                // model.addAttribute("crews", crews);
+
+                // List<String> movieimages = recommendationService.getRecommendedImages(loginUser);
+                // model.addAttribute("movieimages", movieimages);
+            } else {
+                List<LatestMovieDto> movie = tmdbService.getLatestMovies(20);
+                model.addAttribute("latestMovieContents", movie);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
+            model.addAttribute("errorMessage", "콘텐츠를 불러오는 중 오류가 발생했습니다.");
         }
 
-        if (user != null) {//로그인이 됐으면 회원용 메인 페이지로 이동
-            //model.addAttribute("crews", getSampleCrews()); //임의의 Crew값 넣어보기
-            model.addAttribute("user", user);
-            return "home/member_home"; //member_home.html로 이동(회원)
-        } else {
-            return "home/home"; // 첫 화면 home.html로 이동 (비회원)
-        }
-
+        return "home/home";
     }
 
 
