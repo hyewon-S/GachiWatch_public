@@ -3,6 +3,7 @@ package ssd.springcooler.gachiwatch.service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import okhttp3 .OkHttpClient;
 import okhttp3.Request;
@@ -11,6 +12,7 @@ import org.json.*;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.domain.Content;
 import ssd.springcooler.gachiwatch.domain.Genre;
+import ssd.springcooler.gachiwatch.dto.ForMeContentDto;
 import ssd.springcooler.gachiwatch.dto.LatestMovieDto;
 import ssd.springcooler.gachiwatch.dto.TrendingContentDto;
 
@@ -210,6 +212,68 @@ public class TMDBService {
         }
 
         return latestMovies;
+    }
+
+    //회원 메인페이지 "나를 위한 추천" 관련 코드 (사용자가 선택한 선호 장르 기반 추천)
+
+    public List<ForMeContentDto> getForMeContents(int count, List<Genre> genreIdList) throws Exception {
+        List<ForMeContentDto> contents = new ArrayList<>();
+
+        // 장르 리스트 -> 쉼표 구분된 genre_id 문자열로 변환
+        String genreIdParam = genreIdList.stream()
+                .map(g -> String.valueOf(g.getGenre_id()))
+                .collect(Collectors.joining(","));
+
+        // genreIdParam이 비어있을 경우 기본 장르 ID 사용 (예: 액션 28) 비어있을 경우 액션을 default로 보여줌
+        if (genreIdParam.isEmpty()) {
+            genreIdParam = "28";
+        }
+
+        // 영화 API URL
+        final String MOVIE_URL = "https://api.themoviedb.org/3/discover/movie"
+                + "?with_genres=" + genreIdParam
+                + "&language=ko-KR"
+                + "&sort_by=popularity.desc"
+                + "&region=KR"
+                + "&api_key=" + API_KEY;
+
+        // TV API URL
+        final String TV_URL = "https://api.themoviedb.org/3/discover/tv"
+                + "?with_genres=" + genreIdParam
+                + "&language=ko-KR"
+                + "&sort_by=popularity.desc"
+                + "&region=KR"
+                + "&api_key=" + API_KEY;
+
+        // 영화 콘텐츠 먼저 가져오기
+        contents.addAll(fetchContentFromUrl(MOVIE_URL, "movie", count));
+
+        // TV 콘텐츠는 남은 수만큼 추가
+        if (contents.size() < count) {
+            int remaining = count - contents.size();
+            contents.addAll(fetchContentFromUrl(TV_URL, "tv", remaining));
+        }
+
+        return contents;
+    }
+
+    private List<ForMeContentDto> fetchContentFromUrl(String url, String mediaType, int maxCount) throws Exception {
+        List<ForMeContentDto> result = new ArrayList<>();
+        String jsonResponse = readUrl(url);
+
+        JSONObject jsonObject = new JSONObject(jsonResponse);
+        JSONArray results = jsonObject.getJSONArray("results");
+
+        for (int i = 0; i < results.length() && result.size() < maxCount; i++) {
+            JSONObject obj = results.getJSONObject(i);
+            int id = obj.getInt("id");
+            String posterPath = obj.optString("poster_path", null);
+
+            if (posterPath != null && !posterPath.isEmpty()) {
+                result.add(new ForMeContentDto(id, posterPath, mediaType));
+            }
+        }
+        return result;
     }
 
 }
