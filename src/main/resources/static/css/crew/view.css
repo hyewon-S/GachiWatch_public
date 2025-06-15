@@ -1,4 +1,8 @@
-
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
 .ott-platforms {
     display: flex;
     justify-content: space-between;
@@ -50,6 +54,8 @@ body {
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 1.5rem;
             padding: 1rem 2rem;
+            max-width: 1200px; /* 너비 제한 */
+            margin: 0 auto;     /* 중앙 정렬 */
         }
         .party-card {
             background: white;

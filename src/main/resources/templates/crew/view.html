@@ -32,20 +32,10 @@
         </a>
     </nav>
 </header>
-<!--
-<div class="filters">
-    <button>Label</button>
-    <button>Label</button>
-    <button>Label</button>
-    <button>Label</button>
-    <button>Label</button>
-    <button>Label</button>
-    <button style="margin-left:auto;" class="join-btn">플랫폼 선택</button>
-</div>
--->
+<div class="main-container">
 <form id="platformForm">
     <div class="form-group">
-        <label>OTT 플랫폼</label>
+        <!--<label>OTT 플랫폼</label>-->
         <div class="ott-platforms"> <!-- th:object="${crewForm}">-->
             <div th:each="platform : ${platforms}" class="platform-option">
                 <input type="radio"
@@ -69,19 +59,6 @@
         </div>
     </div>
 </form>
-<!--
-<div class="party-list">
-    <div class="party-card" th:each="party : ${parties}">
-        <h3 th:text="${party.crewName}">파티 이름</h3>
-        <img class="party-logo" th:src="@{/static/netflix-logo.png}" alt="플랫폼">
-        <p th:text="${party.payment + '원'}">17900원</p>
-        <p>인원: <span th:text="${party.maxMember}">3</span> / <span th:text="${party.maxMember}">4</span></p>
-        <p>결제일: 매달 7일</p>
-        <p>최소기간: 6개월</p>
-        <button class="join-btn">가입하기</button>
-    </div>
-</div>
--->
 <div class="party-list">
     <!-- 크루 카드 목록 -->
     <div class="party-card" th:each="crew : ${crewPage.content}">
@@ -108,6 +85,7 @@
         <a th:href="@{/crew/view(page=${i - 1}, platform=${selectedPlatform})}" th:text="${i}"></a>
     </span>
     <a th:href="@{/crew/view(page=${crewPage.number + 1}, platform=${selectedPlatform})}" th:if="${!crewPage.last}">Next &gt;</a>
+</div>
 </div>
 </body>
 <script>
