@@ -8,11 +8,13 @@ import ssd.springcooler.gachiwatch.dao.CrewDao;
 import ssd.springcooler.gachiwatch.dao.CrewJoinWaitingDao;
 import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.CrewChat;
+import ssd.springcooler.gachiwatch.domain.JoinedCrew;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.CrewDto;
 import ssd.springcooler.gachiwatch.repository.CrewChatRepository;
 import ssd.springcooler.gachiwatch.repository.CrewMemberRepository;
 import ssd.springcooler.gachiwatch.repository.CrewRepository;
+import ssd.springcooler.gachiwatch.repository.JoinedCrewRepository;
 
 import java.util.Date;
 import java.util.List;
@@ -36,12 +38,20 @@ public class CrewServiceImpl implements CrewFacade {
     @Autowired
     private CrewMemberRepository crewMemberRepository;
 
+    @Autowired
+    private JoinedCrewRepository joinedCrewRepository;
+
 
     public Optional<Crew> getCrew(Long crewId) {
         return crewRepository.findByCrewId(crewId);
     }
     public List<Crew> getCrewList() {
         return crewDao.getCrewList();
+    }
+
+    public List<JoinedCrew> getCrewListByMemberId(int memberId) {
+        //return crewMemberRepository.findAllByCrewId(memberId);
+        return joinedCrewRepository.findByMemberMemberId(Long.valueOf(memberId));
     }
     /*
     public List<Crew> getCrewList(List<Platform> platforms) {
@@ -114,8 +124,22 @@ public class CrewServiceImpl implements CrewFacade {
     public List<CrewChat> getCrewChat(Long crewId) {
         return crewChatRepository.findByIdCrewId(crewId);
     }
-    public boolean insertCrewChat(Long crewId, String chat, Date date){
+
+    @Override
+    public boolean insertCrewChat(Long crewId, String chat, Date date) {
+        return false;
+    }
+
+    public boolean insertCrewChat(Crew crew, String chat, Date date, Member member){
         //return chatDao.insertChat(crewId, chat, date);
+        CrewChat crewChat = new CrewChat(crew, date, chat, member);
+        crewChatRepository.save(crewChat);
+        return true;
+    }
+
+    public boolean insertCrewChat(CrewChat crewChat){
+        //return chatDao.insertChat(crewId, chat, date);
+        crewChatRepository.save(crewChat);
         return true;
     }
 

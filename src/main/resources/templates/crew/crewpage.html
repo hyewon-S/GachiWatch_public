@@ -257,16 +257,8 @@
                     </div>
                 </div>
             </div>
-            <!--
-            <div class="chat-entry">
-                <img src="/images/user-icon.png" alt="User" />
-                <div>
-                    <div><strong>닉네임</strong></div>
-                    <div class="chat-content">사용자가 입력한 채팅</div>
-                </div>
-            </div>
-    -->
             <form class="chat-input-container" th:action="@{/crew/crewpage/chat}" method="post">
+                <input type="hidden" name="crewId" th:value="${crew.crewId}" />
                 <input class="chat-input" type="text" name="message" placeholder="채팅 입력..." />
                 <button class="send-button" type="submit">전송</button>
             </form>
