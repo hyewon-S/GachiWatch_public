@@ -12,7 +12,9 @@ import ssd.springcooler.gachiwatch.dto.*;
 import ssd.springcooler.gachiwatch.service.MemberService;
 import ssd.springcooler.gachiwatch.service.ReviewService;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/mypage")
@@ -27,6 +29,12 @@ public class MypageController {
         this.reviewService = reviewService;
     }
 
+    // ✅ [추가] 홈 로고 클릭 시 이동할 홈 페이지
+    @GetMapping("/home/home")
+    public String homeRedirect() {
+        return "home/home"; // ✅ 로고 클릭 시 이동할 홈 뷰
+    }
+
     @GetMapping("/mypage")
     public String mypage(Model model, HttpSession session) {
         Member user = (Member) session.getAttribute("user");
@@ -34,8 +42,16 @@ public class MypageController {
         return "mypage/mypage";  // 👈 resources/templates/mypage/mypage.html
     }
 
+    // 프로필 수정 페이지 불러오기
+    @GetMapping("/my_profile")
+    public String getProfile(HttpSession session, Model model) {
+        Member user = (Member) session.getAttribute("user");
+        model.addAttribute("user", user);
+        return "mypage/my_profile"; // 화면 띄움
+    }
+
     // 프로필 수정
-    @PostMapping("/profile/update")
+    @PostMapping("/my_profile")
     public String updateProfile(ProfileUpdateDto profileUpdateDto, Model model) {
         memberService.updateProfile(profileUpdateDto);
         model.addAttribute("result", "success");
@@ -43,19 +59,40 @@ public class MypageController {
     }
 
     // 내가 참여 중인 크루
-    @GetMapping("/mycrew")
-    public String getMyCrews(@RequestParam int memberId, Model model) {
+    @GetMapping("/my_crew")
+    public String getMyCrews(HttpSession session, Model model) {
+        Member user = (Member) session.getAttribute("user");
+        int memberId = (int) user.getMemberId();
         List<CrewDto> crewList = memberService.getMyCrews(memberId);
         model.addAttribute("crewList", crewList);
-        return "/mypage/crews";
+        return "mypage/my_crew"; // ✅ HTML 이름에 맞게 수정
+    }
+
+    //콘텐츠 목록 확인
+    @GetMapping("/mypage/my_content")
+    public String getMyContents(@RequestParam(defaultValue = "liked") String tab,
+                                @RequestParam int memberId,
+                                Model model) {
+        if (tab.equals("liked")) {
+            List<ContentSummaryDto> likeContent = memberService.getLikedContents(memberId);
+            model.addAttribute("likedList", likeContent);
+        } else if (tab.equals("watched")) {
+            List<ContentSummaryDto> watchedList = memberService.getWatchedContents(memberId);
+            model.addAttribute("watchedList", watchedList);
+        }
+
+        model.addAttribute("tab", tab); // 프론트에서 어떤 탭 보여줄지 판단용
+        return "mypage/my_content";    // 하나의 HTML 파일에서 탭으로 나눠서 보여줌
     }
 
     // 작성한 리뷰 목록 조회
-    @GetMapping("/reviews")
-    public String getMyReviews(@RequestParam int memberId, Model model) {
+    @GetMapping("/my_review")
+    public String getMyReviews(HttpSession session, Model model) {
+        Member user = (Member) session.getAttribute("user");
+        int memberId = (int) user.getMemberId();
         List<ReviewDto> reviewList = reviewService.getReviewsByUser(memberId);
         model.addAttribute("reviewList", reviewList);
-        return "/mypage/review";
+        return "mypage/my_review"; // ✅ HTML 이름에 맞게 수정
     }
 
     // 작성한 리뷰 삭제
@@ -65,59 +102,77 @@ public class MypageController {
         return "redirect:/mypage/review";
     }
 
-    // 찜한 콘텐츠 목록 보기 (찜순, OTT 필터, 정렬 가능)
-    @GetMapping("/likecontent")
-    public String getLikeContent(@RequestParam int memberId,
-//                                 @RequestParam(required = false) String ottPlatform,
-//                                 @RequestParam(required = false) String sortBy,
-                                 Model model) {
-        List<ContentSummaryDto> likeContent = memberService.getLikedContents(memberId);
-        model.addAttribute("likecontent", likeContent);
-        return "/mypage/likecontent";
-    }
+    @GetMapping("/my_subscribed_ott")
+    public String getMyOtts(Model model, HttpSession session) {
+        Member user = (Member) session.getAttribute("user");
+        int memberId = (int) user.getMemberId();
 
+        // NULL 제외한 플랫폼 리스트
+        List<Platform> ottList = Arrays.stream(Platform.values())
+                .filter(p -> p != Platform.NULL)
+                .collect(Collectors.toList());
+//    List<Platform> ottList = List.of(Platform.values());
+        List<Platform> subscribedOttList = memberService.getSubscribedOttList(memberId);
 
-    // 내가 본 콘텐츠
-    @GetMapping("/watched")
-    public String getWatched(@RequestParam int memberId, Model model) {
-        List<ContentSummaryDto> watchedList = memberService.getWatchedContents(memberId);
-        model.addAttribute("watchedList", watchedList);
-        return "/mypage/watched";
-    }
+        MemberSubscribedOttDto dto = new MemberSubscribedOttDto();
+        dto.setOttList(subscribedOttList);
 
-    // 본 콘텐츠 삭제
-    @PostMapping("/watched/delete")
-    public String deleteWatched(@RequestParam int contentId, Model model) {
-        memberService.deleteWatchedContent(contentId);
-        model.addAttribute("result", "success");
-        return "redirect:/mypage/watched";
+        model.addAttribute("ottList", ottList);
+        model.addAttribute("memberSubscribedOttDto", dto);
+
+        return "mypage/my_subscribed_ott"; // 👉 HTML 파일 이름이 ott_setting.html 이라고 가정
     }
 
     // 구독중인 OTT 수정
-    @PostMapping("/mypage/my_subscribed_ott")
-    public String updateOtt(@RequestParam int memberId,
-                            @RequestParam List<Platform> ottList,
+    @PostMapping("/my_subscribed_ott")
+    public String updateOtt(@RequestParam List<Platform> ottList,
+                            HttpSession session,
                             Model model) {
+        Member user = (Member) session.getAttribute("user");
+        int memberId = (int) user.getMemberId();
+
         memberService.updateSubscribedOtt(memberId, ottList);
         model.addAttribute("result", "success");
         return "redirect:/mypage";
     }
 
-    // 선호 장르 수정
-    @PostMapping("/mypage/my_preferred_genre")
+    // 선호 장르 페이지 보여주기
+    @GetMapping("/my_preferred_genre")
+    public String getMyGenres(Model model, HttpSession session) {
+        Member user = (Member) session.getAttribute("user");
+        int memberId = (int) user.getMemberId();
+
+        // 전체 장르 enum 리스트
+        List<Genre> allGenres = List.of(Genre.values());
+
+        // 사용자가 선택한 선호 장르 리스트
+        List<Genre> selectedGenres = memberService.getPreferredGenres(memberId);
+
+        model.addAttribute("allGenres", allGenres);
+        model.addAttribute("selectedGenres", selectedGenres);
+
+        return "mypage/my_preferred_genre"; // HTML 위치: templates/mypage/my_preferred_genre.html
+    }
+
+
+    // 선호 장르 수정하기
+    @PostMapping("/my_preferred_genre")
     public String updateGenre(@RequestParam int memberId,
                               @RequestParam List<Genre> genreList,
                               Model model) {
         memberService.updatePreferredGenre(memberId, genreList);
         model.addAttribute("result", "success");
-        return "redirect:/mypage";
+        return "redirect:/mypage/my_preferred_genre"; // 수정 후 다시 장르 페이지로 이동
     }
 
-    // 신고 내역
-    @GetMapping("/reports")
-    public String getReports(@RequestParam int memberId, Model model) {
+
+    @GetMapping("/my_report")
+    public String getReports(HttpSession session, Model model) {
+        Member user = (Member) session.getAttribute("user");
+        int memberId = (int) user.getMemberId();
+
         List<ReportDto> reportList = memberService.getReports(memberId);
         model.addAttribute("reportList", reportList);
-        return "/mypage/reports";
+        return "mypage/my_report"; // ✅ HTML 이름에 맞게 수정
     }
 }

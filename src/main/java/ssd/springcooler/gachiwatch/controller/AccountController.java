@@ -28,26 +28,6 @@ public class AccountController {
         this.memberService = memberService;
     }
 
-//    // 회원 가입
-//    @PostMapping("/register")
-//    public String register(MemberRegisterDto regiDto, Model model) {
-//        memberService.register(regiDto);
-//        model.addAttribute("result", "success");
-//        return "/member/registerResult";
-//    }
-//
-//    //signup 시 email 중복확인 버튼 구현
-//    @RequestMapping("emailCheck")
-//    @ResponseBody // ajax 요청에 담긴 값을 자바 객체로 변환시켜 인스턴스(boolean)에 저장 -> illegalargumentException 방지
-//    public boolean emailCheck(@RequestParam("email") String email) {
-//        //DB 들어가서 email 중복값이 있나 들고나옴
-//        String check = null;
-//        check =MemberService.emailCheck(email); //input email에서 받은 email을 DB까지 전달하여 조회작업
-//        if(check != null) return true;
-//        else return false;
-//    }
-
-
         /** ✅ STEP1: 기본 정보 입력 화면 */
         @GetMapping("/register_email_step1")
         public String registerStep1(Model model) {

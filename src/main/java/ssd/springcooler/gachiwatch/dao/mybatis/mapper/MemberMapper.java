@@ -3,6 +3,7 @@ package ssd.springcooler.gachiwatch.dao.mybatis.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.repository.query.Param;
 import ssd.springcooler.gachiwatch.domain.Member;
+import ssd.springcooler.gachiwatch.domain.Platform;
 import ssd.springcooler.gachiwatch.dto.*;
 
 import java.util.List;
@@ -26,6 +27,8 @@ public interface MemberMapper {
     void updateProfileImage(@Param("memberId") Long memberId, @Param("imageUrl") String imageUrl);
 
     // OTT / 장르 수정
+    List<Platform> getSubscribedOttList(@Param("memberId") int memberId);
+
     void deleteMemberOtts(int memberId);
     void deleteMemberGenres(int memberId);
 

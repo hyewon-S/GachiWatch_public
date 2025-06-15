@@ -192,6 +192,10 @@ public class MemberServiceImpl implements MemberService {
         memberDao.deleteWatchedContentById(contentId);
     }
 
+    @Override
+    public List<Platform> getSubscribedOttList(int memberId) {
+        return memberMapper.getSubscribedOttList(memberId); // mapper에서 DB 조회
+    }
     /**
      * 구독 중인 OTT 수정
      */
@@ -235,6 +239,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member getMember(int memberId) {
         return memberRepository.findById(memberId).get();
+    }
+
+    @Override
+    public List<Genre> getPreferredGenres(int memberId) {
+        return List.of();
     }
 }
 

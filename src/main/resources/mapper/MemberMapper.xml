@@ -79,6 +79,17 @@
     <update id="updateSubscribedOTTs" parameterType="map">
         UPDATE member SET subscribedOTTs = #{subscribedOTTs} WHERE member_id = #{memberId}
     </update>-->
+    <select id="getSubscribedOttList" resultType="ssd.springcooler.gachiwatch.domain.Platform">
+        SELECT platform
+        FROM member_subscribed_ott
+        WHERE member_id = #{memberId}
+    </select>
+
+    <delete id="deleteMemberOtts" parameterType="int">
+        DELETE FROM member_subscribed_ott WHERE member_id = #{memberId}
+    </delete>
+
+
 
     <!-- 8. 선호 장르 변경
     <update id="updatePreferredGenres" parameterType="map">
