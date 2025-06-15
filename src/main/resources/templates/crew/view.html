@@ -62,7 +62,7 @@
         <button style="margin-left:auto;" class="join-btn">플랫폼 선택</button>
     </div>
 </form>
-
+<!--
 <div class="party-list">
     <div class="party-card" th:each="party : ${parties}">
         <h3 th:text="${party.crewName}">파티 이름</h3>
@@ -74,7 +74,25 @@
         <button class="join-btn">가입하기</button>
     </div>
 </div>
+-->
+<div class="party-list">
+    <!-- 크루 카드 목록 -->
+    <div class="party-card" th:each="crew : ${crewPage.content}">
+        <p th:text="${crew.crewName}"></p>
+        <!-- 기타 정보 -->
+    </div>
+</div>
 
+
+<!-- 페이지네이션 -->
+<div class="pagination">
+    <a th:href="@{/crew/view(page=${crewPage.number - 1})}" th:if="${!crewPage.first}">&lt; Prev</a>
+    <span th:each="i : ${#numbers.sequence(0, crewPage.totalPages - 1)}">
+        <a th:href="@{/crew/view(page=${i})}" th:text="${i + 1}"></a>
+    </span>
+    <a th:href="@{/crew/view(page=${crewPage.number + 1})}" th:if="${!crewPage.last}">Next &gt;</a>
+</div>
+<!--
 <div class="pagination">
     <button>&lt; Previous</button>
     <button>1</button>
@@ -84,6 +102,6 @@
     <button>5</button>
     <button>Next &gt;</button>
 </div>
-
+-->
 </body>
 </html>
