@@ -61,19 +61,23 @@ public class CrewServiceImpl implements CrewFacade {
         Platform platformEnum = Platform.valueOf(platform);
         return crewRepository.findByPlatform(platformEnum, pageable);
     }
+/*
+    public Page<Crew> getAllCrewsByMemberId(int memberId, int page) {
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        return joinedCrewRepository.findByMemberMemberId(memberId, pageable);
+    }
+*/
     public List<Crew> getCrewList(Platform platform) {
         return crewRepository.findAll();
     }
 
-    public List<JoinedCrew> getCrewListByMemberId(int memberId) {
+    public Page<Crew> getCrewListByMemberId(int memberId, int page) {
         //return crewMemberRepository.findAllByCrewId(memberId);
-        return joinedCrewRepository.findByMemberMemberId(Long.valueOf(memberId));
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        Page<JoinedCrew> joinedCrewsPage = joinedCrewRepository.findByMemberMemberId(memberId, pageable);
+        return joinedCrewsPage.map(JoinedCrew::getCrew);
     }
-    /*
-    public List<Crew> getCrewList(List<Platform> platforms) {
-        return crewDao.getCrewList(platforms);
-    }
-    */
+
 /*
     public CrewDto getCrewWithChat(Long crewId) {
         Crew crew = crewRepository.findByCrewId(crewId);
@@ -147,14 +151,12 @@ public class CrewServiceImpl implements CrewFacade {
     }
 
     public boolean insertCrewChat(Crew crew, String chat, Date date, Member member){
-        //return chatDao.insertChat(crewId, chat, date);
         CrewChat crewChat = new CrewChat(crew, date, chat, member);
         crewChatRepository.save(crewChat);
         return true;
     }
 
     public boolean insertCrewChat(CrewChat crewChat){
-        //return chatDao.insertChat(crewId, chat, date);
         crewChatRepository.save(crewChat);
         return true;
     }

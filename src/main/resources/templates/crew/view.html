@@ -32,7 +32,14 @@
         </a>
     </nav>
 </header>
-<div class="main-container">
+<div class="main-container" style="display: block;">
+    <form action="/crew/create" method="get" style="text-align: center;">
+        <button class="create-btn" type="submit" style="margin: 0 auto;">크루 생성</button>
+    </form>
+    <form action="/crew/view" method="get" style="text-align: center;">
+        <input type="hidden" name="myCrew" value="true"/>
+        <button class="create-btn" type="submit" style=" margin: 0 auto;">나의 크루</button>
+    </form>
 <form id="platformForm">
     <div class="form-group">
         <!--<label>OTT 플랫폼</label>-->

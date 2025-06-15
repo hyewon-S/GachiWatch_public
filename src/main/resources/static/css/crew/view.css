@@ -78,6 +78,16 @@ body {
             border: none;
             cursor: pointer;
         }
+        .create-btn {
+                    background: #7b6ef6;
+                    color: white;
+                    padding: 0.6rem 1.2rem;
+                    border-radius: 999px;
+                    font-weight: bold;
+                    margin-top: 0.8rem;
+                    border: none;
+                    cursor: pointer;
+                }
         .pagination {
             text-align: center;
             padding: 1rem;

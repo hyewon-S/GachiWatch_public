@@ -1,8 +1,16 @@
 package ssd.springcooler.gachiwatch.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,12 +28,18 @@ import java.util.List;
 @Controller
 @RequestMapping("/account")
 public class AccountController {
+    //private final AuthenticationManager authenticationManager;
 
     private final MemberService memberService;
 
     @Autowired
     public AccountController(MemberService memberService) {
         this.memberService = memberService;
+    }
+
+    public AccountController(MemberService memberService, AuthenticationManager authenticationManager) {
+        this.memberService = memberService;
+        //this.authenticationManager = authenticationManager;
     }
 
 //    // 회원 가입
@@ -139,15 +153,49 @@ public class AccountController {
 
     // 로그인
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String showLoginForm(HttpServletRequest request) {
+        /*
+        uthentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+            // 이미 로그인된 사용자면 /home으로 리다이렉트
+            return "redirect:/home";
+        }
+        return "account/login";
+        */
         return "account/login"; // 로그인 폼 보여주는 뷰 이름
     }
 
-
+/*
     @PostMapping("/login")
     public String login(LoginDto loginDto,
                         HttpSession session,
-                        Model model) {
+                        Model model,
+                        HttpServletRequest request) {
+        try {
+            // 사용자가 입력한 아이디/비밀번호
+            UsernamePasswordAuthenticationToken token =
+                    new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
+
+            // 인증 시도
+            Authentication authentication = authenticationManager.authenticate(token);
+
+            // 인증 성공 시 SecurityContext에 저장
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // 세션에도 저장 (중요!)
+            session.setAttribute(
+                    HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                    SecurityContextHolder.getContext()
+            );
+
+            return "redirect:/home";
+
+        } catch (AuthenticationException e) {
+            model.addAttribute("error", "로그인 실패");
+            return "account/login";
+        }
+
         Member member = memberService.login(loginDto);
 
         if (member != null) {
@@ -158,7 +206,7 @@ public class AccountController {
             return "account/login";
         }
     }
-
+*/
 
     // 로그아웃
     @GetMapping("/logout")

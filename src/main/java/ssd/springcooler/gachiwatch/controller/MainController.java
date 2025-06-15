@@ -2,6 +2,8 @@ package ssd.springcooler.gachiwatch.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,17 +25,23 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
     private final TMDBService tmdbService;
 
     @Autowired
+    private MemberServiceImpl memberService;
+
+    @Autowired
     public MainController(TMDBService tmdbService) {
         this.tmdbService = tmdbService;
     }
 
     @GetMapping("/")
-    public String redirectToHome() {
+    public String redirectToHome(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            model.addAttribute("user", memberService.findByEmail(userDetails.getUsername()));
+        }
         return "redirect:/home";
     }
 
     @GetMapping("/home")
-    public String home(Model model, HttpSession session) {
+    public String home(Model model, HttpSession session, @AuthenticationPrincipal UserDetails userDetails) {
         Object user = session.getAttribute("user");
         model.addAttribute("user", user);
 

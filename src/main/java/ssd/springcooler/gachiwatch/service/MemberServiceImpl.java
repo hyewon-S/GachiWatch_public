@@ -1,5 +1,6 @@
 package ssd.springcooler.gachiwatch.service;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.MemberDao;
 import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
@@ -235,6 +236,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member getMember(int memberId) {
         return memberRepository.findById(memberId).get();
+    }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmailWithPreferredGenres(email)
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + email));
     }
 }
 
