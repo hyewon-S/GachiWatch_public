@@ -96,21 +96,10 @@
 <div th:unless="${crewPage.totalElements == 0}" class="pagination">
     <a th:href="@{/crew/view(page=${crewPage.number - 1})}" th:if="${!crewPage.first}">&lt; Prev</a>
     <span th:each="i : ${#numbers.sequence(1, crewPage.totalPages)}">
-        <a th:href="@{/crew/view(page=${i - 1})}" th:text="${i}"></a>
+        <a th:href="@{/crew/view(page=${i - 1}, platform=${selectedPlatform})}" th:text="${i}"></a>
     </span>
     <a th:href="@{/crew/view(page=${crewPage.number + 1})}" th:if="${!crewPage.last}">Next &gt;</a>
 </div>
-<!--
-<div class="pagination">
-    <button>&lt; Previous</button>
-    <button>1</button>
-    <button>2</button>
-    <button>3</button>
-    <button>4</button>
-    <button>5</button>
-    <button>Next &gt;</button>
-</div>
--->
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
