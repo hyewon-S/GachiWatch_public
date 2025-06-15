@@ -6,15 +6,15 @@ import org.springframework.transaction.annotation.Transactional;
 import ssd.springcooler.gachiwatch.dao.CrewChatDao;
 import ssd.springcooler.gachiwatch.dao.CrewDao;
 import ssd.springcooler.gachiwatch.dao.CrewJoinWaitingDao;
-import ssd.springcooler.gachiwatch.domain.Crew;
-import ssd.springcooler.gachiwatch.domain.CrewChat;
-import ssd.springcooler.gachiwatch.domain.JoinedCrew;
-import ssd.springcooler.gachiwatch.domain.Member;
+import ssd.springcooler.gachiwatch.domain.*;
 import ssd.springcooler.gachiwatch.dto.CrewDto;
 import ssd.springcooler.gachiwatch.repository.CrewChatRepository;
 import ssd.springcooler.gachiwatch.repository.CrewMemberRepository;
 import ssd.springcooler.gachiwatch.repository.CrewRepository;
 import ssd.springcooler.gachiwatch.repository.JoinedCrewRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Date;
 import java.util.List;
@@ -22,6 +22,8 @@ import java.util.Optional;
 
 @Service
 public class CrewServiceImpl implements CrewFacade {
+    private static final int PAGE_SIZE = 6;
+
     @Autowired
     private CrewDao crewDao;
     @Autowired
@@ -46,7 +48,20 @@ public class CrewServiceImpl implements CrewFacade {
         return crewRepository.findByCrewId(crewId);
     }
     public List<Crew> getCrewList() {
-        return crewDao.getCrewList();
+        return crewRepository.findAll();
+    }
+
+    public Page<Crew> getAllCrews(int page) {
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        return crewRepository.findAll(pageable);
+    }
+
+    public Page<Crew> getAllCrewsByPlatform(String platform, int page) {
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        return crewRepository.findByPlatform(platform, pageable);
+    }
+    public List<Crew> getCrewList(Platform platform) {
+        return crewRepository.findAll();
     }
 
     public List<JoinedCrew> getCrewListByMemberId(int memberId) {

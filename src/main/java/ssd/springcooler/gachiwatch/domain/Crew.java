@@ -29,10 +29,10 @@ public class Crew {
     String crewDesc;
     @Enumerated(EnumType.STRING)
     Platform platform;
-    int payment;
+    Integer payment;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     Date payDate;
-    int maxMember;
+    Integer maxMember;
     String account;
 
     public Crew(Member captain, String crewName, int maxMember) {
