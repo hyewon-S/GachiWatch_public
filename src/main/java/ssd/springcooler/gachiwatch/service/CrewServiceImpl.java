@@ -58,7 +58,8 @@ public class CrewServiceImpl implements CrewFacade {
 
     public Page<Crew> getAllCrewsByPlatform(String platform, int page) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
-        return crewRepository.findByPlatform(platform, pageable);
+        Platform platformEnum = Platform.valueOf(platform);
+        return crewRepository.findByPlatform(platformEnum, pageable);
     }
     public List<Crew> getCrewList(Platform platform) {
         return crewRepository.findAll();

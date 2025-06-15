@@ -47,13 +47,17 @@
     <div class="form-group">
         <label>OTT 플랫폼</label>
         <div class="ott-platforms"> <!-- th:object="${crewForm}">-->
-            <div th:each="platform : ${platforms}">
+            <div th:each="platform : ${platforms}" class="platform-option">
                 <input type="radio"
                        name="platform"
                        th:id="${'platform_' + platform.name()}"
                        th:value="${platform.name()}"
+                       class="platform-radio"
+                       th:checked="${selectedPlatform != null and platform.name() == selectedPlatform}"
                        required />
-                <label th:for="${'platform_' + platform.name()}">
+                <label th:for="${'platform_' + platform.name()}"
+                       th:classappend="${selectedPlatform != null and platform.name() == selectedPlatform} ? ' selected' : ''"
+                       class="platform-label">
                     <img th:src="@{'/image/' + ${platform.name().toLowerCase()} + '.png'}"
                          th:alt="${platform.label}" />
                 </label>
@@ -85,10 +89,14 @@
 
 
 <!-- 페이지네이션 -->
-<div class="pagination">
+<div th:if="${crewPage.totalElements == 0}" style="text-align: center; margin-top: 2rem;">
+    <p>조회된 크루가 없습니다.</p>
+</div>
+
+<div th:unless="${crewPage.totalElements == 0}" class="pagination">
     <a th:href="@{/crew/view(page=${crewPage.number - 1})}" th:if="${!crewPage.first}">&lt; Prev</a>
-    <span th:each="i : ${#numbers.sequence(0, crewPage.totalPages - 1)}">
-        <a th:href="@{/crew/view(page=${i})}" th:text="${i + 1}"></a>
+    <span th:each="i : ${#numbers.sequence(1, crewPage.totalPages)}">
+        <a th:href="@{/crew/view(page=${i - 1})}" th:text="${i}"></a>
     </span>
     <a th:href="@{/crew/view(page=${crewPage.number + 1})}" th:if="${!crewPage.last}">Next &gt;</a>
 </div>
@@ -104,4 +112,21 @@
 </div>
 -->
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const radios = document.querySelectorAll(".platform-radio");
+        const labels = document.querySelectorAll(".platform-label");
+
+        radios.forEach((radio, idx) => {
+            radio.addEventListener("change", function () {
+                // 모든 label에서 'selected' 클래스 제거
+                labels.forEach(label => label.classList.remove("selected"));
+                // 선택된 radio에 해당하는 label에만 클래스 추가
+                if (radio.checked) {
+                    labels[idx].classList.add("selected");
+                }
+            });
+        });
+    });
+</script>
 </html>

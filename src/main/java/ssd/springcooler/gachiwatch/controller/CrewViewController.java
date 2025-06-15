@@ -28,7 +28,7 @@ public class CrewViewController {
 
     @GetMapping
     public String viewCrews(@RequestParam(defaultValue = "0") int page, Model model) {
-
+        if (page < 0) page = 0;
         List<Platform> filteredPlatforms = Arrays.stream(Platform.values())
                 .filter(p -> p != Platform.NULL)
                 .collect(Collectors.toList());
@@ -44,10 +44,11 @@ public class CrewViewController {
         return "crew/view";
     }
 
-    @GetMapping("/platform")
+    @GetMapping(params = "platform")
     public String viewCrewsByPlatform(@RequestParam String platform,
                                             @RequestParam(defaultValue = "0") int page,
                                             Model model) {
+        if (page < 0) page = 0;
         //ModelAndView mav = new ModelAndView();
         List<Platform> filteredPlatforms = Arrays.stream(Platform.values())
                 .filter(p -> p != Platform.NULL)
