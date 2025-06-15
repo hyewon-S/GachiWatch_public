@@ -19,12 +19,11 @@
           background-color: white;
           border-bottom: 1px solid #ddd;
         }
+
         .logo {
-          font-size: 1.8rem;
-          font-weight: bold;
-          color: purple;
-          cursor: pointer;
-          text-decoration: none;
+            width: 150px;
+            margin-right: 20px;
+            cursor: pointer;
         }
         .container {
           max-width: 800px;
@@ -116,18 +115,26 @@
 </head>
 <body>
 <header>
-    <a href="/home/member_home" th:href="@{/home/member_home}" class="logo">Gachi Watch</a>
-    <button onclick="location.href='/home/home'" th:onclick="|location.href='@{/home/home}'|">Logout</button>
+    <a th:href="@{/home/home}">
+        <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
+    </a>
+    <button th:onclick="|location.href='@{/home/home}'|">Logout</button>
 </header>
 
 <div class="container">
     <div class="profile">
         <img src="https://via.placeholder.com/80" alt="프로필" style="border-radius: 50%;" />
         <div>
-            <div class="section no-border" onclick="location.href='memberinfo'" th:onclick="|location.href='@{memberinfo}'|">
-                <div class="section-title">닉네임 ▶</div>
+            <!--            <div class="section no-border" th:onclick="|location.href='@{/mypage/my_profile}'|">-->
+            <!--                <div class="section-title">닉네임 ▶</div>-->
+            <!--            </div>-->
+            <div class="section no-border" th:onclick="|location.href='@{/mypage/my_profile}'|">
+                <div class="section-title">
+                    <span th:text="${user.nickname}">닉네임</span> ▶
+                </div>
             </div>
-            <div class="section no-border" onclick="location.href='mycrew'" th:onclick="|location.href='@{mycrew}'|">
+
+            <div class="section no-border" th:onclick="|location.href='@{/mypage/my_crew}'|">
                 <div class="section-title">나의 가치클럽 ▶</div>
             </div>
 
@@ -135,23 +142,43 @@
     </div>
 
     <div class="tabs">
-        <div class="tab">찜했어요</div>
-        <div class="tab">봤어요</div>
+        <div class="tabs">
+            <div class="tab"
+                 th:onclick="|location.href='@{/mypage/my_content(tab='liked')}'|">
+                찜했어요
+            </div>
+            <div class="tab"
+                 th:onclick="|location.href='@{/mypage/my_content(tab='watched')}'|">
+                봤어요
+            </div>
+        </div>
+
+        <!--        &lt;!&ndash; 찜했어요 &ndash;&gt;-->
+        <!--        <div class="tab"-->
+        <!--             th:onclick="|location.href='@{/mypage/my_content(tab='''liked''', memberId=${user.id})}'|">-->
+        <!--            찜했어요-->
+        <!--        </div>-->
+        <!--        <div class="tab"-->
+        <!--             th:onclick="|location.href='@{/mypage/my_content(tab='''watched''', memberId=${user.id})}'|">-->
+        <!--            봤어요-->
+        <!--        </div>-->
+        <!--<div class="tab">찜했어요</div>-->
+        <!--        <div class="tab">봤어요</div>-->
     </div>
 
-    <div class="section" onclick="location.href='/mypage/reviews'" th:onclick="|location.href='@{/mypage/reviews}'|">
+    <div class="section" th:onclick="|location.href='@{/mypage/my_review}'|">
         <div class="section-title">작성한 리뷰 ▶</div>
     </div>
 
-    <div class="section" onclick="location.href='/mypage/services'" th:onclick="|location.href='@{/mypage/services}'|">
+    <div class="section" th:onclick="|location.href='@{/mypage/my_subscribed_ott}'|">
         <div class="section-title">구독중인 서비스 ▶</div>
     </div>
 
-    <div class="section" onclick="location.href='/mypage/genres'" th:onclick="|location.href='@{/mypage/genres}'|">
+    <div class="section" th:onclick="|location.href='@{/mypage/my_preferred_genre}'|">
         <div class="section-title">선호하는 장르 ▶</div>
     </div>
 
-    <div class="section" onclick="location.href='/mypage/report'" th:onclick="|location.href='@{/mypage/report}'|">
+    <div class="section" th:onclick="|location.href='@{/mypage/my_report}'|">
         <div class="section-title">신고 ▶</div>
     </div>
 
@@ -169,5 +196,36 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get("tab") || "liked";
+
+      const tabs = document.querySelectorAll(".tab-button");
+      const sortSelect = document.querySelector(".dropdowns select");
+
+      tabs.forEach((tab, index) => {
+        const isLikedTab = tabParam === "liked";
+        const isCurrentTab = (isLikedTab && index === 0) || (!isLikedTab && index === 1);
+
+        if (isCurrentTab) {
+          tab.classList.add("active");
+          sortSelect.innerHTML = isLikedTab ? `
+            <option selected>최근 찜한 순</option>
+            <option>조회수 높은 순</option>
+            <option>평균 별점 높은 순</option>
+          ` : `
+            <option selected>최근 찜한 순</option>
+            <option>조회수 높은 순</option>
+            <option>나의 별점 높은 순</option>
+          `;
+        }
+      });
+
+      // 아래는 기존에 있던 ott 버튼 및 콘텐츠 카드 처리
+    });
+</script>
+
 </body>
 </html>
