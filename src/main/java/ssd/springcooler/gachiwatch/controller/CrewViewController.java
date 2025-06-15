@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
+import ssd.springcooler.gachiwatch.security.CustomUserDetails;
 import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
 
 import java.util.Arrays;
@@ -123,9 +124,11 @@ public class CrewViewController {
                 return "redirect:/account/login";
             }
 
-            // 예를 들어 principal이 User 객체일 때
-            Member member = (Member) auth.getPrincipal();
+
+            CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+            Member member = (Member) userDetails.getMember();
             int userId = (Integer) member.getMemberId();
+            System.out.println(userId);
 
             crewPage = crewService.getCrewListByMemberId(userId, page);
             model.addAttribute("myCrew", true);

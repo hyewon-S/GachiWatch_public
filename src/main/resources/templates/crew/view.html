@@ -33,8 +33,11 @@
     </nav>
 </header>
 <div class="main-container" style="display: block;">
-    <form action="/crew/create" method="get" style="text-align: center;">
+    <form action="/crew/create" method="get" style="text-align: center; display: inline;">
         <button class="create-btn" type="submit" style="margin: 0 auto;">크루 생성</button>
+    </form>
+    <form action="/crew/view" method="get" style="text-align: center; display: inline;">
+        <button class="create-btn" type="submit" style="margin: 0 auto;">전체 크루 조회</button>
     </form>
     <form action="/crew/view" method="get" style="text-align: center;">
         <input type="hidden" name="myCrew" value="true"/>
@@ -87,11 +90,11 @@
 </div>
 
 <div th:unless="${crewPage.totalElements == 0}" class="pagination">
-    <a th:href="@{/crew/view(page=${crewPage.number - 1}, platform=${selectedPlatform})}" th:if="${!crewPage.first}">&lt; Prev</a>
+    <a th:href="@{/crew/view(page=${crewPage.number - 1}, myCrew=${myCrew}, platform=${selectedPlatform})}" th:if="${!crewPage.first}">&lt; Prev</a>
     <span th:each="i : ${#numbers.sequence(1, crewPage.totalPages)}">
-        <a th:href="@{/crew/view(page=${i - 1}, platform=${selectedPlatform})}" th:text="${i}"></a>
+        <a th:href="@{/crew/view(page=${i - 1}, myCrew=${myCrew}, platform=${selectedPlatform})}" th:text="${i}"></a>
     </span>
-    <a th:href="@{/crew/view(page=${crewPage.number + 1}, platform=${selectedPlatform})}" th:if="${!crewPage.last}">Next &gt;</a>
+    <a th:href="@{/crew/view(page=${crewPage.number + 1}, myCrew=${myCrew}, platform=${selectedPlatform})}" th:if="${!crewPage.last}">Next &gt;</a>
 </div>
 </div>
 </body>
