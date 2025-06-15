@@ -125,7 +125,7 @@
 
         .group-thumbnail {
             width: 120px;
-            height: 80px;
+            height: 120px; /*80*/
             border-radius: 8px;
             object-fit: cover;
         }
@@ -184,15 +184,32 @@
     <!-- 로그인한 유저만 보이는 그룹 영역 -->
     <section class="group-section" th:if="${user != null}">
         <h2>내 그룹</h2>
-        <div class="carousel small-carousel">
-            <button class="carousel-btn left">&lt;</button>
-            <div class="carousel-track">
-                <div th:if="${crews != null}" th:each="crew : ${crews}" style="text-align: center;">
-                    <img th:src="@{'/image/' + ${crew.platform}}" alt="그룹 썸네일" class="group-thumbnail">
-                    <div th:text="${crew.crewName}" class="group-name"></div>
-                </div>
+        <div style="overflow-x: auto;">
+            <div style="display: flex; gap: 16px; scroll-snap-type: x mandatory; overflow-x: auto; padding-bottom: 16px;"
+                 class="carousel-track">
+                <a th:each="crew : ${joinedCrews}"
+                   th:href="@{/crew/detail/{id}(id=${crew.crewId})}"
+                   style="flex: 0 0 25%; scroll-snap-align: start;
+                  display: flex; justify-content: space-between; align-items: center;
+                  border: 1px solid #ccc; padding: 12px; text-decoration: none; color: inherit;
+                  border-radius: 8px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                  min-width: 240px; max-width: 280px;">
+
+                    <!-- 왼쪽 텍스트 영역 -->
+                    <div style="flex: 1; margin-right: 12px;">
+                        <h3 th:text="${crew.crewName}" style="margin: 0 0 8px 0; font-size: 15px;">파티 이름</h3>
+                        <p th:text="${crew.payment} + '원'" style="margin: 0 0 4px 0; font-size: 13px;">17900원</p>
+                        <p th:text="'결제일: ' + ${crew.payDate}" style="margin: 0; font-size: 12px;">결제일</p>
+                    </div>
+
+                    <!-- 오른쪽 플랫폼 이미지 -->
+                    <div>
+                        <img th:src="@{'/image/' + ${crew.platform} + '.png'}"
+                             alt="플랫폼 로고"
+                             style="width: 60px; height: 60px; object-fit: contain;" />
+                    </div>
+                </a>
             </div>
-            <button class="carousel-btn right">&gt;</button>
         </div>
     </section>
 

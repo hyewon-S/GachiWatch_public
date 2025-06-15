@@ -8,6 +8,7 @@ import ssd.springcooler.gachiwatch.dao.CrewDao;
 import ssd.springcooler.gachiwatch.dao.CrewJoinWaitingDao;
 import ssd.springcooler.gachiwatch.domain.*;
 import ssd.springcooler.gachiwatch.dto.CrewDto;
+import ssd.springcooler.gachiwatch.dto.CrewInfoDto;
 import ssd.springcooler.gachiwatch.repository.CrewChatRepository;
 import ssd.springcooler.gachiwatch.repository.CrewMemberRepository;
 import ssd.springcooler.gachiwatch.repository.CrewRepository;
@@ -67,6 +68,17 @@ public class CrewServiceImpl implements CrewFacade {
     public List<JoinedCrew> getCrewListByMemberId(int memberId) {
         //return crewMemberRepository.findAllByCrewId(memberId);
         return joinedCrewRepository.findByMemberMemberId(Long.valueOf(memberId));
+    }
+
+    //main페이지 작업을 위해 추가한 코드
+    public List<CrewInfoDto> getJoinedCrewsByMemberId(int memberId) {
+        List<JoinedCrew> joinedCrews = joinedCrewRepository.findByMemberMemberId(Long.valueOf(memberId));
+        return joinedCrews.stream()
+                .map(jc -> {
+                    Crew crew = jc.getCrew();
+                    return new CrewInfoDto(crew.getCrewId(), crew.getCrewName(), crew.getPlatform(), crew.getPayment(), crew.getPayDate());
+                })
+                .toList();
     }
     /*
     public List<Crew> getCrewList(List<Platform> platforms) {

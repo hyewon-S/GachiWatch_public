@@ -108,6 +108,11 @@ public class Member {
     public Object getMemberId() {
         return memberId;
     }
+
+    //임의로 추가
+    public int getUserId() {
+        return memberId;
+    }
 /*
     // Getter & Setter 어노테이션으로 대체
 
