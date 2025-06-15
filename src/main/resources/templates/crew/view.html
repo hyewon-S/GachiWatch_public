@@ -3,133 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Gachi Watch</title>
-    <link rel="stylesheet" href="/static/styles.css"> <!-- CSS 따로 연결 -->
+    <link rel="stylesheet" th:href="@{/css/crew/view.css}"> <!-- CSS 따로 연결 -->
     <style>
-        body {
-            font-family: sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-        }
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            padding: 1rem 2rem;
-            background-color: white;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-        }
-        .filters {
-            display: flex;
-            padding: 1rem 2rem;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .party-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-            padding: 1rem 2rem;
-        }
-        .party-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.2rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .party-logo {
-            width: 50px;
-            height: 50px;
-        }
-        .join-btn {
-            background: #7b6ef6;
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 999px;
-            font-weight: bold;
-            margin-top: 0.8rem;
-            border: none;
-            cursor: pointer;
-        }
-        .pagination {
-            text-align: center;
-            padding: 1rem;
-        }
-        .pagination button {
-            margin: 0 0.3rem;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
 
-
-        .main-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: white;
-        }
-
-        .logo-search {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo {
-            width: 150px;
-            margin-right: 20px;
-            cursor: pointer;
-        }
-
-        .search-bar {
-            width: 250px;
-            padding: 10px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-        }
-
-        .search-button {
-            margin-left: 10px;
-            padding: 10px 16px;
-            border-radius: 6px;
-            border: none;
-            background-color: #eee;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .nav-menu a, .logout, .profile-image {
-            margin-left: 15px;
-            text-decoration: none;
-            color: #333;
-            cursor: pointer;
-        }
-
-        .logout, .profile-image {
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .logout {
-            background-color: #eee;
-        }
-
-        .profile-image {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-left: 15px;
-            border: 1px solid #ccc;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.2s ease;
-        }
-
-        .profile-image:hover {
-            box-shadow: 0 0 0 2px #4285f4;
-        }
 
     </style>
 </head>
@@ -156,6 +32,7 @@
         </a>
     </nav>
 </header>
+<!--
 <div class="filters">
     <button>Label</button>
     <button>Label</button>
@@ -165,6 +42,26 @@
     <button>Label</button>
     <button style="margin-left:auto;" class="join-btn">플랫폼 선택</button>
 </div>
+-->
+<form>
+    <div class="form-group">
+        <label>OTT 플랫폼</label>
+        <div class="ott-platforms"> <!-- th:object="${crewForm}">-->
+            <div th:each="platform : ${platforms}">
+                <input type="radio"
+                       name="platform"
+                       th:id="${'platform_' + platform.name()}"
+                       th:value="${platform.name()}"
+                       required />
+                <label th:for="${'platform_' + platform.name()}">
+                    <img th:src="@{'/image/' + ${platform.name().toLowerCase()} + '.png'}"
+                         th:alt="${platform.label}" />
+                </label>
+            </div>
+        </div>
+        <button style="margin-left:auto;" class="join-btn">플랫폼 선택</button>
+    </div>
+</form>
 
 <div class="party-list">
     <div class="party-card" th:each="party : ${parties}">
