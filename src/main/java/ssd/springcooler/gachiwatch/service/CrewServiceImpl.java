@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @Service
 public class CrewServiceImpl implements CrewFacade {
-    private static final int PAGE_SIZE = 6;
+    private static final int PAGE_SIZE = 4;
 
     @Autowired
     private CrewDao crewDao;

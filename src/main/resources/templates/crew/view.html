@@ -43,7 +43,7 @@
     <button style="margin-left:auto;" class="join-btn">플랫폼 선택</button>
 </div>
 -->
-<form>
+<form id="platformForm">
     <div class="form-group">
         <label>OTT 플랫폼</label>
         <div class="ott-platforms"> <!-- th:object="${crewForm}">-->
@@ -63,7 +63,10 @@
                 </label>
             </div>
         </div>
-        <button style="margin-left:auto;" class="join-btn">플랫폼 선택</button>
+        <div class="button-group" style="display: flex; gap: 6px;">
+            <button style="margin-left:auto;" class="join-btn">플랫폼 선택</button>
+            <button style="margin-left:auto;" class="join-btn" id="grey-btn" onclick="clearPlatformAndSubmit()">플랫폼 해제</button>
+        </div>
     </div>
 </form>
 <!--
@@ -84,6 +87,12 @@
     <div class="party-card" th:each="crew : ${crewPage.content}">
         <p th:text="${crew.crewName}"></p>
         <!-- 기타 정보 -->
+        <img class="party-logo" th:src="@{'/image/' + ${crew.platform.name().toLowerCase()} + '.png'}" alt="플랫폼">
+        <p th:text="${crew.payment + '원'}">17900원</p>
+        <p>인원: <span th:text="${crew.maxMember}">3</span> / <span th:text="${crew.maxMember}">4</span></p>
+        <p>결제일: 매달 7일</p>
+        <p>최소기간: 6개월</p>
+        <button class="join-btn">가입하기</button>
     </div>
 </div>
 
@@ -94,11 +103,11 @@
 </div>
 
 <div th:unless="${crewPage.totalElements == 0}" class="pagination">
-    <a th:href="@{/crew/view(page=${crewPage.number - 1})}" th:if="${!crewPage.first}">&lt; Prev</a>
+    <a th:href="@{/crew/view(page=${crewPage.number - 1}, platform=${selectedPlatform})}" th:if="${!crewPage.first}">&lt; Prev</a>
     <span th:each="i : ${#numbers.sequence(1, crewPage.totalPages)}">
         <a th:href="@{/crew/view(page=${i - 1}, platform=${selectedPlatform})}" th:text="${i}"></a>
     </span>
-    <a th:href="@{/crew/view(page=${crewPage.number + 1})}" th:if="${!crewPage.last}">Next &gt;</a>
+    <a th:href="@{/crew/view(page=${crewPage.number + 1}, platform=${selectedPlatform})}" th:if="${!crewPage.last}">Next &gt;</a>
 </div>
 </body>
 <script>
@@ -117,5 +126,16 @@
             });
         });
     });
+
+    function clearPlatformAndSubmit() {
+        // 폼 요소 가져오기
+        const form = document.querySelector('#platformForm');
+        // platform 라디오 버튼들 모두 선택 해제
+        const platforms = form.querySelectorAll('input[name="platform"]');
+        platforms.forEach(radio => radio.checked = false);
+
+        // form 전송
+        form.submit();
+    }
 </script>
 </html>

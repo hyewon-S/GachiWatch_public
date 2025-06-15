@@ -185,3 +185,32 @@ body {
      box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
      background-color: #f0f8ff;
  }
+ .button-group {
+     display: inline-flex;
+     gap: 6px;
+     margin-left: auto;
+ }
+ #grey-btn {
+     background-color: #ccc; /* 연한 회색 배경 */
+     color: #333; /* 진한 글자색 */
+     border: 1px solid #999; /* 연한 테두리 */
+ }
+
+ .pagination a {
+   color: black;           /* 링크 색깔 검은색 */
+   text-decoration: none;  /* 밑줄 제거 */
+   margin: 0 5px;
+ }
+
+ .pagination a:hover {
+   text-decoration: underline; /* 마우스 올릴 때만 밑줄 */
+ }
+
+ /* 현재 페이지 표시 */
+ .pagination span.current-page {
+   font-weight: bold;
+   color: blue;   /* 현재 페이지 색깔 */
+   text-decoration: underline; /* 현재 페이지만 밑줄 */
+   pointer-events: none; /* 클릭 불가 */
+   margin: 0 5px;
+ }

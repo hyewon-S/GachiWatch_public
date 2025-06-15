@@ -56,12 +56,17 @@ public class CrewViewController {
 
         model.addAttribute("platforms", filteredPlatforms);
 
+        // 플랫폼이 빈 문자열이거나 null인 경우 기본 조회로 처리하거나 빈 결과 처리
+        if (platform == null || platform.isBlank()) {
+            Page<Crew> crewPage = crewService.getAllCrews(page);
+            model.addAttribute("crewPage", crewPage);
+            return "crew/view";
+        }
+
         Page<Crew> crewPage = crewService.getAllCrewsByPlatform(platform, page);
         model.addAttribute("crewPage", crewPage);
         model.addAttribute("selectedPlatform", platform);
 
-        //List<Crew> crewList = crewService.getCrewList();
-        //mav.addObject("parties", crewList);
         return "crew/view";
     }
 }
