@@ -1,25 +1,25 @@
 package ssd.springcooler.gachiwatch.domain;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@Table(name = "JOINEDCREWS")
 public class JoinedCrew {
     @EmbeddedId
     private JoinedCrewId id = new JoinedCrewId();
 
     @ManyToOne
     @MapsId("memberId")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne
     @MapsId("crewId")
+    @JoinColumn(name = "crew_id")
     private Crew crew;
 
     private boolean isLeader;
