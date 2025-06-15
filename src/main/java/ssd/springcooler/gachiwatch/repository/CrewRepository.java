@@ -16,7 +16,7 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
     //Optional<Crew> findCrewByCrewId(Long id);
     Optional<Crew> findByCrewId(Long id);
 
-    Page<Crew> findByPlatform(String platform, Pageable pageable);
+    Page<Crew> findByPlatform(Platform platform, Pageable pageable);
 
     //@Query("select * from crew c where c.platform like :platform")
     //List<Crew> findCrewByPlatform(Platform platform,);
