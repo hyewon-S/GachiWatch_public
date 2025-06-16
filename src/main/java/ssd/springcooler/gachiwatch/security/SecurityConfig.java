@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -28,7 +29,7 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance(); //test
-        //return new BCryptPasswordEncoder();
+//        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -70,4 +71,12 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
+//    @Bean
+//    public CommonsMultipartResolver multipartResolver() {
+//        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+//        multipartResolver.setDefaultEncoding("utf-8");
+//        multipartResolver.setMaxUploadSize(10 * 1024 * 1024); // 10MB
+//        return multipartResolver;
+//    }
 }

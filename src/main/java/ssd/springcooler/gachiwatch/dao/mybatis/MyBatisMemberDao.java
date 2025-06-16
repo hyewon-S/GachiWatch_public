@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.web.multipart.MultipartFile;
 import ssd.springcooler.gachiwatch.dao.MemberDao;
 import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
 import ssd.springcooler.gachiwatch.domain.Member;
@@ -51,7 +52,7 @@ public class MyBatisMemberDao implements MemberDao {
     }
 
     @Override
-    public void updateProfile(ProfileUpdateDto dto) {
+    public void updateProfile(ProfileUpdateDto dto, MultipartFile profileImage) {
         memberMapper.updateProfile(dto);
     }
 

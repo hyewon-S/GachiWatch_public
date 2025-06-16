@@ -1,5 +1,6 @@
 package ssd.springcooler.gachiwatch.service;
 
+import org.springframework.web.multipart.MultipartFile;
 import ssd.springcooler.gachiwatch.domain.Genre;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
@@ -32,7 +33,8 @@ public interface MemberService {
      * @param memberId 회원 ID
      * @param dto 수정할 프로필 정보 DTO
      */
-    void updateProfile(ProfileUpdateDto dto);
+
+    void updateProfile(ProfileUpdateDto dto, MultipartFile profileImage);
 
     /**
      * 내가 참여 중인 가치크루 목록 조회

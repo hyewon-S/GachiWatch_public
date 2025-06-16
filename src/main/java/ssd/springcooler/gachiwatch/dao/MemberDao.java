@@ -2,6 +2,7 @@ package ssd.springcooler.gachiwatch.dao;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.*;
 
@@ -19,7 +20,7 @@ public interface MemberDao {
     LoginDto findByKakaoEmail(String email);
 
     // 프로필
-    void updateProfile(ProfileUpdateDto dto);
+    void updateProfile(ProfileUpdateDto dto, MultipartFile profileImage);
     void updatePassword(Long memberId, String newPassword);
     void updateProfileImage(Long memberId, String imageUrl);
 

@@ -25,6 +25,16 @@
             margin-right: 20px;
             cursor: pointer;
         }
+        .logout {
+            padding: 6px 12px;-->
+            margin-left: 15px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            background-color: #eee;
+        }
         .container {
           max-width: 800px;
           margin: 2rem auto;
@@ -44,18 +54,41 @@
           text-decoration: none;
           color: black;
         }
+<!--        .tabs {-->
+<!--          display: flex;-->
+<!--          margin-top: 1.5rem;-->
+<!--          border: 1px solid #eee;-->
+<!--        }-->
+<!--        .tab {-->
+<!--          flex: 1;-->
+<!--          text-align: center;-->
+<!--          padding: 0.75rem;-->
+<!--          cursor: pointer;-->
+<!--          background-color: #f8f0fc;-->
+<!--        }-->
         .tabs {
           display: flex;
-          margin-top: 1.5rem;
+          width: 100%; /* 전체 너비 차지 */
+          margin: 0; /* 위쪽 여백 제거 */
+          padding: 0; /* 안쪽 여백 제거 */
           border: 1px solid #eee;
+          box-sizing: border-box;
         }
+
         .tab {
           flex: 1;
           text-align: center;
-          padding: 0.75rem;
+          padding: 1rem 0; /* 위아래만 여백 */
           cursor: pointer;
           background-color: #f8f0fc;
+          border-right: 1px solid #eee;
+          font-weight: bold;
         }
+
+        .tab:last-child {
+          border-right: none;
+        }
+
         .section {
           margin-top: 1.5rem;
           border-top: 1px solid #ddd;
@@ -115,20 +148,18 @@
 </head>
 <body>
 <header>
-    <a th:href="@{/home/home}">
+    <a th:href="@{/}">
         <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
     </a>
-    <button th:onclick="|location.href='@{/home/home}'|">Logout</button>
+    <span th:if="${user != null}">
+        <a th:href="@{/account/logout}"><button class="logout">Logout</button></a>
+    </span>
 </header>
 
 <div class="container">
     <div class="profile">
         <img src="https://via.placeholder.com/80" alt="프로필" style="border-radius: 50%;" />
         <div>
-            <!--            <div class="section no-border" th:onclick="|location.href='@{/mypage/my_profile}'|">-->
-            <!--                <div class="section-title">닉네임 ▶</div>-->
-            <!--            </div>-->
-
             <div class="section no-border" th:onclick="|location.href='@{/mypage/my_profile}'|">
                 <div class="section-title">
                     <span th:text="${user.nickname}">닉네임</span> ▶
@@ -141,31 +172,15 @@
 
         </div>
     </div>
-
     <div class="tabs">
-        <div class="tabs">
-            <div class="tab"
-                 th:onclick="|location.href='@{/mypage/my_content(tab=${'liked'})}'|">
-                찜했어요
-            </div>
-            <div class="tab"
-                 th:onclick="|location.href='@{/mypage/my_content(tab=${'watched'})}'|">
-                봤어요
-            </div>
-
+        <div class="tab"
+             th:onclick="|location.href='@{/mypage/my_content(tab=${'liked'})}'|">
+            찜했어요
         </div>
-
-        <!--        &lt;!&ndash; 찜했어요 &ndash;&gt;-->
-        <!--        <div class="tab"-->
-        <!--             th:onclick="|location.href='@{/mypage/my_content(tab='''liked''', memberId=${user.id})}'|">-->
-        <!--            찜했어요-->
-        <!--        </div>-->
-        <!--        <div class="tab"-->
-        <!--             th:onclick="|location.href='@{/mypage/my_content(tab='''watched''', memberId=${user.id})}'|">-->
-        <!--            봤어요-->
-        <!--        </div>-->
-        <!--<div class="tab">찜했어요</div>-->
-        <!--        <div class="tab">봤어요</div>-->
+        <div class="tab"
+             th:onclick="|location.href='@{/mypage/my_content(tab=${'watched'})}'|">
+            봤어요
+        </div>
     </div>
 
     <div class="section" th:onclick="|location.href='@{/mypage/my_review}'|">
