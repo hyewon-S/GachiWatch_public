@@ -1,5 +1,6 @@
 package ssd.springcooler.gachiwatch.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,7 +50,7 @@ public class MypageController {
         model.addAttribute("user", member);
         return "mypage/my_profile";
     }
-
+/*
     // 프로필 수정 페이지 불러오기
     @GetMapping("/my_profile")
     public String getProfile(HttpSession session, Model model) {
@@ -57,7 +58,7 @@ public class MypageController {
         model.addAttribute("user", user);
         return "mypage/my_profile"; // 화면 띄움
     }
-
+*/
     // 프로필 수정
     @PostMapping("/my_profile")
     public String updateProfile(ProfileUpdateDto profileUpdateDto, Model model) {

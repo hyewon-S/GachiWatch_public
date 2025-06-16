@@ -10,38 +10,41 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+public class CrewChatId implements Serializable {
+    private Long crewId;
+    private Date chatDate;
+    private Integer memberId;
+
+    public CrewChatId() {}
+
+    public CrewChatId(Long crewId, Date chatDate, Integer memberId) {
+        this.crewId = crewId;
+        this.chatDate = chatDate;
+        this.memberId = memberId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CrewChatId)) return false;
+        CrewChatId that = (CrewChatId) o;
+        return Objects.equals(crewId, that.crewId) &&
+                Objects.equals(chatDate, that.chatDate) &&
+                Objects.equals(memberId, that.memberId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(crewId, chatDate, memberId);
+    }
+}
+/*
 @Embeddable
 @Access(AccessType.FIELD)
 //@Getter
 //@Setter
 @NoArgsConstructor
 public class CrewChatId implements Serializable {
-//    @ManyToOne
-//    @JoinColumn(name = "crew_id", nullable = false)
-//    private Crew crew;
-//
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @Column(nullable = false)
-//    private Date chat_date;
-//
-//    public CrewChatId(Crew crew, Date date) {
-//        this.crew = crew;
-//        this.chat_date = date;
-//    }
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof CrewChatId)) return false;
-//        CrewChatId that = (CrewChatId) o;
-//        return Objects.equals(crew, that.crew) &&
-//                Objects.equals(chat_date, that.chat_date);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(crew, chat_date);
-//    }
 @Column(name = "crew_id", nullable = false)
 private Long crewId;
 
@@ -76,3 +79,4 @@ private Long crewId;
         return Objects.hash(crewId, chatDate);
     }
 }
+*/

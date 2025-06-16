@@ -13,11 +13,39 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@IdClass(CrewChatId.class)
 @Table(name = "CREWCHAT")
 public class CrewChat {
-@EmbeddedId
-private CrewChatId id;
+//@EmbeddedId
+//private CrewChatId id;
 
+    @Id
+    @Column(name = "CREW_ID")
+    private Long crewId;
+
+    @Id
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "CHAT_DATE")
+    private Date chatDate;
+
+    @Id
+    @Column(name = "MEMBER_ID")
+    private Integer memberId;
+
+    @Column(name = "CHAT", nullable = false)
+    private String chat;
+
+    public CrewChat(Crew crew, Date date, String chat, Member member) {
+        //this.crew = crew;
+        this.crewId = crew.getCrewId();
+        this.chatDate = date;
+        this.chat = chat;
+        //this.member = member;
+        this.memberId = (Integer) member.getMemberId();
+    }
+
+
+/*
     @ManyToOne
     @MapsId("crewId") // EmbeddedId의 필드 이름과 매핑
     @JoinColumn(name = "crew_id", insertable = false, updatable = false)
@@ -30,10 +58,10 @@ private CrewChatId id;
     private String chat;
 
     public CrewChat(Crew crew, Date date, String chat, Member member) {
-        this.id = new CrewChatId(crew.getCrewId(), date); // Long id 전달
+        this.id = new CrewChatId(crew.getCrewId(), date, member.getMemberId()); // Long id 전달
         System.out.println("CrewChat 생성자 test  " + crew.getCrewId());
         this.crew = crew;
         this.chat = chat;
         this.member = member;
-    }
+    }*/
 }
