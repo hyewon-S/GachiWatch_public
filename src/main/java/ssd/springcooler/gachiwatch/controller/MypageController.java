@@ -15,6 +15,7 @@ import ssd.springcooler.gachiwatch.service.ReviewService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/mypage")
@@ -47,6 +48,14 @@ public class MypageController {
         Member member = memberService.findByEmail(userDetails.getUsername());
         model.addAttribute("user", member);
         return "mypage/my_profile";
+    }
+
+    // 프로필 수정 페이지 불러오기
+    @GetMapping("/my_profile")
+    public String getProfile(HttpSession session, Model model) {
+        Member user = (Member) session.getAttribute("user");
+        model.addAttribute("user", user);
+        return "mypage/my_profile"; // 화면 띄움
     }
 
     // 프로필 수정
@@ -103,6 +112,7 @@ public class MypageController {
     }
 
     @GetMapping("/my_subscribed_ott")
+
     public String getMyOtts(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         Member member = memberService.findByEmail(userDetails.getUsername());
 
@@ -123,10 +133,12 @@ public class MypageController {
     // 구독중인 OTT 수정
     @PostMapping("/my_subscribed_ott")
     public String updateOtt(@RequestParam List<Platform> ottList,
+
                             @AuthenticationPrincipal UserDetails userDetails,
                             Model model) {
         Member member = memberService.findByEmail(userDetails.getUsername());
         memberService.updateSubscribedOtt(member.getMemberId(), ottList);
+
         model.addAttribute("result", "success");
         return "redirect:/mypage";
     }
@@ -153,6 +165,7 @@ public class MypageController {
         Member member = memberService.findByEmail(userDetails.getUsername());
         memberService.updatePreferredGenre(member.getMemberId(), genreList);
         model.addAttribute("result", "success");
+      
         return "redirect:/mypage/my_preferred_genre";
     }
 

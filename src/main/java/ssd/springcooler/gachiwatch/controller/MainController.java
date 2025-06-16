@@ -10,21 +10,29 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.Member;
+import ssd.springcooler.gachiwatch.domain.Platform;
+import ssd.springcooler.gachiwatch.dto.CrewInfoDto;
 import ssd.springcooler.gachiwatch.dto.ForMeContentDto;
 import ssd.springcooler.gachiwatch.dto.LatestMovieDto;
 import ssd.springcooler.gachiwatch.dto.TrendingContentDto;
 import ssd.springcooler.gachiwatch.repository.JoinedCrewRepository;
+
 import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
 import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
 import ssd.springcooler.gachiwatch.service.TMDBService;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
 @Controller
 
-public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러 HomeController
+public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
     private final TMDBService tmdbService;
+    private final CrewServiceImpl crewService;
 
     @Autowired
     private MemberServiceImpl memberService;
@@ -35,6 +43,7 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
     @Autowired
     public MainController(TMDBService tmdbService) {
         this.tmdbService = tmdbService;
+        this.crewService = crewService;
     }
 
     //    @GetMapping("/")
