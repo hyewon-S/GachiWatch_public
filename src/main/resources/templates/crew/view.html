@@ -79,7 +79,12 @@
             <p>인원: <span th:text="${crew.maxMember}">3</span> / <span th:text="${crew.maxMember}">4</span></p>
             <p>결제일: <span th:text="${#dates.format(crew.payDate, 'd')} + '일'">매달 7일</span></p>
             <!--<p>최소기간: 6개월</p>-->
-            <button class="join-btn join-crew-btn">가입하기</button>
+            <th:block th:if="${myCrew}">
+                <a th:href="@{'/crew/crewpage/' + ${crew.crewId}}" class="join-btn">크루 입장</a>
+            </th:block>
+            <th:block th:unless="${myCrew}">
+                <button class="join-btn join-crew-btn">가입하기</button>
+            </th:block>
         </div>
     </div>
 

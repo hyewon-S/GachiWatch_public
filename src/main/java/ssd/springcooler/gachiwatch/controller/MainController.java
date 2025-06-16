@@ -13,6 +13,7 @@ import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.ForMeContentDto;
 import ssd.springcooler.gachiwatch.dto.LatestMovieDto;
 import ssd.springcooler.gachiwatch.dto.TrendingContentDto;
+import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
 import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
 import ssd.springcooler.gachiwatch.service.TMDBService;
 
@@ -26,6 +27,9 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
 
     @Autowired
     private MemberServiceImpl memberService;
+
+    @Autowired
+    private CrewServiceImpl crewService;
 
     @Autowired
     public MainController(TMDBService tmdbService) {
@@ -53,8 +57,8 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
                 Member loginUser = (Member) user;
 
                 // Crew 및 추천 콘텐츠 서비스 활성화 시 아래 코드 사용
-                // List<Crew> crews = crewService.getCrewsByUser(loginUser);
-                // model.addAttribute("crews", crews);
+                 List<Crew> crews = crewService.getCrewListByMemberId(loginUser.getMemberId());
+                 model.addAttribute("crews", crews);
 
                 // List<String> movieimages = recommendationService.getRecommendedImages(loginUser);
                 // model.addAttribute("movieimages", movieimages);
