@@ -252,7 +252,7 @@
                 <div th:each="chat : ${chatList}" class="chat-entry">
                     <!--<img src="/images/user-icon.png" alt="User" />-->
                     <div>
-                        <div><strong th:text="${chat.member.nickname}">닉네임</strong></div>
+                        <div><strong th:text="${chat.member?.nickname} ?: '닉네임 없음'">닉네임</strong></div>
                         <div class="chat-content" th:text="${chat.chat}">사용자가 입력한 채팅</div>
                     </div>
                 </div>

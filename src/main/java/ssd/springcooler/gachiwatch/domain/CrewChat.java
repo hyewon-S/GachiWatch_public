@@ -36,24 +36,25 @@ public class CrewChat {
     private String chat;
 
     // 연관 관계
-    @Transient
+/*
     @ManyToOne
     @JoinColumn(name = "CREW_ID", insertable = false, updatable = false)
     private Crew crew;
 
-    @Transient
+
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID", insertable = false, updatable = false)
     private Member member;
-
+*/
     public CrewChat(Crew crew, Date date, String chat, Member member) {
-        this.crew = crew;
+        //this.crew = crew;
         this.crewId = crew.getCrewId();
         this.chatDate = date;
         this.chat = chat;
-        this.member = member;
+        //this.member = member;
         this.memberId = (Integer) member.getMemberId();
     }
+
 /*
     @ManyToOne
     @MapsId("crewId") // EmbeddedId의 필드 이름과 매핑
