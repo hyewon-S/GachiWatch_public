@@ -13,6 +13,7 @@ import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
 import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
 
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/crew/crewpage")
@@ -61,18 +62,18 @@ public class CrewPageController {
         crewService.insertCrewChat(newChat);
 
         // 5. 채팅 후 다시 해당 크루 페이지로 리다이렉트
-        return "redirect:/crew/" + crewId;
+        return "redirect:/crew/crewpage/" + crewId;
     }
 
     @GetMapping("/{id}")
     public String viewCrewPage(@PathVariable Long id, Model model) {
-        CrewDto crewDto = crewService.getCrewWithChat(id);
-        System.out.println(crewDto.getChatList().toArray().toString());
-        System.out.println(crewDto.getChatList());
 
-        model.addAttribute("crewDto", crewDto);
-        model.addAttribute("crew", crewDto.getCrew().get());
-        model.addAttribute("chatList", crewDto.getChatList());
+        Crew crew = crewService.getCrew(id).get();
+        List<CrewChat> chatList = crewService.getCrewChat(id);
+
+        model.addAttribute("crew", crew);
+        model.addAttribute("chatList", chatList);
+
         return "crew/crewpage";
     }
 }

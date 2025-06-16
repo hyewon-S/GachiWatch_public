@@ -86,7 +86,8 @@ public class CrewServiceImpl implements CrewFacade {
     public CrewDto getCrewWithChat(Long crewId) {
         Optional<Crew> crew = crewRepository.findByCrewId(crewId);
 
-        List<CrewChat> chatList = crewChatRepository.findByIdCrewId(crewId);
+        List<CrewChat> chatList = crewChatRepository.findByCrewIdOrderByChatDateAsc(crewId);
+
         System.out.println("CrewServiceImple getCrewWithChat test " + chatList);
 
         return new CrewDto(crew, chatList);
@@ -138,7 +139,7 @@ public class CrewServiceImpl implements CrewFacade {
     }
 
     public List<CrewChat> getCrewChat(Long crewId) {
-        return crewChatRepository.findByIdCrewId(crewId);
+        return crewChatRepository.findByCrewIdOrderByChatDateAsc(crewId);
     }
 
     @Override
