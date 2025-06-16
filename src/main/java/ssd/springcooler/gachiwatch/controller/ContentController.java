@@ -4,12 +4,18 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.ContentDto;
 import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
+import ssd.springcooler.gachiwatch.dto.ForMeContentDto;
+import ssd.springcooler.gachiwatch.security.CustomUserDetails;
 import ssd.springcooler.gachiwatch.service.ContentService;
+import ssd.springcooler.gachiwatch.service.TMDBService;
 
 import java.security.Principal;
 import java.util.Collections;
@@ -20,6 +26,9 @@ import java.util.List;
 public class ContentController {
     @Autowired
     private ContentService contentService;
+
+    @Autowired
+    private TMDBService tmdbService;
 
     @GetMapping("/search")
     public String search(Model model, HttpSession session) {
@@ -66,7 +75,7 @@ public class ContentController {
                                             @RequestParam boolean isLiked,
                                             Principal principal) {
         System.out.println("contentId는 : " + contentId);
-        System.out.println("memberId는 : " + memberId); //이게 계속 0으로 뜨는데.. 왜지???
+        System.out.println("memberId는 : " + memberId);
         System.out.println("isLike는" + isLiked);
 
         return ResponseEntity.ok().build();
@@ -81,6 +90,26 @@ public class ContentController {
         System.out.println("isWatched는 : " + isWatched);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/recommend")
+    public String recommendContent(@AuthenticationPrincipal CustomUserDetails userDetails, Model model, HttpSession session) throws Exception {
+        Object user = session.getAttribute("user");
+        Member loginUser = (Member) user;
+
+        if(user != null) {
+            model.addAttribute("isLoggedIn", true);
+            List<ForMeContentDto> recommendList = tmdbService.getForMeContents(20, loginUser.getPreferredGenres());
+            Collections.shuffle(recommendList);
+            model.addAttribute("recommendList", recommendList);
+        }
+
+        //아래 코드는 오류가 남....
+       // Member user = (Member)userDetails.getMember();
+       // List<ForMeContentDto> recommendList = tmdbService.getForMeContents(50, user.getPreferredGenres());
+      //  model.addAttribute("recommendList", recommendList);
+
+        return "content/recommendPage";
     }
 
     //API 에서 콘텐츠 받아와서 DB에 데이터 넣어둠

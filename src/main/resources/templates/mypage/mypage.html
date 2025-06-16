@@ -144,13 +144,14 @@
     <div class="tabs">
         <div class="tabs">
             <div class="tab"
-                 th:onclick="|location.href='@{/mypage/my_content(tab='liked')}'|">
+                 th:onclick="|location.href='@{/mypage/my_content(tab=${'liked'})}'|">
                 찜했어요
             </div>
             <div class="tab"
-                 th:onclick="|location.href='@{/mypage/my_content(tab='watched')}'|">
+                 th:onclick="|location.href='@{/mypage/my_content(tab=${'watched'})}'|">
                 봤어요
             </div>
+
         </div>
 
         <!--        &lt;!&ndash; 찜했어요 &ndash;&gt;-->

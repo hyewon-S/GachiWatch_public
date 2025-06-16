@@ -51,7 +51,7 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .loginPage("/account/login")  // 사용자 정의 로그인 페이지
                         .loginProcessingUrl("/account/login") // 로그인 POST 요청 URL
-                        .defaultSuccessUrl("/home", true)
+//                        .defaultSuccessUrl("/home", true)
                         .successHandler(customLoginSuccessHandler)
                         .failureUrl("/account/login?error")
                         .permitAll()

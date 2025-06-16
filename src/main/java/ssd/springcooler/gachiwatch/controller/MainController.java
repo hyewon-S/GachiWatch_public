@@ -36,18 +36,58 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
         this.tmdbService = tmdbService;
     }
 
+//    @GetMapping("/")
+//    public String redirectToHome(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+//        if (userDetails != null) {
+//            model.addAttribute("user", memberService.findByEmail(userDetails.getUsername()));
+//        }
+//        return "redirect:/home";
+//    }
     @GetMapping("/")
-    public String redirectToHome(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails != null) {
-            model.addAttribute("user", memberService.findByEmail(userDetails.getUsername()));
-        }
+    public String redirectToHome() {
         return "redirect:/home";
     }
 
+
+//    @GetMapping("/home")
+//    public String home(Model model, HttpSession session, @AuthenticationPrincipal UserDetails userDetails) {
+//        Object user = session.getAttribute("user");
+//        model.addAttribute("user", user);
+//
+//        try {
+//            List<TrendingContentDto> trending = tmdbService.getTrendingContents(20);
+//            model.addAttribute("trendingContents", trending);
+//
+//            if (user != null) {
+//                Member loginUser = (Member) user;
+//
+//                // Crew 및 추천 콘텐츠 서비스 활성화 시 아래 코드 사용
+//                // List<Crew> crews = crewService.getCrewsByUser(loginUser);
+//                // model.addAttribute("crews", crews);
+//
+//                // List<String> movieimages = recommendationService.getRecommendedImages(loginUser);
+//                // model.addAttribute("movieimages", movieimages);
+//
+//                //나를 위한 추천 (통합 및 수정 필요) -> null값이 전달 되는 것 같음
+//                 List<ForMeContentDto> formecontents = tmdbService.getForMeContents(20, loginUser.getPreferredGenres() /*수정필요*/);
+//                 model.addAttribute("formecontents", formecontents);
+//            } else {
+//                List<LatestMovieDto> movie = tmdbService.getLatestMovies(20);
+//                model.addAttribute("latestMovieContents", movie);
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            model.addAttribute("errorMessage", "콘텐츠를 불러오는 중 오류가 발생했습니다.");
+//        }
+//
+//        return "home/home";
+//    }
     @GetMapping("/home")
-    public String home(Model model, HttpSession session, @AuthenticationPrincipal UserDetails userDetails) {
-        Object user = session.getAttribute("user");
-        model.addAttribute("user", user);
+    public String home(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            System.out.println("로그인된 유저: " + userDetails.getUsername());
+            Member loginUser = memberService.findByEmail(userDetails.getUsername());
 
         try {
             List<TrendingContentDto> trending = tmdbService.getTrendingContents(20);
@@ -66,18 +106,41 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
                 //나를 위한 추천 (통합 및 수정 필요) -> null값이 전달 되는 것 같음
                  List<ForMeContentDto> formecontents = tmdbService.getForMeContents(20, loginUser.getPreferredGenres() /*수정필요*/);
                  model.addAttribute("formecontents", formecontents);
+
             } else {
-                List<LatestMovieDto> movie = tmdbService.getLatestMovies(20);
-                model.addAttribute("latestMovieContents", movie);
+                System.out.println("회원 정보: " + loginUser.getNickname());
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("errorMessage", "콘텐츠를 불러오는 중 오류가 발생했습니다.");
+            model.addAttribute("user", loginUser);
+
+            try {
+                List<TrendingContentDto> trending = tmdbService.getTrendingContents(20);
+                model.addAttribute("trendingContents", trending);
+
+                List<ForMeContentDto> formecontents = tmdbService.getForMeContents(20, loginUser.getPreferredGenres());
+                model.addAttribute("formecontents", formecontents);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                model.addAttribute("errorMessage", "콘텐츠를 불러오는 중 오류가 발생했습니다.");
+            }
+        } else {
+            System.out.println("userDetails가 null임 -> 로그인 안된 상태");
+            try {
+                List<TrendingContentDto> trending = tmdbService.getTrendingContents(20);
+                model.addAttribute("trendingContents", trending);
+
+                List<LatestMovieDto> movie = tmdbService.getLatestMovies(20);
+                model.addAttribute("latestMovieContents", movie);
+            } catch (Exception e) {
+                e.printStackTrace();
+                model.addAttribute("errorMessage", "콘텐츠를 불러오는 중 오류가 발생했습니다.");
+            }
         }
 
         return "home/home";
     }
+
 
 
     //검색 관련 코드 추가

@@ -1,6 +1,5 @@
 package ssd.springcooler.gachiwatch.service;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.MemberDao;
 import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
@@ -193,6 +192,10 @@ public class MemberServiceImpl implements MemberService {
         memberDao.deleteWatchedContentById(contentId);
     }
 
+    @Override
+    public List<Platform> getSubscribedOttList(int memberId) {
+        return memberMapper.getSubscribedOttList(memberId); // mapper에서 DB 조회
+    }
     /**
      * 구독 중인 OTT 수정
      */
@@ -238,10 +241,16 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findById(memberId).get();
     }
 
-    public Member findByEmail(String email) {
-        return memberRepository.findByEmailWithPreferredGenres(email)
-                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + email));
+    @Override
+    public List<Genre> getPreferredGenres(int memberId) {
+        return List.of();
     }
+
+    @Override
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email).orElse(null);
+    }
+
 }
 
 //// repository 사용

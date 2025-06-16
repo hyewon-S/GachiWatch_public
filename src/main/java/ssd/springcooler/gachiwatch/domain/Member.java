@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,10 @@ import java.util.List;
 @Entity
 @Builder
 //@Table(name = "Member")
-public class Member {
+public class Member implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
     @SequenceGenerator(
             name = "member_seq_gen",

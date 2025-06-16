@@ -3,12 +3,16 @@ package ssd.springcooler.gachiwatch.security;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 
 import ssd.springcooler.gachiwatch.domain.Member;
 
-public class CustomUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private final Member member;
 
