@@ -28,103 +28,83 @@ public class AccountController {
         this.memberService = memberService;
     }
 
-//    // 회원 가입
-//    @PostMapping("/register")
-//    public String register(MemberRegisterDto regiDto, Model model) {
-//        memberService.register(regiDto);
-//        model.addAttribute("result", "success");
-//        return "/member/registerResult";
+    /** ✅ STEP1: 기본 정보 입력 화면 */
+    @GetMapping("/register_email_step1")
+    public String registerStep1(Model model) {
+        model.addAttribute("member", new MemberRegisterDto());
+        return "account/register_email_step1"; // Thymeleaf 템플릿
+    }
+
+    /** ✅ STEP1 폼 전송 → STEP2로 이동 */
+    @PostMapping("/register_step2")
+    public String registerStep2(@ModelAttribute("member") MemberRegisterDto dto, HttpSession session) {
+        session.setAttribute("tempMember", dto); // 임시 저장
+        return "account/register_step2"; // step2 화면으로 이동
+    }
+
+    /** ✅ STEP2에서 닉네임, ott, 장르 입력 받아 최종 회원가입 */
+    @PostMapping("/register_result")
+    public String registerFinal(@RequestParam String nickname,
+                                @RequestParam String subscribedOTTs,
+                                @RequestParam String preferredGenres,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
+
+        MemberRegisterDto dto = (MemberRegisterDto) session.getAttribute("tempMember");
+        if (dto == null) {
+            return "redirect:/account/register_email_step1";
+        }
+
+        dto.setNickname(nickname);
+
+        // OTT, Genre 문자열 → Enum 리스트 변환
+        List<Platform> ottList = Arrays.stream(subscribedOTTs.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Platform::fromDisplayName)
+                .toList();
+
+        List<Genre> genreList = Arrays.stream(preferredGenres.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .map(Genre::fromDisplayName)
+                .toList();
+
+        dto.setSubscribedOtts(ottList);
+        dto.setPreferredGenres(genreList);
+
+        memberService.register(dto);
+        session.removeAttribute("tempMember");
+
+        // ✅ 로그인 페이지로 redirect & JS alert 위한 플래그 전달
+        redirectAttributes.addFlashAttribute("registerSuccess", true);
+        return "redirect:/account/register_result";
+    }
+
+    @GetMapping("/register_result")
+    public String registerResultPage() {
+        return "account/register_result"; // ← templates/account/register_result.html
+    }
+
+//    @Value("${kakao.client_id}")
+//    private String client_id;
+//
+//    @Value("${kakao.redirect_uri}")
+//    private String redirect_uri;
+//
+//    @GetMapping("/register_kakao_step1")
+//    public String kakaologin(Model model) {
+//        String location = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="+client_id+"&redirect_uri="+redirect_uri;
+//        model.addAttribute("location", location);
+//
+//        return "account/register_kakao_step1";
 //    }
 //
-//    //signup 시 email 중복확인 버튼 구현
-//    @RequestMapping("emailCheck")
-//    @ResponseBody // ajax 요청에 담긴 값을 자바 객체로 변환시켜 인스턴스(boolean)에 저장 -> illegalargumentException 방지
-//    public boolean emailCheck(@RequestParam("email") String email) {
-//        //DB 들어가서 email 중복값이 있나 들고나옴
-//        String check = null;
-//        check =MemberService.emailCheck(email); //input email에서 받은 email을 DB까지 전달하여 조회작업
-//        if(check != null) return true;
-//        else return false;
+//    @GetMapping("/kakao/callback")
+//    public String kakaoCallback(@RequestParam String code, HttpSession session) {
+//        // code로 토큰 받고, 사용자 정보 받아서 세션에 저장
+//        return "redirect:account/register_step2";
 //    }
-
-
-        /** ✅ STEP1: 기본 정보 입력 화면 */
-        @GetMapping("/register_email_step1")
-        public String registerStep1(Model model) {
-            model.addAttribute("member", new MemberRegisterDto());
-            return "account/register_email_step1"; // Thymeleaf 템플릿
-        }
-
-        /** ✅ STEP1 폼 전송 → STEP2로 이동 */
-        @PostMapping("/register_step2")
-        public String registerStep2(@ModelAttribute("member") MemberRegisterDto dto, HttpSession session) {
-            session.setAttribute("tempMember", dto); // 임시 저장
-            return "account/register_step2"; // step2 화면으로 이동
-        }
-
-        /** ✅ STEP2에서 닉네임, ott, 장르 입력 받아 최종 회원가입 */
-        @PostMapping("/register_result")
-        public String registerFinal(@RequestParam String nickname,
-                                    @RequestParam String subscribedOTTs,
-                                    @RequestParam String preferredGenres,
-                                    HttpSession session,
-                                    RedirectAttributes redirectAttributes) {
-
-            MemberRegisterDto dto = (MemberRegisterDto) session.getAttribute("tempMember");
-            if (dto == null) {
-                return "redirect:/account/register_email_step1";
-            }
-
-            dto.setNickname(nickname);
-
-            // OTT, Genre 문자열 → Enum 리스트 변환
-            List<Platform> ottList = Arrays.stream(subscribedOTTs.split(","))
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .map(Platform::fromDisplayName)
-                    .toList();
-
-            List<Genre> genreList = Arrays.stream(preferredGenres.split(","))
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty())
-                    .map(Genre::fromDisplayName)
-                    .toList();
-
-            dto.setSubscribedOtts(ottList);
-            dto.setPreferredGenres(genreList);
-
-            memberService.register(dto);
-            session.removeAttribute("tempMember");
-
-            // ✅ 로그인 페이지로 redirect & JS alert 위한 플래그 전달
-            redirectAttributes.addFlashAttribute("registerSuccess", true);
-            return "redirect:/account/register_result";
-        }
-
-        @GetMapping("/register_result")
-        public String registerResultPage() {
-            return "account/register_result"; // ← templates/account/register_result.html
-        }
-
-    @Value("${kakao.client_id}")
-    private String client_id;
-
-    @Value("${kakao.redirect_uri}")
-    private String redirect_uri;
-
-    @GetMapping("/register_kakao_step1")
-    public String kakaologin(Model model) {
-        String location = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id="+client_id+"&redirect_uri="+redirect_uri;
-        model.addAttribute("location", location);
-
-        return "account/register_kakao_step1";
-    }
-
-    @GetMapping("/kakao/callback")
-    public String kakaoCallback(@RequestParam String code, HttpSession session) {
-        // code로 토큰 받고, 사용자 정보 받아서 세션에 저장
-        return "redirect:account/register_step2";
-    }
 
 
 
@@ -144,20 +124,20 @@ public class AccountController {
     }
 
 
-    @PostMapping("/login")
-    public String login(LoginDto loginDto,
-                        HttpSession session,
-                        Model model) {
-        Member member = memberService.login(loginDto);
-
-        if (member != null) {
-            session.setAttribute("user", member);
-            return "redirect:/home"; // ← account 디렉토리 외부로 redirect //메인페이지 통합으로 인해 수정했습니다.
-        } else {
-            model.addAttribute("error", "로그인 실패");
-            return "account/login";
-        }
-    }
+//    @PostMapping("/login")
+//    public String login(LoginDto loginDto,
+//                        HttpSession session,
+//                        Model model) {
+//        Member member = memberService.login(loginDto);
+//
+//        if (member != null) {
+//            session.setAttribute("user", member);
+//            return "redirect:/home"; // ← account 디렉토리 외부로 redirect //메인페이지 통합으로 인해 수정했습니다.
+//        } else {
+//            model.addAttribute("error", "로그인 실패");
+//            return "account/login";
+//        }
+//    }
 
 
     // 로그아웃

@@ -254,7 +254,7 @@
 
             <!-- 좋아요 버튼 -->
             <img id="heart-icon" th:if="${isLoggedIn}"
-                 th:src="@{${heartUrl}}" th:attr="onclick=|toggleHeart(${contentInfo.contentId}, ${session.user.memberId})|"
+                 th:src="@{${heartUrl}}" th:attr="onclick=|toggleHeart(${contentInfo.contentId}, ${user.memberId})|"
                  class="icon" />
 
             <img th:unless="${isLoggedIn}"
@@ -264,7 +264,7 @@
 
             <!--봤어요 버튼 -->
             <img id="eye-icon" th:if="${isLoggedIn}"
-                 th:src="@{${eyeUrl}}" th:attr="onclick=|toggleEye(${contentInfo.contentId}, ${session.user.memberId})|"
+                 th:src="@{${eyeUrl}}" th:attr="onclick=|toggleEye(${contentInfo.contentId}, ${user.memberId})|"
                  class="icon" />
 
             <img th:unless="${isLoggedIn}"

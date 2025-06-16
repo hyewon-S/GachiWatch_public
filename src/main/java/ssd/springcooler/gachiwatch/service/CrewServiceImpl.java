@@ -8,17 +8,17 @@ import ssd.springcooler.gachiwatch.dao.CrewDao;
 import ssd.springcooler.gachiwatch.dao.CrewJoinWaitingDao;
 import ssd.springcooler.gachiwatch.domain.*;
 import ssd.springcooler.gachiwatch.dto.CrewDto;
-import ssd.springcooler.gachiwatch.repository.CrewChatRepository;
-import ssd.springcooler.gachiwatch.repository.CrewMemberRepository;
-import ssd.springcooler.gachiwatch.repository.CrewRepository;
-import ssd.springcooler.gachiwatch.repository.JoinedCrewRepository;
+import ssd.springcooler.gachiwatch.repository.*;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CrewServiceImpl implements CrewFacade {
@@ -43,6 +43,9 @@ public class CrewServiceImpl implements CrewFacade {
     @Autowired
     private JoinedCrewRepository joinedCrewRepository;
 
+    @Autowired
+    private CrewJoinWaitingRepository crewJoinWaitingRepository;
+
 
     public Optional<Crew> getCrew(Long crewId) {
         return crewRepository.findByCrewId(crewId);
@@ -61,27 +64,32 @@ public class CrewServiceImpl implements CrewFacade {
         Platform platformEnum = Platform.valueOf(platform);
         return crewRepository.findByPlatform(platformEnum, pageable);
     }
+/*
+    public Page<Crew> getAllCrewsByMemberId(int memberId, int page) {
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        return joinedCrewRepository.findByMemberMemberId(memberId, pageable);
+    }
+*/
     public List<Crew> getCrewList(Platform platform) {
         return crewRepository.findAll();
     }
 
-    public List<JoinedCrew> getCrewListByMemberId(int memberId) {
-        //return crewMemberRepository.findAllByCrewId(memberId);
-        return joinedCrewRepository.findByMemberMemberId(Long.valueOf(memberId));
+    public List<Crew> getCrewListByMemberId(Integer memberId) {
+        List<JoinedCrew> joinedCrewList = joinedCrewRepository.findByMemberId(memberId);
+        List<Crew> crewList = joinedCrewList.stream()
+                .map(JoinedCrew::getCrew)  // 각 JoinedCrew에서 Crew 추출
+                .collect(Collectors.toList());
+        return crewList;
     }
-    /*
-    public List<Crew> getCrewList(List<Platform> platforms) {
-        return crewDao.getCrewList(platforms);
-    }
-    */
-/*
-    public CrewDto getCrewWithChat(Long crewId) {
-        Crew crew = crewRepository.findByCrewId(crewId);
-        List<CrewChat> chatList = crewChatRepository.findById_Crew_CrewIdOrderByIdAsc(crewId);
 
-        return new CrewDto(crew, chatList);
+    public Page<Crew> getCrewListByMemberId(int memberId, int page) {
+        //return crewMemberRepository.findAllByCrewId(memberId);
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        Page<JoinedCrew> joinedCrewsPage = joinedCrewRepository.findByMemberMemberId(memberId, pageable);
+        return joinedCrewsPage.map(JoinedCrew::getCrew);
     }
-*/
+
+
     @Transactional
     public CrewDto getCrewWithChat(Long crewId) {
         Optional<Crew> crew = crewRepository.findByCrewId(crewId);
@@ -102,9 +110,14 @@ public class CrewServiceImpl implements CrewFacade {
         return null;
     }
 
+    @Transactional
     public Crew createCrew(Crew crew, Member captain) {
         crew.setCaptain(captain);
         crewRepository.save(crew);
+
+        JoinedCrew joinedCrew = new JoinedCrew(captain, crew, true);
+        //joinedCrewRepository.save(joinedCrew);
+        joinedCrewRepository.insertJoinedCrew(crew.getCrewId(), captain.getMemberId(), true);
         return crew;
     }
     public Crew updateCrew(Crew crew) {
@@ -115,7 +128,9 @@ public class CrewServiceImpl implements CrewFacade {
     }
 
     public boolean makeApplication(Long crewId, Member member) {
-        //return waitingDao.insertMember(crewId, member);
+        System.out.println(crewId + " , " + member.getMemberId());
+        CrewJoinWaiting crewJoinWaiting = new CrewJoinWaiting(crewId, member.getMemberId());
+        crewJoinWaitingRepository.save(crewJoinWaiting);
         return true;
     }
     public boolean denyMember(Long crewId, Member member) {
@@ -141,21 +156,24 @@ public class CrewServiceImpl implements CrewFacade {
     public List<CrewChat> getCrewChat(Long crewId) {
         return crewChatRepository.findByCrewIdOrderByChatDateAsc(crewId);
     }
-
+/*
+    @Transactional
     @Override
-    public boolean insertCrewChat(Long crewId, String chat, Date date) {
-        return false;
-    }
+    public boolean insertCrewChat(Long crewId, String chat, Date date, Integer memberId) {
+        CrewChat crewChat = new CrewChat(crewId, date, chat, memberId);
+        crewChatRepository.save(crewChat);
+        return true;
 
+    }
+*/
+    @Transactional
     public boolean insertCrewChat(Crew crew, String chat, Date date, Member member){
-        //return chatDao.insertChat(crewId, chat, date);
         CrewChat crewChat = new CrewChat(crew, date, chat, member);
         crewChatRepository.save(crewChat);
         return true;
     }
 
     public boolean insertCrewChat(CrewChat crewChat){
-        //return chatDao.insertChat(crewId, chat, date);
         crewChatRepository.save(crewChat);
         return true;
     }

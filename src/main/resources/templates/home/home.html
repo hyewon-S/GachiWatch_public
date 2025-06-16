@@ -125,7 +125,7 @@
 
         .group-thumbnail {
             width: 120px;
-            height: 80px;
+            height: 120px; /*80*/
             border-radius: 8px;
             object-fit: cover;
         }
@@ -145,6 +145,22 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
+        }
+
+        .enter-crew-btn {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .enter-crew-btn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -188,11 +204,13 @@
             <button class="carousel-btn left">&lt;</button>
             <div class="carousel-track">
                 <div th:if="${crews != null}" th:each="crew : ${crews}" style="text-align: center;">
-                    <img th:src="@{'/image/' + ${crew.platform}}" alt="그룹 썸네일" class="group-thumbnail">
+                    <img th:src="@{'/image/' + ${crew.platform.name().toLowerCase()} + '.png'}" alt="그룹 썸네일" class="group-thumbnail">
                     <div th:text="${crew.crewName}" class="group-name"></div>
+                    <button type="button" class="enter-crew-btn" th:attr="data-crew-id=${crew.crewId}">
+                        크루 입장
+                    </button>
                 </div>
             </div>
-            <button class="carousel-btn right">&gt;</button>
         </div>
     </section>
 
@@ -244,5 +262,18 @@
         </div>
     </section>
 </main>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('.enter-crew-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const crewId = button.getAttribute('data-crew-id');
+                if (crewId) {
+                    window.location.href = `/crew/crewpage/${crewId}`;
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
