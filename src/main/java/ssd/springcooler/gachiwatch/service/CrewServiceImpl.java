@@ -8,10 +8,7 @@ import ssd.springcooler.gachiwatch.dao.CrewDao;
 import ssd.springcooler.gachiwatch.dao.CrewJoinWaitingDao;
 import ssd.springcooler.gachiwatch.domain.*;
 import ssd.springcooler.gachiwatch.dto.CrewDto;
-import ssd.springcooler.gachiwatch.repository.CrewChatRepository;
-import ssd.springcooler.gachiwatch.repository.CrewMemberRepository;
-import ssd.springcooler.gachiwatch.repository.CrewRepository;
-import ssd.springcooler.gachiwatch.repository.JoinedCrewRepository;
+import ssd.springcooler.gachiwatch.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
@@ -42,6 +39,9 @@ public class CrewServiceImpl implements CrewFacade {
 
     @Autowired
     private JoinedCrewRepository joinedCrewRepository;
+
+    @Autowired
+    private CrewJoinWaitingRepository crewJoinWaitingRepository;
 
 
     public Optional<Crew> getCrew(Long crewId) {
@@ -78,14 +78,7 @@ public class CrewServiceImpl implements CrewFacade {
         return joinedCrewsPage.map(JoinedCrew::getCrew);
     }
 
-/*
-    public CrewDto getCrewWithChat(Long crewId) {
-        Crew crew = crewRepository.findByCrewId(crewId);
-        List<CrewChat> chatList = crewChatRepository.findById_Crew_CrewIdOrderByIdAsc(crewId);
 
-        return new CrewDto(crew, chatList);
-    }
-*/
     @Transactional
     public CrewDto getCrewWithChat(Long crewId) {
         Optional<Crew> crew = crewRepository.findByCrewId(crewId);
@@ -124,6 +117,10 @@ public class CrewServiceImpl implements CrewFacade {
 
     public boolean makeApplication(Long crewId, Member member) {
         //return waitingDao.insertMember(crewId, member);
+        System.out.println(crewId + " , " + member.getMemberId());
+        CrewJoinWaiting crewJoinWaiting = new CrewJoinWaiting(crewId, member.getMemberId());
+        crewJoinWaitingRepository.save(crewJoinWaiting);
+        //crewJoinWaitingRepository.findByCrewId(crewId);
         return true;
     }
     public boolean denyMember(Long crewId, Member member) {
