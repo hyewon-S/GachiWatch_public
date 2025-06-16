@@ -25,7 +25,7 @@ public class Member {
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_gen")
     @Column(name="member_id")
-    private int memberId; // 멤버 고유 ID
+    private Integer memberId; // 멤버 고유 ID
 
     private String name; // 이름
     private String password; // 비밀번호
@@ -105,7 +105,7 @@ public class Member {
 //        this.birthdate = birthdate;
 //    }
 
-    public Object getMemberId() {
+    public Integer getMemberId() {
         return memberId;
     }
 /*

@@ -105,9 +105,14 @@ public class CrewServiceImpl implements CrewFacade {
         return null;
     }
 
+    @Transactional
     public Crew createCrew(Crew crew, Member captain) {
         crew.setCaptain(captain);
         crewRepository.save(crew);
+
+        JoinedCrew joinedCrew = new JoinedCrew(captain, crew, true);
+        //joinedCrewRepository.save(joinedCrew);
+        joinedCrewRepository.insertJoinedCrew(crew.getCrewId(), captain.getMemberId(), true);
         return crew;
     }
     public Crew updateCrew(Crew crew) {

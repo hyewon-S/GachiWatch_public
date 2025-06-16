@@ -29,6 +29,6 @@ public class JoinedCrew {
         this.member = member;
         this.crew = crew;
         this.isLeader = isLeader;
-        this.id = new JoinedCrewId();
+        this.id = new JoinedCrewId((Integer) member.getMemberId(), crew.getCrewId());
     }
 }
