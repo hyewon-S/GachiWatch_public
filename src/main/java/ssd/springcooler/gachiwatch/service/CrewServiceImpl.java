@@ -13,9 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CrewServiceImpl implements CrewFacade {
@@ -71,6 +73,14 @@ public class CrewServiceImpl implements CrewFacade {
         return crewRepository.findAll();
     }
 
+    public List<Crew> getCrewListByMemberId(Integer memberId) {
+        List<JoinedCrew> joinedCrewList = joinedCrewRepository.findByMemberId(memberId);
+        List<Crew> crewList = joinedCrewList.stream()
+                .map(JoinedCrew::getCrew)  // 각 JoinedCrew에서 Crew 추출
+                .collect(Collectors.toList());
+        return crewList;
+    }
+
     public Page<Crew> getCrewListByMemberId(int memberId, int page) {
         //return crewMemberRepository.findAllByCrewId(memberId);
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
@@ -83,7 +93,7 @@ public class CrewServiceImpl implements CrewFacade {
     public CrewDto getCrewWithChat(Long crewId) {
         Optional<Crew> crew = crewRepository.findByCrewId(crewId);
 
-        List<CrewChat> chatList = crewChatRepository.findByIdCrewId(crewId);
+        List<CrewChat> chatList = crewChatRepository.findByCrewIdJPQL(crewId);
         System.out.println("CrewServiceImple getCrewWithChat test " + chatList);
 
         return new CrewDto(crew, chatList);
@@ -116,11 +126,9 @@ public class CrewServiceImpl implements CrewFacade {
     }
 
     public boolean makeApplication(Long crewId, Member member) {
-        //return waitingDao.insertMember(crewId, member);
         System.out.println(crewId + " , " + member.getMemberId());
         CrewJoinWaiting crewJoinWaiting = new CrewJoinWaiting(crewId, member.getMemberId());
         crewJoinWaitingRepository.save(crewJoinWaiting);
-        //crewJoinWaitingRepository.findByCrewId(crewId);
         return true;
     }
     public boolean denyMember(Long crewId, Member member) {
@@ -144,7 +152,7 @@ public class CrewServiceImpl implements CrewFacade {
     }
 
     public List<CrewChat> getCrewChat(Long crewId) {
-        return crewChatRepository.findByIdCrewId(crewId);
+        return crewChatRepository.findByCrewIdJPQL(crewId);
     }
 
     @Override
