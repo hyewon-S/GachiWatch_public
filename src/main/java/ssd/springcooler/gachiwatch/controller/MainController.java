@@ -32,7 +32,6 @@ import java.util.List;
 
 public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
     private final TMDBService tmdbService;
-    private final CrewServiceImpl crewService;
 
     @Autowired
     private MemberServiceImpl memberService;
@@ -43,7 +42,6 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
     @Autowired
     public MainController(TMDBService tmdbService) {
         this.tmdbService = tmdbService;
-        this.crewService = crewService;
     }
 
     //    @GetMapping("/")
