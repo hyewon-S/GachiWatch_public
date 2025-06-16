@@ -15,6 +15,7 @@ import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
 import ssd.springcooler.gachiwatch.dto.ForMeContentDto;
 import ssd.springcooler.gachiwatch.security.CustomUserDetails;
 import ssd.springcooler.gachiwatch.service.ContentService;
+import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
 import ssd.springcooler.gachiwatch.service.TMDBService;
 
 import java.security.Principal;
@@ -30,11 +31,12 @@ public class ContentController {
     @Autowired
     private TMDBService tmdbService;
 
-    @GetMapping("/search")
-    public String search(Model model, HttpSession session) {
-        Object user = session.getAttribute("user");
+    @Autowired
+    private MemberServiceImpl memberService;
 
-        if(user != null) { //로그인 여부 boolean 에 세팅
+    @GetMapping("/search")
+    public String search(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
             model.addAttribute("isLoggedIn", true);
         } else {
             model.addAttribute("isLoggedIn", false);
@@ -46,12 +48,14 @@ public class ContentController {
     }
 
     @GetMapping("/detail")
-    public String detail(@RequestParam("contentId") int contentId, Model model, HttpSession session) throws Exception {
-        Object user = session.getAttribute("user");
+    public String detail(@RequestParam("contentId") int contentId, Model model, @AuthenticationPrincipal UserDetails userDetails) throws Exception {
 
-        if(user != null) { //로그인 했음
-            session.setAttribute("user", user);
+        if(userDetails != null) { //로그인 했음
+            //session.setAttribute("user", user);
+            Member user = memberService.findByEmail(userDetails.getUsername());
             model.addAttribute("isLoggedIn", true);
+            model.addAttribute("user", user);
+
             //유저가 좋아요를 눌렀는지, 봤어요를 눌렀는지 확인해줘야 함
             model.addAttribute("heartUrl", "/image/icon/icon-heart-red.png");
             model.addAttribute("eyeUrl", "/image/icon/icon-eye.png");
@@ -94,21 +98,15 @@ public class ContentController {
 
     @GetMapping("/recommend")
     public String recommendContent(@AuthenticationPrincipal CustomUserDetails userDetails, Model model, HttpSession session) throws Exception {
-        Object user = session.getAttribute("user");
-        Member loginUser = (Member) user;
 
-        if(user != null) {
+        if(userDetails != null) {
             model.addAttribute("isLoggedIn", true);
-            List<ForMeContentDto> recommendList = tmdbService.getForMeContents(20, loginUser.getPreferredGenres());
+            Member loginUser = memberService.findByEmail(userDetails.getUsername());
+            List<ForMeContentDto> recommendList = tmdbService.getForMeContents(50, loginUser.getPreferredGenres());
+
             Collections.shuffle(recommendList);
             model.addAttribute("recommendList", recommendList);
         }
-
-        //아래 코드는 오류가 남....
-       // Member user = (Member)userDetails.getMember();
-       // List<ForMeContentDto> recommendList = tmdbService.getForMeContents(50, user.getPreferredGenres());
-      //  model.addAttribute("recommendList", recommendList);
-
         return "content/recommendPage";
     }
 
