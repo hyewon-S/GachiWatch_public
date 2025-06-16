@@ -14,10 +14,16 @@ public class GlobalControllerAdvice {
     private MemberServiceImpl memberService;
 
     @ModelAttribute("user")
-    public Member currentUser(@AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails != null) {
-            return memberService.findByEmail(userDetails.getUsername());
+    public Member currentUser(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        System.out.println("🔥 GlobalControllerAdvice 실행됨");
+        System.out.println("🔥 customUserDetails: " + customUserDetails);
+    //    return (customUserDetails != null) ? customUserDetails.getMember() : null;
+        Member member = null;
+        if (customUserDetails != null) {
+            member = customUserDetails.getMember();
+            System.out.println("🔥 member: " + member);
         }
-        return null;
-    }
+        return member;
+}
+
 }

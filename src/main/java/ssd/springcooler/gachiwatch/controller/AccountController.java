@@ -124,20 +124,20 @@ public class AccountController {
     }
 
 
-    @PostMapping("/login")
-    public String login(LoginDto loginDto,
-                        HttpSession session,
-                        Model model) {
-        Member member = memberService.login(loginDto);
-
-        if (member != null) {
-            session.setAttribute("user", member);
-            return "redirect:/home"; // ← account 디렉토리 외부로 redirect //메인페이지 통합으로 인해 수정했습니다.
-        } else {
-            model.addAttribute("error", "로그인 실패");
-            return "account/login";
-        }
-    }
+//    @PostMapping("/login")
+//    public String login(LoginDto loginDto,
+//                        HttpSession session,
+//                        Model model) {
+//        Member member = memberService.login(loginDto);
+//
+//        if (member != null) {
+//            session.setAttribute("user", member);
+//            return "redirect:/home"; // ← account 디렉토리 외부로 redirect //메인페이지 통합으로 인해 수정했습니다.
+//        } else {
+//            model.addAttribute("error", "로그인 실패");
+//            return "account/login";
+//        }
+//    }
 
 
     // 로그아웃

@@ -22,11 +22,10 @@ public interface MemberService {
 
     /**
      * 로그인 처리
-     *
-     * @param dto 로그인 요청 DTO
-     * @return
      */
     Member login(LoginDto loginDto);
+
+    Member findByEmail(String username);
 
     /*
      * 프로필 정보 수정
@@ -76,6 +75,7 @@ public interface MemberService {
 //    void deleteWatchedContent(int memberId, int contentId);
 
 
+    List<Platform> getSubscribedOttList(int memberId);
     /**
      * 구독 중인 OTT 목록 수정
      * @param memberId 회원 ID
@@ -100,6 +100,8 @@ public interface MemberService {
     boolean deleteMember(int memberId);
 
     Member getMember(int memberId);
+
+    List<Genre> getPreferredGenres(int memberId);
 
 //    LoginDto login(String email, String password);
 }
