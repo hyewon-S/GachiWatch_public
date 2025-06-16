@@ -35,17 +35,6 @@ public class CrewChat {
     @Column(name = "CHAT", nullable = false)
     private String chat;
 
-    // 연관 관계
-/*
-    @ManyToOne
-    @JoinColumn(name = "CREW_ID", insertable = false, updatable = false)
-    private Crew crew;
-
-
-    @ManyToOne
-    @JoinColumn(name = "MEMBER_ID", insertable = false, updatable = false)
-    private Member member;
-*/
     public CrewChat(Crew crew, Date date, String chat, Member member) {
         //this.crew = crew;
         this.crewId = crew.getCrewId();
@@ -54,6 +43,7 @@ public class CrewChat {
         //this.member = member;
         this.memberId = (Integer) member.getMemberId();
     }
+
 
 /*
     @ManyToOne

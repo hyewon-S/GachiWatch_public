@@ -62,6 +62,7 @@ public class CrewPageController {
     public String viewCrewPage(@PathVariable Long id, Model model) {
         Crew crew = crewService.getCrew(id).get();
         List<CrewChat> chatList = crewService.getCrewChat(id);
+
         List<ChatDto> chatDtoList = chatList.stream()
                 .map(chat -> ChatDto.builder()
                         .crew(crewService.getCrew(chat.getCrewId()).get())
@@ -70,6 +71,7 @@ public class CrewPageController {
                         .date(chat.getChatDate())
                         .build())
                 .collect(Collectors.toList());
+
 
         model.addAttribute("crew", crew);
         //model.addAttribute("chatList", chatList);
