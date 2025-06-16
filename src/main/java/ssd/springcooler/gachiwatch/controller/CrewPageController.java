@@ -2,6 +2,7 @@ package ssd.springcooler.gachiwatch.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -9,10 +10,12 @@ import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.CrewChat;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.CrewDto;
+import ssd.springcooler.gachiwatch.security.CustomUserDetails;
 import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
 import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
 
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/crew/crewpage")
@@ -45,13 +48,14 @@ public class CrewPageController {
     @PostMapping("/chat")
     public String writeChat(@RequestParam Long crewId,
                             @RequestParam("message") String chatMessage,
+                            @AuthenticationPrincipal CustomUserDetails userDetails,
                             HttpSession session) {
         // 1. 세션에서 로그인한 멤버 정보 얻기 (예시: memberId가 세션에 저장되어 있다고 가정)
-        Integer memberId = (int) session.getAttribute("memberId");
-
+        //Integer memberId = (int) session.getAttribute("memberId");
+        Member member = userDetails.getMember();
         // 2. 크루와 멤버 엔티티 조회
         Crew crew = crewService.getCrew(crewId).get();
-        Member member = memberService.getMember(memberId);
+        //Member member = memberService.getMember(memberId);
 
         // 3. 현재 시간으로 CrewChat 생성
         Date now = new Date();
@@ -66,13 +70,19 @@ public class CrewPageController {
 
     @GetMapping("/{id}")
     public String viewCrewPage(@PathVariable Long id, Model model) {
-        CrewDto crewDto = crewService.getCrewWithChat(id);
-        System.out.println(crewDto.getChatList().toArray().toString());
-        System.out.println(crewDto.getChatList());
+        //CrewDto crewDto = crewService.getCrewWithChat(id);
+        Crew crew = crewService.getCrew(id).get();
+        List<CrewChat> chatList = crewService.getCrewChat(id);
+        //System.out.println(crewDto.getChatList().toArray().toString());
+        //System.out.println(crewDto.getChatList());
 
-        model.addAttribute("crewDto", crewDto);
-        model.addAttribute("crew", crewDto.getCrew().get());
-        model.addAttribute("chatList", crewDto.getChatList());
+
+        model.addAttribute("crew", crew);
+        model.addAttribute("chatList", chatList);
+
+//        //model.addAttribute("crewDto", crewDto);
+//        model.addAttribute("crew", crewDto.getCrew().get());
+//        model.addAttribute("chatList", crewDto.getChatList());
         return "crew/crewpage";
     }
 }

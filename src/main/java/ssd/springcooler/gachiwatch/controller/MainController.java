@@ -13,6 +13,7 @@ import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.ForMeContentDto;
 import ssd.springcooler.gachiwatch.dto.LatestMovieDto;
 import ssd.springcooler.gachiwatch.dto.TrendingContentDto;
+import ssd.springcooler.gachiwatch.repository.JoinedCrewRepository;
 import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
 import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
 import ssd.springcooler.gachiwatch.service.TMDBService;
@@ -36,7 +37,7 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
         this.tmdbService = tmdbService;
     }
 
-//    @GetMapping("/")
+    //    @GetMapping("/")
 //    public String redirectToHome(Model model, @AuthenticationPrincipal UserDetails userDetails) {
 //        if (userDetails != null) {
 //            model.addAttribute("user", memberService.findByEmail(userDetails.getUsername()));
@@ -49,7 +50,7 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
     }
 
 
-//    @GetMapping("/home")
+    //    @GetMapping("/home")
 //    public String home(Model model, HttpSession session, @AuthenticationPrincipal UserDetails userDetails) {
 //        Object user = session.getAttribute("user");
 //        model.addAttribute("user", user);
@@ -89,28 +90,13 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
             System.out.println("로그인된 유저: " + userDetails.getUsername());
             Member loginUser = memberService.findByEmail(userDetails.getUsername());
 
-        try {
-            List<TrendingContentDto> trending = tmdbService.getTrendingContents(20);
-            model.addAttribute("trendingContents", trending);
-
-            if (user != null) {
-                Member loginUser = (Member) user;
-
-                // Crew 및 추천 콘텐츠 서비스 활성화 시 아래 코드 사용
-                 List<Crew> crews = crewService.getCrewListByMemberId(loginUser.getMemberId());
-                 model.addAttribute("crews", crews);
-
-                // List<String> movieimages = recommendationService.getRecommendedImages(loginUser);
-                // model.addAttribute("movieimages", movieimages);
-
-                //나를 위한 추천 (통합 및 수정 필요) -> null값이 전달 되는 것 같음
-                 List<ForMeContentDto> formecontents = tmdbService.getForMeContents(20, loginUser.getPreferredGenres() /*수정필요*/);
-                 model.addAttribute("formecontents", formecontents);
-
+            if (loginUser == null) {
+                System.out.println("해당 이메일로 회원을 찾을 수 없음!");
             } else {
                 System.out.println("회원 정보: " + loginUser.getNickname());
             }
-
+            List<Crew> crews = crewService.getCrewListByMemberId(loginUser.getMemberId());
+            model.addAttribute("crews", crews);
             model.addAttribute("user", loginUser);
 
             try {

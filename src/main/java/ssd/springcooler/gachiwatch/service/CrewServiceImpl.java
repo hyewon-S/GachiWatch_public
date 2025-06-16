@@ -154,12 +154,17 @@ public class CrewServiceImpl implements CrewFacade {
     public List<CrewChat> getCrewChat(Long crewId) {
         return crewChatRepository.findByCrewIdJPQL(crewId);
     }
-
+/*
+    @Transactional
     @Override
-    public boolean insertCrewChat(Long crewId, String chat, Date date) {
-        return false;
-    }
+    public boolean insertCrewChat(Long crewId, String chat, Date date, Integer memberId) {
+        CrewChat crewChat = new CrewChat(crewId, date, chat, memberId);
+        crewChatRepository.save(crewChat);
+        return true;
 
+    }
+*/
+    @Transactional
     public boolean insertCrewChat(Crew crew, String chat, Date date, Member member){
         CrewChat crewChat = new CrewChat(crew, date, chat, member);
         crewChatRepository.save(crewChat);
