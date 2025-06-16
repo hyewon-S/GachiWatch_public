@@ -29,7 +29,6 @@ public interface CrewFacade {
     boolean kickMember(Long crewId, Member member);
 
     List<CrewChat> getCrewChat(Long crewId);
-    boolean insertCrewChat(Long crewId, String chat, Date date);
-
+    boolean insertCrewChat(Crew crew, String chat, Date date, Member member);
     List<Member> getCrewMembers(Long crewId);
 }

@@ -1,7 +1,8 @@
 package ssd.springcooler.gachiwatch.controller;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,17 +30,24 @@ public class MypageController {
         this.reviewService = reviewService;
     }
 
-    // ✅ [추가] 홈 로고 클릭 시 이동할 홈 페이지
     @GetMapping("/home/home")
     public String homeRedirect() {
-        return "home/home"; // ✅ 로고 클릭 시 이동할 홈 뷰
+        return "home/home";
     }
 
     @GetMapping("/mypage")
-    public String mypage(Model model, HttpSession session) {
-        Member user = (Member) session.getAttribute("user");
-        model.addAttribute("user", user);
-        return "mypage/mypage";  // 👈 resources/templates/mypage/mypage.html
+    public String mypage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        Member member = memberService.findByEmail(userDetails.getUsername());
+        model.addAttribute("user", member);
+        return "mypage/mypage";
+    }
+
+    // 프로필 수정 페이지 불러오기
+    @GetMapping("/my_profile")
+    public String getProfile(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        Member member = memberService.findByEmail(userDetails.getUsername());
+        model.addAttribute("user", member);
+        return "mypage/my_profile";
     }
 
     // 프로필 수정 페이지 불러오기
@@ -60,39 +68,40 @@ public class MypageController {
 
     // 내가 참여 중인 크루
     @GetMapping("/my_crew")
-    public String getMyCrews(HttpSession session, Model model) {
-        Member user = (Member) session.getAttribute("user");
-        int memberId = (int) user.getMemberId();
-        List<CrewDto> crewList = memberService.getMyCrews(memberId);
+    public String getMyCrews(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        Member member = memberService.findByEmail(userDetails.getUsername());
+        List<CrewDto> crewList = memberService.getMyCrews(member.getMemberId());
         model.addAttribute("crewList", crewList);
-        return "mypage/my_crew"; // ✅ HTML 이름에 맞게 수정
+        return "mypage/my_crew";
     }
 
-    //콘텐츠 목록 확인
+    // 콘텐츠 목록 확인
     @GetMapping("/mypage/my_content")
     public String getMyContents(@RequestParam(defaultValue = "liked") String tab,
-                                @RequestParam int memberId,
+                                @AuthenticationPrincipal UserDetails userDetails,
                                 Model model) {
-        if (tab.equals("liked")) {
+        Member member = memberService.findByEmail(userDetails.getUsername());
+        int memberId = member.getMemberId();
+
+        if ("liked".equals(tab)) {
             List<ContentSummaryDto> likeContent = memberService.getLikedContents(memberId);
             model.addAttribute("likedList", likeContent);
-        } else if (tab.equals("watched")) {
+        } else if ("watched".equals(tab)) {
             List<ContentSummaryDto> watchedList = memberService.getWatchedContents(memberId);
             model.addAttribute("watchedList", watchedList);
         }
 
-        model.addAttribute("tab", tab); // 프론트에서 어떤 탭 보여줄지 판단용
-        return "mypage/my_content";    // 하나의 HTML 파일에서 탭으로 나눠서 보여줌
+        model.addAttribute("tab", tab);
+        return "mypage/my_content";
     }
 
     // 작성한 리뷰 목록 조회
     @GetMapping("/my_review")
-    public String getMyReviews(HttpSession session, Model model) {
-        Member user = (Member) session.getAttribute("user");
-        int memberId = (int) user.getMemberId();
-        List<ReviewDto> reviewList = reviewService.getReviewsByUser(memberId);
+    public String getMyReviews(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        Member member = memberService.findByEmail(userDetails.getUsername());
+        List<ReviewDto> reviewList = reviewService.getReviewsByUser(member.getMemberId());
         model.addAttribute("reviewList", reviewList);
-        return "mypage/my_review"; // ✅ HTML 이름에 맞게 수정
+        return "mypage/my_review";
     }
 
     // 작성한 리뷰 삭제
@@ -103,16 +112,14 @@ public class MypageController {
     }
 
     @GetMapping("/my_subscribed_ott")
-    public String getMyOtts(Model model, HttpSession session) {
-        Member user = (Member) session.getAttribute("user");
-        int memberId = (int) user.getMemberId();
 
-        // NULL 제외한 플랫폼 리스트
+    public String getMyOtts(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        Member member = memberService.findByEmail(userDetails.getUsername());
+
         List<Platform> ottList = Arrays.stream(Platform.values())
                 .filter(p -> p != Platform.NULL)
-                .collect(Collectors.toList());
-//    List<Platform> ottList = List.of(Platform.values());
-        List<Platform> subscribedOttList = memberService.getSubscribedOttList(memberId);
+                .toList();
+        List<Platform> subscribedOttList = memberService.getSubscribedOttList(member.getMemberId());
 
         MemberSubscribedOttDto dto = new MemberSubscribedOttDto();
         dto.setOttList(subscribedOttList);
@@ -120,59 +127,53 @@ public class MypageController {
         model.addAttribute("ottList", ottList);
         model.addAttribute("memberSubscribedOttDto", dto);
 
-        return "mypage/my_subscribed_ott"; // 👉 HTML 파일 이름이 ott_setting.html 이라고 가정
+        return "mypage/my_subscribed_ott";
     }
 
     // 구독중인 OTT 수정
     @PostMapping("/my_subscribed_ott")
     public String updateOtt(@RequestParam List<Platform> ottList,
-                            HttpSession session,
-                            Model model) {
-        Member user = (Member) session.getAttribute("user");
-        int memberId = (int) user.getMemberId();
 
-        memberService.updateSubscribedOtt(memberId, ottList);
+                            @AuthenticationPrincipal UserDetails userDetails,
+                            Model model) {
+        Member member = memberService.findByEmail(userDetails.getUsername());
+        memberService.updateSubscribedOtt(member.getMemberId(), ottList);
+
         model.addAttribute("result", "success");
         return "redirect:/mypage";
     }
 
     // 선호 장르 페이지 보여주기
     @GetMapping("/my_preferred_genre")
-    public String getMyGenres(Model model, HttpSession session) {
-        Member user = (Member) session.getAttribute("user");
-        int memberId = (int) user.getMemberId();
+    public String getMyGenres(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        Member member = memberService.findByEmail(userDetails.getUsername());
 
-        // 전체 장르 enum 리스트
         List<Genre> allGenres = List.of(Genre.values());
-
-        // 사용자가 선택한 선호 장르 리스트
-        List<Genre> selectedGenres = memberService.getPreferredGenres(memberId);
+        List<Genre> selectedGenres = memberService.getPreferredGenres(member.getMemberId());
 
         model.addAttribute("allGenres", allGenres);
         model.addAttribute("selectedGenres", selectedGenres);
 
-        return "mypage/my_preferred_genre"; // HTML 위치: templates/mypage/my_preferred_genre.html
+        return "mypage/my_preferred_genre";
     }
-
 
     // 선호 장르 수정하기
     @PostMapping("/my_preferred_genre")
-    public String updateGenre(@RequestParam int memberId,
+    public String updateGenre(@AuthenticationPrincipal UserDetails userDetails,
                               @RequestParam List<Genre> genreList,
                               Model model) {
-        memberService.updatePreferredGenre(memberId, genreList);
+        Member member = memberService.findByEmail(userDetails.getUsername());
+        memberService.updatePreferredGenre(member.getMemberId(), genreList);
         model.addAttribute("result", "success");
-        return "redirect:/mypage/my_preferred_genre"; // 수정 후 다시 장르 페이지로 이동
+      
+        return "redirect:/mypage/my_preferred_genre";
     }
 
-
     @GetMapping("/my_report")
-    public String getReports(HttpSession session, Model model) {
-        Member user = (Member) session.getAttribute("user");
-        int memberId = (int) user.getMemberId();
-
-        List<ReportDto> reportList = memberService.getReports(memberId);
+    public String getReports(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        Member member = memberService.findByEmail(userDetails.getUsername());
+        List<ReportDto> reportList = memberService.getReports(member.getMemberId());
         model.addAttribute("reportList", reportList);
-        return "mypage/my_report"; // ✅ HTML 이름에 맞게 수정
+        return "mypage/my_report";
     }
 }

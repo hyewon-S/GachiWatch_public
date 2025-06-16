@@ -55,4 +55,3 @@ public interface MemberMapper {
 
     List<ReportDto> selectReportsByMe(Long memberId);
 }
-

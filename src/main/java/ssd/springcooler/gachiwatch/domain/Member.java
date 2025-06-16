@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,10 @@ import java.util.List;
 @Entity
 @Builder
 //@Table(name = "Member")
-public class Member {
+public class Member implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Id
     @SequenceGenerator(
             name = "member_seq_gen",
@@ -25,7 +30,7 @@ public class Member {
     )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_gen")
     @Column(name="member_id")
-    private int memberId; // 멤버 고유 ID
+    private Integer memberId; // 멤버 고유 ID
 
     private String name; // 이름
     private String password; // 비밀번호
@@ -105,7 +110,7 @@ public class Member {
 //        this.birthdate = birthdate;
 //    }
 
-    public Object getMemberId() {
+    public Integer getMemberId() {
         return memberId;
     }
 

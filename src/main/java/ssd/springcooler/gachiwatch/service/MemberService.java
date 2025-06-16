@@ -25,6 +25,8 @@ public interface MemberService {
      */
     Member login(LoginDto loginDto);
 
+    Member findByEmail(String username);
+
     /*
      * 프로필 정보 수정
      * @param memberId 회원 ID

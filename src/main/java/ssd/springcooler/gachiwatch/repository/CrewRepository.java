@@ -18,6 +18,9 @@ public interface CrewRepository extends JpaRepository<Crew, Long> {
 
     Page<Crew> findByPlatform(Platform platform, Pageable pageable);
 
+    //@Query("select c from crew c where c.memberId like :memberId")
+    //Page<Crew> findByCrewMembersMemberId(int memberId, Pageable pageable);
+
     //@Query("select * from crew c where c.platform like :platform")
     //List<Crew> findCrewByPlatform(Platform platform,);
 }

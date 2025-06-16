@@ -125,9 +125,10 @@
     <div class="profile">
         <img src="https://via.placeholder.com/80" alt="프로필" style="border-radius: 50%;" />
         <div>
-<!--            <div class="section no-border" th:onclick="|location.href='@{/mypage/my_profile}'|">-->
-<!--                <div class="section-title">닉네임 ▶</div>-->
-<!--            </div>-->
+            <!--            <div class="section no-border" th:onclick="|location.href='@{/mypage/my_profile}'|">-->
+            <!--                <div class="section-title">닉네임 ▶</div>-->
+            <!--            </div>-->
+
             <div class="section no-border" th:onclick="|location.href='@{/mypage/my_profile}'|">
                 <div class="section-title">
                     <span th:text="${user.nickname}">닉네임</span> ▶
@@ -144,26 +145,27 @@
     <div class="tabs">
         <div class="tabs">
             <div class="tab"
-                 th:onclick="|location.href='@{/mypage/my_content(tab='liked')}'|">
+                 th:onclick="|location.href='@{/mypage/my_content(tab=${'liked'})}'|">
                 찜했어요
             </div>
             <div class="tab"
-                 th:onclick="|location.href='@{/mypage/my_content(tab='watched')}'|">
+                 th:onclick="|location.href='@{/mypage/my_content(tab=${'watched'})}'|">
                 봤어요
             </div>
+
         </div>
 
         <!--        &lt;!&ndash; 찜했어요 &ndash;&gt;-->
-<!--        <div class="tab"-->
-<!--             th:onclick="|location.href='@{/mypage/my_content(tab='''liked''', memberId=${user.id})}'|">-->
-<!--            찜했어요-->
-<!--        </div>-->
-<!--        <div class="tab"-->
-<!--             th:onclick="|location.href='@{/mypage/my_content(tab='''watched''', memberId=${user.id})}'|">-->
-<!--            봤어요-->
-<!--        </div>-->
+        <!--        <div class="tab"-->
+        <!--             th:onclick="|location.href='@{/mypage/my_content(tab='''liked''', memberId=${user.id})}'|">-->
+        <!--            찜했어요-->
+        <!--        </div>-->
+        <!--        <div class="tab"-->
+        <!--             th:onclick="|location.href='@{/mypage/my_content(tab='''watched''', memberId=${user.id})}'|">-->
+        <!--            봤어요-->
+        <!--        </div>-->
         <!--<div class="tab">찜했어요</div>-->
-<!--        <div class="tab">봤어요</div>-->
+        <!--        <div class="tab">봤어요</div>-->
     </div>
 
     <div class="section" th:onclick="|location.href='@{/mypage/my_review}'|">

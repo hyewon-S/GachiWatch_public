@@ -1,4 +1,8 @@
-
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
 .ott-platforms {
     display: flex;
     justify-content: space-between;
@@ -50,6 +54,8 @@ body {
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 1.5rem;
             padding: 1rem 2rem;
+            max-width: 1200px; /* 너비 제한 */
+            margin: 0 auto;     /* 중앙 정렬 */
         }
         .party-card {
             background: white;
@@ -71,7 +77,18 @@ body {
             margin-top: 0.8rem;
             border: none;
             cursor: pointer;
+            text-decoration: none;
         }
+        .create-btn {
+                    background: #7b6ef6;
+                    color: white;
+                    padding: 0.6rem 1.2rem;
+                    border-radius: 999px;
+                    font-weight: bold;
+                    margin-top: 0.8rem;
+                    border: none;
+                    cursor: pointer;
+                }
         .pagination {
             text-align: center;
             padding: 1rem;
@@ -184,4 +201,60 @@ body {
      border: 2px solid #007bff;
      box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
      background-color: #f0f8ff;
+ }
+ .button-group {
+     display: inline-flex;
+     gap: 6px;
+     margin-left: auto;
+ }
+ #grey-btn {
+     background-color: #ccc; /* 연한 회색 배경 */
+     color: #333; /* 진한 글자색 */
+     border: 1px solid #999; /* 연한 테두리 */
+ }
+
+ .pagination a {
+   color: black;           /* 링크 색깔 검은색 */
+   text-decoration: none;  /* 밑줄 제거 */
+   margin: 0 5px;
+ }
+
+ .pagination a:hover {
+   text-decoration: underline; /* 마우스 올릴 때만 밑줄 */
+ }
+
+ /* 현재 페이지 표시 */
+ .pagination span.current-page {
+   font-weight: bold;
+   color: blue;   /* 현재 페이지 색깔 */
+   text-decoration: underline; /* 현재 페이지만 밑줄 */
+   pointer-events: none; /* 클릭 불가 */
+   margin: 0 5px;
+ }
+
+ .modal {
+     display: none;
+     position: fixed;
+     z-index: 999;
+     left: 0;
+     top: 0;
+     width: 100%;
+     height: 100%;
+     overflow: auto;
+     background-color: rgba(0,0,0,0.5);
+ }
+
+ .modal-content {
+     background-color: #fff;
+     margin: 15% auto;
+     padding: 20px;
+     border-radius: 10px;
+     width: 300px;
+     text-align: center;
+ }
+
+ .close {
+     float: right;
+     font-size: 24px;
+     cursor: pointer;
  }

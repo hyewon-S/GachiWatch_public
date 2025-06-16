@@ -228,7 +228,7 @@ public class TMDBService {
         if (genreIdParam.isEmpty()) {
             genreIdParam = "28";
         }
-
+        System.out.println(genreIdParam);
         // 영화 API URL
         final String MOVIE_URL = "https://api.themoviedb.org/3/discover/movie"
                 + "?with_genres=" + genreIdParam
@@ -259,21 +259,30 @@ public class TMDBService {
 
     private List<ForMeContentDto> fetchContentFromUrl(String url, String mediaType, int maxCount) throws Exception {
         List<ForMeContentDto> result = new ArrayList<>();
-        String jsonResponse = readUrl(url);
+        int page = 1;
 
-        JSONObject jsonObject = new JSONObject(jsonResponse);
-        JSONArray results = jsonObject.getJSONArray("results");
+        while (result.size() < maxCount) {
+            String pagedUrl = url + "&page=" + page;
+            String jsonResponse = readUrl(pagedUrl);
 
-        for (int i = 0; i < results.length() && result.size() < maxCount; i++) {
-            JSONObject obj = results.getJSONObject(i);
-            int id = obj.getInt("id");
-            String posterPath = obj.optString("poster_path", null);
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            JSONArray results = jsonObject.getJSONArray("results");
 
-            if (posterPath != null && !posterPath.isEmpty()) {
-                result.add(new ForMeContentDto(id, posterPath, mediaType));
+            if (results.length() == 0) break; // 더 이상 결과 없음
+
+            for (int i = 0; i < results.length() && result.size() < maxCount; i++) {
+                JSONObject obj = results.getJSONObject(i);
+                int id = obj.getInt("id");
+                String posterPath = obj.optString("poster_path", null);
+
+                if (posterPath != null && !posterPath.isEmpty()) {
+                    result.add(new ForMeContentDto(id, posterPath, mediaType));
+                }
             }
+
+            page++;
         }
+
         return result;
     }
-
 }

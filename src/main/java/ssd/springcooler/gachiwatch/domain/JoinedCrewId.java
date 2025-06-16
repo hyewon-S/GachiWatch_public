@@ -9,9 +9,13 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode
 public class JoinedCrewId implements Serializable {
-    private Long memberId;
+    private Integer memberId;
     private Long crewId;
+
+    public JoinedCrewId(Integer memberId, Long crewId) {
+        this.memberId = memberId;
+        this.crewId = crewId;
+    }
 }
