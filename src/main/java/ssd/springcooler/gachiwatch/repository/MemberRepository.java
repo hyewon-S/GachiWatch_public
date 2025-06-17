@@ -16,4 +16,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
     @Query("SELECT m FROM Member m LEFT JOIN FETCH m.preferredGenres WHERE m.email = :email")
     Optional<Member> findByEmailWithPreferredGenres(@Param("email") String email);
+
+    boolean existsByEmail(String email);
+
 }

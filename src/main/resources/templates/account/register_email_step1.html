@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <title>회원가입 - Step 1</title>
     <style>
+        .logo-container {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 20px;
+        }
+
+        .logo-img {
+          width: 180px;  /* or 150px 등으로 조절 */
+          height: auto;
+          max-width: 100%;
+        }
+
+        .register-title {
+          text-align: center;
+          margin-top: 10px;
+          font-size: 24px;
+        }
+
         body { font-family: sans-serif; display: flex; justify-content: center; margin-top: 50px; }
         .container { width: 400px; }
         h1 { text-align: center; }
@@ -18,8 +36,11 @@
 </head>
 <body>
 <div class="container">
-    <h1>Gachi Watch<br>회원가입</h1>
-<!--    <form action="register_email_step1.html" method="post">-->
+    <div class="logo-container">
+        <img src="/image/logo.png" alt="로고" class="logo-img">
+    </div>
+    <h1 class="register-title">회원가입</h1>
+
     <form th:action="@{/account/register_step2}" method="post">
 
     <div class="form-group">
@@ -43,24 +64,124 @@
 
         <div class="form-group">
             <label for="email">이메일</label>
-            <input type="email" id="email" name="email" required>
-            <button type="button">중복 확인</button>
+            <input type="email" id="email" name="email" placeholder="ex) 123@gmail.com" required>
+            <button type="button" onclick="checkEmail()">중복 확인</button>
+            <div id="emailMessage" style="color:red; font-size:0.9em;"></div>
         </div>
+
 
         <div class="form-group">
             <label for="password">비밀번호</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" placeholder="영문 + 숫자 조합 7자리 이상" required>
+            <div id="passwordMessage" style="color:red; font-size:0.9em;"></div>
         </div>
 
         <div class="form-group">
             <label for="confirmPassword">비밀번호 확인</label>
             <input type="password" id="confirmPassword" name="confirmPassword" required>
+            <div id="confirmPasswordMessage" style="color:red; font-size:0.9em;"></div>
         </div>
 
-<!--        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
+
+        <!--        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
 
         <button class="btn" type="submit">다음</button>
     </form>
 </div>
+
+<script>
+    // 1. 이메일 형식 검사 함수 + 중복 확인 기능
+    function checkEmailFormat(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+
+    function checkEmail() {
+        const email = document.getElementById("email").value;
+        const msg = document.getElementById("emailMessage");
+
+        if (!checkEmailFormat(email)) {
+            msg.innerText = "올바른 이메일 형식이 아닙니다.";
+            msg.style.color = "red";
+            return;
+        }
+
+        fetch(`/account/check-email?email=${encodeURIComponent(email)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.exists) {
+                    msg.innerText = "이미 가입된 이메일입니다.";
+                    msg.style.color = "red";
+                } else {
+                    msg.innerText = "사용 가능한 이메일입니다.";
+                    msg.style.color = "green";
+                }
+            })
+            .catch(() => {
+                msg.innerText = "오류가 발생했습니다.";
+                msg.style.color = "red";
+            });
+    }
+</script>
+
+<script>
+    // 2. 비밀번호 형식 + 일치 여부 검사
+    function checkPasswordFormat(password) {
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{7,}$/;
+        return regex.test(password);
+    }
+
+    document.getElementById("password").addEventListener("input", function() {
+        const pwd = this.value;
+        const msg = document.getElementById("passwordMessage");
+
+        if (!checkPasswordFormat(pwd)) {
+            msg.innerText = "비밀번호는 영문 + 숫자 조합으로 7자리 이상이어야 합니다.";
+        } else {
+            msg.innerText = "";
+        }
+    });
+
+    document.getElementById("confirmPassword").addEventListener("input", function() {
+        const pwd = document.getElementById("password").value;
+        const confirmPwd = this.value;
+        const msg = document.getElementById("confirmPasswordMessage");
+
+        if (pwd !== confirmPwd) {
+            msg.innerText = "비밀번호가 일치하지 않습니다.";
+        } else {
+            msg.innerText = "";
+        }
+    });
+</script>
+
+<script>
+    // form 제출 전에 유효성 검사 한 번 더
+    document.querySelector("form").addEventListener("submit", function(e) {
+        const email = document.getElementById("email").value;
+        const pwd = document.getElementById("password").value;
+        const confirmPwd = document.getElementById("confirmPassword").value;
+
+        if (!checkEmailFormat(email)) {
+            alert("이메일 형식이 올바르지 않습니다.");
+            e.preventDefault();
+            return;
+        }
+
+        if (!checkPasswordFormat(pwd)) {
+            alert("비밀번호 형식이 올바르지 않습니다.");
+            e.preventDefault();
+            return;
+        }
+
+        if (pwd !== confirmPwd) {
+            alert("비밀번호가 일치하지 않습니다.");
+            e.preventDefault();
+            return;
+        }
+    });
+</script>
+
+
 </body>
 </html>
