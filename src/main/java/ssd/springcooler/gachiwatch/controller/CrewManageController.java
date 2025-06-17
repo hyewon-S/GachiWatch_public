@@ -57,6 +57,9 @@ public class CrewManageController {
             return "error/404";
         }
 
+        if (userDetails.getMember() == null) {
+            return "redirect:/account/login";
+        }
         Crew crew = crewOpt.get();
         List<Member> members = crewService.getCrewMembersByCrewId(crewId);
 

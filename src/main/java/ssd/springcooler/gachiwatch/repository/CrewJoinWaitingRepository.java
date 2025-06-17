@@ -5,11 +5,12 @@ import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.CrewJoinWaiting;
 import ssd.springcooler.gachiwatch.domain.CrewJoinWaitingId;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CrewJoinWaitingRepository extends JpaRepository<CrewJoinWaiting, CrewJoinWaitingId> {
     //Optional<CrewJoinWaiting> findByCrew(Crew crew);
 
     //Optional<CrewJoinWaiting> findByCrew_Id(Long crewId);
-    Optional<CrewJoinWaiting> findByCrewId(Long crewId);
+    List<CrewJoinWaiting> findByCrewId(Long crewId);
 }

@@ -114,6 +114,13 @@ public class CrewServiceImpl implements CrewFacade {
         return crewList;
     }
 
+    public List<CrewJoinWaiting> getWaitingList(Long crewId) {
+        List<CrewJoinWaiting> crewJoinWaitingList = crewJoinWaitingRepository.findByCrewId(crewId);
+        //List<Member> memberList = crewJoinWaitingList.stream()
+       //         .map(CrewJoinWaiting::getCrewId);
+        return crewJoinWaitingList;
+    }
+
     @Transactional
     public Crew createCrew(Crew crew, Member captain) {
         crew.setCaptain(captain);
