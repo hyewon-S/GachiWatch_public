@@ -1,95 +1,36 @@
 package ssd.springcooler.gachiwatch.domain;
 
-import java.io.Serializable;
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
-@SuppressWarnings("serial")
-public class Notification implements Serializable {
-    private int notificationId; //알림
-    private int memberId; // 알림을 받을 사용자
-    //private Member member; //알림을 받을 사용자
-    private Content content; //새롭게 업로드 된 콘텐츠 정보
-    private LocalDateTime sentAt; //이메일 전송 시간
-    private String substance; //이메일로 전송될 내용
-    private NotificationStatus status; //알림 상태 (PENDING, SENT, FAILED)
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "notification")
+public class Notification   {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notification_seq")
+    @SequenceGenerator(name = "notification_seq", sequenceName = "NOTIFICATION_SEQ", allocationSize = 1)
+    private Long id;
 
-    // 모든 필드에 대한 생성자 -> 나중에 필요시 활성화
-//    public Notification(int notificationId, /*Member member*/ int memberId, Content content, LocalDateTime sentAt, String substance, NotificationStatus status) {
-//        this.notificationId = notificationId;
-//        this.member = member;
-//        this.content = content;
-//        this.sentAt = sentAt;
-//        this.substance = substance;
-//        this.status = status;
-//    }
+    // Member와 다대일 관계 매핑
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
-    // Getter & Setter
-    public int getNotificationId() {
-        return notificationId;
-    }
+    private String email;          // 알림을 받은 이메일
+    private String nickname;       // 회원 닉네임
 
-    public void setNotificationId(int notificationId) {
-        this.notificationId = notificationId;
-    }
+    @Column(length = 1000)
+    private String content;        // 알림 내용 (예: 로그인 알림 메시지)
 
-//    public Member getMember() {
-//        return member;
-//    }
-//
-//    public void setMember(Member member) {
-//        this.member = member;
-//    }
+    private LocalDateTime sentAt;  // 알림 전송 시간
 
-
-    public int getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(int memberId) {
-        this.memberId = memberId;
-    }
-
-    public Content getContent() {
-        return content;
-    }
-
-    public void setContent(Content content) {
-        this.content = content;
-    }
-
-    public LocalDateTime getSentAt() {
-        return sentAt;
-    }
-
-    public void setSentAt(LocalDateTime sentAt) {
-        this.sentAt = sentAt;
-    }
-
-    public String getSubstance() {
-        return substance;
-    }
-
-    public void setSubstance(String substance) {
-        this.substance = substance;
-    }
-
-    public NotificationStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(NotificationStatus status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "Notification{" +
-                "notificationId=" + notificationId +
-                ", memberId=" + memberId +
-                ", content=" + content +
-                ", sentAt=" + sentAt +
-                ", substance='" + substance + '\'' +
-                ", status=" + status +
-                '}';
-    }
+    @Enumerated(EnumType.STRING)
+    private NotificationStatus status; // 전송 상태 (예: SENT, FAILED 등)
 }
