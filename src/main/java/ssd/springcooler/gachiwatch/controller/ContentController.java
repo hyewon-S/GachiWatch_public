@@ -64,8 +64,8 @@ public class ContentController {
             memberId = user.getMemberId();
 
             //유저가 좋아요를 눌렀는지, 봤어요를 눌렀는지 확인해줘야 함
-            model.addAttribute("heartUrl", "/image/icon/icon-heart-red.png");
-            model.addAttribute("eyeUrl", "/image/icon/icon-eye.png");
+            model.addAttribute("heartUrl", "/image/icon/icon-heart-black.png");
+            model.addAttribute("eyeUrl", "/image/icon/icon-hidden.png");
         } else {
             model.addAttribute("isLoggedIn", false);
         }
