@@ -51,6 +51,7 @@
            color: #333;
            cursor: pointer;
        }
+
        .sign-in, .register {
             padding: 6px 12px;
             border-radius: 6px;
@@ -72,6 +73,20 @@
             border-radius: 6px;
             border: none;
             cursor: pointer;
+        }
+
+        .profile-image {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid #ccc;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.2s ease;
+        }
+
+        .profile-image:hover {
+            box-shadow: 0 0 0 2px #4285f4;
         }
 
         .logout {
@@ -163,10 +178,9 @@
 
         <!-- 로그인 했다면 -->
         <a th:if="${isLoggedIn}" th:href="@{/account/logout}"><button class="logout">Logout</button></a>
-        <!-- 아래는 나중에 다시 구현
-        <a th:if="${isLoggedIn}" th:href="@{/mypage}">
-            <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
-        </a> -->
+        <a th:if="${isLoggedIn}" th:href="@{/mypage/mypage}">
+            <img th:src="@{/image/profile_img_default.png}" alt="프로필" class="profile-image">
+        </a>
     </nav>
 </header>
 

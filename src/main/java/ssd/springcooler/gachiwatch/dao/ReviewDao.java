@@ -8,7 +8,7 @@ public interface ReviewDao {
     void insertReview(Review review);
 
     // 2. 리뷰 수정
-    void updateReview(Review review);
+    void updateReview(int reviewId, String substance, int rate, String date);
 
     // 3. 리뷰 삭제
     void deleteReview(int reviewId);

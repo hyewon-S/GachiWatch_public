@@ -46,24 +46,24 @@ public class ReviewController {
     }
 
     @GetMapping("/updateForm")
-    public String updateForm(@RequestParam int contentId, @RequestParam String substance, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String updateForm(@RequestParam int reviewId, @RequestParam int contentId, @RequestParam String substance, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         if( userDetails != null) {
-            Member user = memberService.findByEmail(userDetails.getUsername());
-            model.addAttribute("contentId", contentId);
-            model.addAttribute("memberId", user.getMemberId());
+            model.addAttribute("reviewId", reviewId);
             model.addAttribute("substance", substance);
+            model.addAttribute("contentId", contentId);
         }
-        return "review/review_form";//일단 오류남
+        return "review/review_form";
     }
 
     @PostMapping("/update")
-    public String update(@RequestParam int star, @RequestParam int memberId, @RequestParam int contentId, @RequestParam String reviewContent) {
-        reviewService.updateReview(contentId, memberId, reviewContent, star);
+    public String update(@RequestParam int star, @RequestParam int contentId, @RequestParam int reviewId, @RequestParam String reviewContent) {
+        reviewService.updateReview(reviewId, reviewContent, star);
         return "redirect:/content/detail?contentId=" + contentId;
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam int contentId) {
+    public String delete(@RequestParam int reviewId, @RequestParam int contentId) {
+        reviewService.deleteReview(reviewId);
         return "redirect:/content/detail?contentId=" + contentId;
     }
 }

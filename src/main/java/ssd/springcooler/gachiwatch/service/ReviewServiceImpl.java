@@ -61,7 +61,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
     @Override
     public void deleteReview(int reviewId) {
-
+        reviewDao.deleteReview(reviewId);
     }
 
     @Override
@@ -76,13 +76,10 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public void updateReview(int contentId, int memberId, String reviewContent, int star) {
+    public void updateReview(int reviewId, String reviewContent, int star) {
         Date now = new Date(); // 현재 시간
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd:HH:mm");
         String formatted = sdf.format(now);
-        Member memberForId = new Member();
-        memberForId.setMemberId(memberId);
-        Review review = new Review(contentId, memberForId, reviewContent, star, formatted);
-        reviewDao.updateReview(review);
+        reviewDao.updateReview(reviewId, reviewContent, star, formatted);
     }
 }
