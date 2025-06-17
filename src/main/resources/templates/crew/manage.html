@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
-    <title>Gachi Watch - 크루 페이지</title>
+    <title>Gachi Watch - 크루 관리</title>
     <link rel="stylesheet" href="/css/crew/manage.css" />
 </head>
 <body>
@@ -37,18 +37,25 @@
             <input type="text" th:value="${crew.crewName}" name="crewName" />
 
             <label>OTT 플랫폼</label>
-            <div class="platforms">
-                <img th:classappend="${crew.platform} == 'NETFLIX' ? 'selected' : ''" src="/img/netflix.png" />
-                <img th:classappend="${crew.platform} == 'DISNEY' ? 'selected' : ''" src="/img/disney.png" />
-                <img th:classappend="${crew.platform} == 'TVING' ? 'selected' : ''" src="/img/tving.png" />
-                <!-- 기타 플랫폼도 동일 방식으로 -->
+            <div class="ott-platforms" th:object="${crew}">
+                <div th:each="platform : ${platforms}">
+                    <input type="radio"
+                           th:field="*{platform}"
+                           th:id="${'platform_' + platform.name()}"
+                           th:value="${platform.name()}"
+                           required />
+                    <label th:for="${'platform_' + platform.name()}">
+                        <img th:src="@{'/image/' + ${platform.name().toLowerCase()} + '.png'}"
+                             th:alt="${platform.label}" />
+                    </label>
+                </div>
             </div>
 
             <label>인원</label>
             <input type="number" th:value="${crew.maxMember}" name="maxMember" />
 
             <label>결제일</label>
-            <input type="text" th:value="${#dates.format(crew.payDate, 'MM:dd')}" name="payDate" />
+            <input type="text" th:value="${#dates.format(crew.payDate, 'd')} + '일'" name="payDate" />
 
             <button type="submit">변경</button>
         </form>
@@ -58,18 +65,18 @@
     <section class="member-list">
         <div class="member-grid">
             <div th:each="member : ${memberList}">
-                <div class="member-card" th:classappend="${member.id} == ${captainId} ? ' captain' : ''">
+                <div class="member-card" th:classappend="${member.memberId} == ${crew.captain.memberId} ? ' captain' : ''">
                     <div class="profile-pic">
-                        <img src="/img/profile-placeholder.png" />
+                        <img src="/image/profile-placeholder.png" />
                     </div>
                     <div class="nickname" th:text="${member.nickname}">닉네임</div>
 
                     <div class="actions">
-                        <button class="report-btn">신고하기</button>
-                        <button class="kick-btn" th:if="${member.id} != ${captainId}">강퇴하기</button>
+                        <button class="report-btn" th:if="${loginUser.memberId} != ${member.memberId}">신고하기</button>
+                        <button class="kick-btn" th:if="${member.memberId} != ${crew.captain.memberId} and ${loginUser.memberId} == ${crew.captain.memberId}">강퇴하기</button>
                     </div>
 
-                    <div class="badge" th:if="${member.id} == ${captainId}">파티장</div>
+                    <div class="badge" th:if="${member.memberId} == ${crew.captain.memberId}">파티장</div>
                 </div>
             </div>
         </div>

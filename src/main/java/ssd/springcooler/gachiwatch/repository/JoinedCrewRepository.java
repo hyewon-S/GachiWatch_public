@@ -27,6 +27,9 @@ public interface JoinedCrewRepository extends JpaRepository<JoinedCrew, JoinedCr
                           @Param("memberId") Integer memberId,
                           @Param("isLeader") boolean isLeader);
 
-    @Query("SELECT jc FROM JoinedCrew jc WHERE jc.member.id = :memberId")
+    @Query("SELECT jc FROM JoinedCrew jc WHERE jc.member.memberId = :memberId")
     List<JoinedCrew> findByMemberId(Integer memberId);
+
+    @Query("SELECT jc FROM JoinedCrew jc WHERE jc.crew.id = :crewId ORDER BY jc.isLeader DESC")
+    List<JoinedCrew> findByCrewId(Long crewId);
 }

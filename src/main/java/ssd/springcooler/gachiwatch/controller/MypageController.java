@@ -7,12 +7,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ssd.springcooler.gachiwatch.domain.Crew;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import ssd.springcooler.gachiwatch.domain.Genre;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
 import ssd.springcooler.gachiwatch.dto.*;
+import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
+
 import ssd.springcooler.gachiwatch.security.CustomUserDetails;
 import ssd.springcooler.gachiwatch.service.MemberService;
 import ssd.springcooler.gachiwatch.service.ReviewService;
@@ -27,11 +31,13 @@ public class MypageController {
 
     private final MemberService memberService;
     private final ReviewService reviewService;
+    private final CrewServiceImpl crewService;
 
     @Autowired
-    public MypageController(MemberService memberService, ReviewService reviewService) {
+    public MypageController(MemberService memberService, ReviewService reviewService, CrewServiceImpl crewService) {
         this.memberService = memberService;
         this.reviewService = reviewService;
+        this.crewService = crewService;
     }
 
     @GetMapping("/home/home")
@@ -122,7 +128,7 @@ public String updateProfile(@AuthenticationPrincipal CustomUserDetails userDetai
     @GetMapping("/my_crew")
     public String getMyCrews(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         Member member = memberService.findByEmail(userDetails.getUsername());
-        List<CrewDto> crewList = memberService.getMyCrews(member.getMemberId());
+        List<Crew> crewList = crewService.getCrewListByMemberId(member.getMemberId());
         model.addAttribute("crewList", crewList);
         return "mypage/my_crew";
     }
