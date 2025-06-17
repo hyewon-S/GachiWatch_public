@@ -228,7 +228,7 @@ public class TMDBService {
         if (genreIdParam.isEmpty()) {
             genreIdParam = "28";
         }
-        System.out.println(genreIdParam);
+
         // 영화 API URL
         final String MOVIE_URL = "https://api.themoviedb.org/3/discover/movie"
                 + "?with_genres=" + genreIdParam

@@ -1,10 +1,7 @@
 package ssd.springcooler.gachiwatch.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -15,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter // lombok 어노테이션 (모든 필드에 적용)
+@Setter
 @Entity
 @Builder
 //@Table(name = "Member")

@@ -21,4 +21,6 @@ public interface ReviewDao {
 
     // 6. 사용자의 모든 리뷰 조회
     List<Review> getReviewsByUserId(int userId);
+
+    List<Review> getReviewsByContentIdAndMemberId(int memberId, int contentId);
 }

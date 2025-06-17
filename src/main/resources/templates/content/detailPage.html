@@ -122,25 +122,28 @@
             font-size: 50px;
             font-weight: bold;
         }
-        .my_review {
+        .review_box {
             background-color: #ebebeb;
             padding: 2%;
             padding-right: 8%;
             display: inline-block;
-
+            width: 50%;
         }
-        .my_review input {
+        .review_box input {
            background-color: #C6C9FF;
-           padding: 12px 32px;
            border: none;
            border-radius: 20px;
            font-size: 16px;
            font-weight: bold;
            cursor: pointer;
         }
-        .my_review p {
+        .review_box p {
             font-weight: bold;
             font-size: large;
+        }
+
+        .user_review p {
+            font-weight: lighter;
         }
     </style>
     <script>
@@ -284,23 +287,56 @@
     </div>
 
     <div class="content_review">
-        <h1>&nbsp;리뷰&nbsp;</h1>
-        <img th:src="@{/image/icon/full-star.png}" width=60px>
-        <p>&emsp;8.5</p><br><br> <hr>
-        <div class="my_review">
+        <h1>&nbsp;GachiWatch 회원들의 리뷰&nbsp;</h1>
+        <img th:src="@{/image/icon/full-star.png}" width=60px>&emsp;
+        <p th:text="${#lists.isEmpty(reviewList)} and ${#lists.isEmpty(memberReview)} ? '리뷰 없음' : ${average} + ' / 5.0'">&emsp;8.5</p><br><br> <hr>
+        <div class="review_box">
             <p>내가 쓴 리뷰</p><br>
-            <img th:src="@{/image/icon/full-star.png}" width=40px>
-            <img th:src="@{/image/icon/full-star.png}" width=40px>
-            <img th:src="@{/image/icon/full-star.png}" width=40px>
-            <img th:src="@{/image/icon/full-star.png}" width=40px>
-            <img th:src="@{/image/icon/full-star.png}" width=40px>
-            <br><br>
-            <a th:if="${isLoggedIn}" th:href="@{/review/form(contentId=${contentInfo.contentId})}">
-                <input type="button" value="리뷰 작성하기">
-            </a>
-            <a th:unless="${isLoggedIn}" th:href="@{/account/login}">
-                <input type="button" value="리뷰 작성하기" onclick="alert('로그인이 필요합니다.')">
-            </a>
+            <div th:unless="${#lists.isEmpty(memberReview)}" class="user_review"><!-- 작성한 리뷰가 있으면 -->
+                <img th:each="i : ${#numbers.sequence(1, memberReview.rate)}" th:src="@{/image/icon/full-star.png}" width=40px>
+                <br><br>
+                <span th:text="${memberReview.nickname}"></span> &emsp; <span th:text="${memberReview.date}"></span> &emsp;
+                <a th:href="@{/review/updateForm(contentId=${contentInfo.contentId}, substance=${memberReview.substance})}" style="text-decoration: none;">
+                    <input type="button" value="수정" style="width: 60px;">
+                </a>
+                <a th:href="@{/review/delete}">
+                    <input type="button" value="삭제" style="width: 60px;">
+                </a>
+                <br><span th:text="${memberReview.substance}" ></span><br>
+            </div>
+            <div th:if="${#lists.isEmpty(memberReview)}">
+                <img th:each="i : ${#numbers.sequence(1, 5)}" th:src="@{/image/icon/full-star.png}" width=40px>
+                <br><br>
+                <a th:if="${isLoggedIn}" th:href="@{/review/form(contentId=${contentInfo.contentId})}">
+                    <input type="button" value="리뷰 작성하기">
+                </a>
+                <a th:unless="${isLoggedIn}" th:href="@{/account/login}">
+                    <input type="button" value="리뷰 작성하기" onclick="alert('로그인이 필요합니다.')">
+                </a>
+            </div>
+        </div> <br><hr><br>
+        <div th:unless="${#lists.isEmpty(reviewList)}">
+        <div th:each="review : ${reviewList}">
+            <div class="review_box">
+                <img th:each="i : ${#numbers.sequence(1, review.rate)}" th:src="@{/image/icon/full-star.png}" width=40px>
+                <br><br>
+                <span th:text="${review.nickname}"></span> &emsp; <span th:text="${review.date}"></span> &emsp;
+
+                <!--review like, report button -->
+
+                <a th:href="@{/review/like(contentId=${contentInfo.contentId})}" style="text-decoration: none;">
+                    <img th:src="@{/image/icon/icon-heart-red.png}" style="width: 30px;"> <span >0</span>
+                </a> &emsp;
+                <a th:href="@{/review/report(contentId=${contentInfo.contentId})}">
+                    <input type="button" value="신고" style="width: 60px;">
+                </a>
+                <br><br>
+                <span th:text="${review.substance}" ></span>
+            </div> <br><br>
+        </div>
+        </div>
+        <div th:if="${#lists.isEmpty(reviewList)} and ${#lists.isEmpty(memberReview)}">
+            <p style="font-size: medium;">현재 리뷰가 없습니다. 리뷰를 작성해보세요</p>
         </div>
     </div>
 </main>

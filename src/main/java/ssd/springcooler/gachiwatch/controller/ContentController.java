@@ -10,12 +10,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ssd.springcooler.gachiwatch.domain.Member;
+import ssd.springcooler.gachiwatch.domain.Review;
 import ssd.springcooler.gachiwatch.dto.ContentDto;
 import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
 import ssd.springcooler.gachiwatch.dto.ForMeContentDto;
+import ssd.springcooler.gachiwatch.dto.ReviewDto;
 import ssd.springcooler.gachiwatch.security.CustomUserDetails;
 import ssd.springcooler.gachiwatch.service.ContentService;
 import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
+import ssd.springcooler.gachiwatch.service.ReviewServiceImpl;
 import ssd.springcooler.gachiwatch.service.TMDBService;
 
 import java.security.Principal;
@@ -34,6 +37,9 @@ public class ContentController {
     @Autowired
     private MemberServiceImpl memberService;
 
+    @Autowired
+    private ReviewServiceImpl reviewService;
+
     @GetMapping("/search")
     public String search(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails != null) {
@@ -50,11 +56,12 @@ public class ContentController {
     @GetMapping("/detail")
     public String detail(@RequestParam("contentId") int contentId, Model model, @AuthenticationPrincipal UserDetails userDetails) throws Exception {
 
+        int memberId = 0;
         if(userDetails != null) { //로그인 했음
-            //session.setAttribute("user", user);
             Member user = memberService.findByEmail(userDetails.getUsername());
             model.addAttribute("isLoggedIn", true);
             model.addAttribute("user", user);
+            memberId = user.getMemberId();
 
             //유저가 좋아요를 눌렀는지, 봤어요를 눌렀는지 확인해줘야 함
             model.addAttribute("heartUrl", "/image/icon/icon-heart-red.png");
@@ -70,7 +77,32 @@ public class ContentController {
         }
         model.addAttribute("contentInfo", contentInfo);
 
-        return "content/detailPage"; //여기서 review 쪽으로 redirect 한번 해줄것
+        //전체 review
+        List<ReviewDto> reviewList = reviewService.getReviewsByContent(memberId, contentId);
+        model.addAttribute("reviewList", reviewList);
+
+        int total = 0;
+        for(ReviewDto review : reviewList) {
+            total += Integer.parseInt(review.getRate());
+        }
+        double average = 0;
+        if(userDetails != null) {
+            //사용자 review
+            List<ReviewDto> memberReview = reviewService.getReviewsByContentAndUser(memberId, contentId);
+            if(!memberReview.isEmpty()) {
+                model.addAttribute("memberReview", memberReview.get(0));
+                total += Integer.parseInt(memberReview.get(0).getRate());
+                average = (double) total / (reviewList.size() + 1);
+            } else {
+                model.addAttribute("memberReview", null);
+            }
+        } else {
+            model.addAttribute("memberReview", null);
+            average = (double) total / reviewList.size();
+        }
+        model.addAttribute("average", String.format("%.1f", average));
+
+        return "content/detailPage";
     }
 
     @PostMapping("/likeUpdate")
