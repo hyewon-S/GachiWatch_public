@@ -1,13 +1,14 @@
 package ssd.springcooler.gachiwatch.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ssd.springcooler.gachiwatch.dao.MemberDao;
 import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
 import ssd.springcooler.gachiwatch.domain.*;
 import ssd.springcooler.gachiwatch.dto.*;
 import ssd.springcooler.gachiwatch.repository.MemberRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,11 +19,15 @@ public class MemberServiceImpl implements MemberService {
     private final MemberDao memberDao;
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final FileStorageService fileStorageService;
 
-    protected MemberServiceImpl(MemberDao memberDao, MemberRepository memberRepository, MemberMapper memberMapper) {
+    protected MemberServiceImpl(MemberDao memberDao, MemberRepository memberRepository, MemberMapper memberMapper, PasswordEncoder passwordEncoder, FileStorageService fileStorageService) {
         this.memberDao = memberDao;
         this.memberRepository = memberRepository;
         this.memberMapper = memberMapper;
+        this.passwordEncoder = passwordEncoder;
+        this.fileStorageService = fileStorageService;
     }
 //    // 생성자 주입 (요즘 권장하는 방법)
 //    public MemberServiceImpl(MemberRepository memberRepository) {
@@ -158,9 +163,38 @@ public class MemberServiceImpl implements MemberService {
      * 프로필 수정
      */
     @Override
-    public void updateProfile(ProfileUpdateDto dto) {
-        memberDao.updateProfile(dto);
+    public void updateProfile(ProfileUpdateDto dto, MultipartFile profileImage) {
+        System.out.println("updateProfile 호출됨");
+        // 1. 프로필 이미지 처리
+        if (profileImage != null && !profileImage.isEmpty()) {
+            System.out.println("파일 저장 시작");
+            String profileImagePath = fileStorageService.store(profileImage);
+            System.out.println("저장된 파일 경로: " + profileImagePath);
+            dto.setProfileImage(profileImagePath);
+        } else {
+            dto.setProfileImage(null); // 변경 안함 처리
+        }
+
+        // 2. 닉네임 비어있으면 null 처리
+        if (dto.getNickname() == null || dto.getNickname().isBlank()) {
+            dto.setNickname(null);
+        }
+
+        // 3. 비밀번호 처리
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
+                throw new IllegalArgumentException("비밀번호 확인이 일치하지 않습니다.");
+            }
+            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+        } else {
+            dto.setPassword(null); // 변경 안함
+        }
+
+        // 4. DAO 호출
+        memberDao.updateProfile(dto, profileImage);
     }
+
+
 
     /**
      * 참여한 가치크루 목록 조회

@@ -8,11 +8,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ssd.springcooler.gachiwatch.domain.Crew;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import ssd.springcooler.gachiwatch.domain.Genre;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
 import ssd.springcooler.gachiwatch.dto.*;
 import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
+
+import ssd.springcooler.gachiwatch.security.CustomUserDetails;
 import ssd.springcooler.gachiwatch.service.MemberService;
 import ssd.springcooler.gachiwatch.service.ReviewService;
 
@@ -64,12 +69,60 @@ public class MypageController {
     }
 */
     // 프로필 수정
-    @PostMapping("/my_profile")
-    public String updateProfile(ProfileUpdateDto profileUpdateDto, Model model) {
-        memberService.updateProfile(profileUpdateDto);
-        model.addAttribute("result", "success");
-        return "redirect:/mypage";
+//    @PostMapping("/my_profile")
+//    public String updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
+//                                ProfileUpdateDto profileUpdateDto,
+//                                Model model) {
+//        int memberId = userDetails.getMember().getMemberId(); // 로그인한 사용자 ID 세션에서 안전하게 가져옴
+//        // 여기서 클라이언트가 넘긴 memberId
+//        profileUpdateDto.setMemberId(memberId); // 세션 정보로 덮어쓰기
+//
+//        memberService.updateProfile(profileUpdateDto); // 이제 믿을 수 있는 데이터
+//        model.addAttribute("result", "success");
+//        return "redirect:/mypage/mypage";
+//    }
+@PostMapping("/my_profile")
+public String updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
+                            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
+                            @RequestParam(value = "password", required = false) String password,
+                            @RequestParam(value = "passwordConfirm", required = false) String passwordConfirm,
+                            @RequestParam(value = "nickname", required = false) String nickname,
+                            RedirectAttributes redirectAttributes) {
+
+    int memberId = userDetails.getMember().getMemberId();
+
+    // 변경사항 체크
+    boolean hasImage = profileImage != null && !profileImage.isEmpty();
+    boolean hasPassword = password != null && !password.isBlank();
+    boolean hasNickname = nickname != null && !nickname.isBlank();
+
+    if (!hasImage && !hasPassword && !hasNickname) {
+        redirectAttributes.addFlashAttribute("error", "변경사항이 없습니다.");
+        return "redirect:/mypage/my_profile";
     }
+
+    // 비밀번호 확인
+    if (hasPassword && (passwordConfirm == null || !password.equals(passwordConfirm))) {
+        redirectAttributes.addFlashAttribute("error", "비밀번호가 일치하지 않습니다.");
+        return "redirect:/mypage/my_profile";
+    }
+
+    // DTO 만들기
+    ProfileUpdateDto dto = ProfileUpdateDto.builder()
+            .memberId(memberId)
+            .nickname(hasNickname ? nickname : null)
+            .password(hasPassword ? password : null)
+            .build();
+
+    // 서비스 호출
+    memberService.updateProfile(dto, profileImage);
+
+    redirectAttributes.addFlashAttribute("result", "success");
+    return "redirect:/mypage/mypage";
+}
+
+
+
 
     // 내가 참여 중인 크루
     @GetMapping("/my_crew")

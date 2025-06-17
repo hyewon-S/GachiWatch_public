@@ -8,20 +8,13 @@
         body {
           margin: 0;
           font-family: 'Arial', sans-serif;
-          background-color: #e1e1e1;
+          background-color: #f9f9f9;
           display: flex;
           flex-direction: column;
           align-items: center;
           padding: 20px;
         }
 
-        .header {
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          position: relative;
-        }
 
         .back-button {
           position: absolute;
@@ -34,6 +27,7 @@
           font-size: 24px;
           font-weight: bold;
           margin: 20px 0;
+          text-align: center;
         }
 
         .save-button {
@@ -45,6 +39,7 @@
           border-radius: 6px;
           padding: 8px 16px;
           cursor: pointer;
+          margin-right: 3%;
         }
 
         .stars {
@@ -64,19 +59,13 @@
           transform: scale(1.2);
         }
 
-        .review-section {
-          width: 80%;
-          max-width: 800px;
-          margin-top: 20px;
-        }
-
         .review-label {
           font-weight: bold;
           margin-bottom: 10px;
         }
 
         .review-input {
-          width: 100%;
+          width: 500px;
           height: 150px;
           background-color: #aaa;
           border: none;
@@ -86,39 +75,48 @@
           color: white;
         }
 
+        .review-section {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 30px;
+        }
         .review-input::placeholder {
           color: #eee;
         }
     </style>
 </head>
 <body>
-<div class="header">
-    <div class="back-button" onclick="history.back()">←</div>
-    <div class="title">리뷰 작성하기</div>
 
-</div>
-<form id="ratingForm" method="post" th:action="@{/review/save}">
+
+<form id="ratingForm" method="post" th:action="${substance} ? @{/review/update} : @{/review/save}">
+    <br><div class="back-button" onclick="history.back()">&emsp;&emsp;←</div><br>
+
     <button class="save-button" type="submit">저장</button>
-    <div class="stars" id="stars">
-        <span class="star" data-value="1">★</span>
-        <span class="star" data-value="2">★</span>
-        <span class="star" data-value="3">★</span>
-        <span class="star" data-value="4">★</span>
-        <span class="star" data-value="5">★</span>
+    <br>
+    <div class="review_form">
+        <div class="title" th:text="${substance} ? '리뷰 수정하기' : '리뷰 작성하기'" >리뷰 작성하기</div>
+
+        <div class="stars" id="stars">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+
+        <!-- 선택된 별점을 담을 hidden input -->
+        <input type="hidden" name="star" id="starInput" value="5" />
+
+        <!-- memberId와 contentId도 hidden으로 담기 -->
+        <input type="hidden" name="memberId" th:value="${memberId}" />
+        <input type="hidden" name="contentId" th:value="${contentId}" />
+
+        <div class="review-section" >
+            <div class="review-label" th:text="${substance} ? '리뷰 수정' : '리뷰 작성'">리뷰 작성</div>
+            <textarea class="review-input" name="reviewContent" th:text="${substance} ? ${substance} : ''" placeholder="리뷰를 입력해주세요."></textarea>
+        </div>
     </div>
-    <!-- 선택된 별점을 담을 hidden input -->
-    <input type="hidden" name="star" id="starInput" value="0" />
-
-    <!-- memberId와 contentId도 hidden으로 담기 -->
-    <input type="hidden" name="memberId" th:value="${memberId}" />
-    <input type="hidden" name="contentId" th:value="${contentId}" />
-
-
-<div class="review-section">
-    <div class="review-label">리뷰 작성</div>
-    <textarea class="review-input" name="reviewContent" placeholder="리뷰를 입력해주세요."></textarea>
-</div>
-
 </form>
 <script>
     const stars = document.querySelectorAll('.star');

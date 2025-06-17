@@ -81,32 +81,75 @@
 <body>
 <div class="container">
     <div class="header">
-        <div class="back-button" onclick="location.href='/mypage'">←</div>
+        <div class="back-button" onclick="location.href='/mypage/mypage'">←</div>
         <h2 style="flex-grow: 1; text-align: center;">프로필 수정</h2>
     </div>
 
-    <form th:action="@{/mypage/profile/update}" method="post" enctype="multipart/form-data">
+<!--    <form th:action="@{/mypage/my_profile}" method="post" enctype="multipart/form-data">-->
+<!--        <div class="profile-img">-->
+<!--            <img th:src="@{${profileImageUrl}}" id="preview-img" alt="프로필 이미지">-->
+<!--        </div>-->
+<!--        <input type="file" name="profileImage" id="profileImageInput" accept="image/*" style="display:none;" onchange="previewImage(event)">-->
+<!--        <button type="button" class="change-btn" onclick="document.getElementById('profileImageInput').click()">프로필 사진 변경</button>-->
+
+<!--        <input type="text" name="nickname" th:placeholder="${user.nickname}" class="form-input">-->
+<!--        <input type="password" name="password" placeholder="비밀번호 변경" class="form-input">-->
+
+<!--        <button type="submit" class="submit-btn">저장</button>-->
+<!--    </form>-->
+    <form th:action="@{/mypage/my_profile}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
         <div class="profile-img">
             <img th:src="@{${profileImageUrl}}" id="preview-img" alt="프로필 이미지">
         </div>
         <input type="file" name="profileImage" id="profileImageInput" accept="image/*" style="display:none;" onchange="previewImage(event)">
         <button type="button" class="change-btn" onclick="document.getElementById('profileImageInput').click()">프로필 사진 변경</button>
 
-        <input type="text" name="nickname" th:placeholder="${currentNickname}" class="form-input">
-        <input type="password" name="password" placeholder="비밀번호 변경" class="form-input">
+        <input type="text" name="nickname" th:placeholder="${user.nickname}" id="nicknameInput" class="form-input">
+
+        <input type="password" name="password" placeholder="비밀번호 변경" id="passwordInput" class="form-input">
+        <input type="password" name="passwordConfirm" placeholder="비밀번호 확인" id="passwordConfirmInput" class="form-input">
 
         <button type="submit" class="submit-btn">저장</button>
     </form>
+
 </div>
 
 <script>
+    const originalNickname = /*[[${user != null} ? '${user.nickname}' : '' ]]*/ '';
+
     function previewImage(event) {
-      const reader = new FileReader();
-      reader.onload = function(){
-        document.getElementById('preview-img').src = reader.result;
-      };
-      reader.readAsDataURL(event.target.files[0]);
+        const reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById('preview-img').src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function validateForm() {
+        const nickname = document.getElementById('nicknameInput').value.trim();
+        const password = document.getElementById('passwordInput').value;
+        const passwordConfirm = document.getElementById('passwordConfirmInput').value;
+        const fileInput = document.getElementById('profileImageInput');
+
+        const nicknameChanged = nickname !== '' && nickname !== originalNickname;
+        const passwordChanged = password !== '';
+        const imageChanged = fileInput.files.length > 0;
+
+        // 비밀번호 확인 검사
+        if (passwordChanged && password !== passwordConfirm) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return false;
+        }
+
+        // 모든 항목 변경 없음
+        if (!nicknameChanged && !passwordChanged && !imageChanged) {
+            alert("변경사항이 없습니다.");
+            return false;
+        }
+
+        return true;
     }
 </script>
+
 </body>
 </html>

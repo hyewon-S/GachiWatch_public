@@ -19,4 +19,6 @@ public interface ReviewMapper {
     List<Review> getReviewsByContentId(int contentId);
 
     List<Review> getReviewsByUserId(int userId);
+
+    List<Review> getReviewsByContentIdAndMemberId(int memberId, int contentId);
 }

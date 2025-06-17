@@ -8,20 +8,16 @@
     <!-- 리뷰 삽입 -->
     <insert id="insertReview" parameterType="ssd.springcooler.gachiwatch.domain.Review">
         INSERT INTO review (
-        review_id,
         content_id,
         member_id,
         substance,
-        likes,
         review_date,
         score
         ) VALUES (
-        #{reviewId},
         #{contentId},
-        #{memberId},
+        #{member.memberId},
         #{substance},
-        #{likes},
-        #{date},
+        TO_DATE(#{date}, 'YYYY-MM-DD:HH24:MI'),
         #{score}
         )
     </insert>
@@ -51,17 +47,35 @@
     </select>
 
     <!-- 콘텐츠 ID로 리뷰 리스트 조회 -->
-    <select id="getReviewsByContentId" resultType="ssd.springcooler.gachiwatch.domain.Review">
+    <select id="getReviewsByContentId" resultMap="ReviewResultMap">
         SELECT *
         FROM review
         WHERE content_id = #{contentId}
     </select>
 
     <!-- 유저 ID로 리뷰 리스트 조회 -->
-    <select id="getReviewsByUserId" resultType="ssd.springcooler.gachiwatch.domain.Review">
+    <select id="getReviewsByUserId" resultMap="ReviewResultMap">
         SELECT *
         FROM review
         WHERE member_id = #{memberId}
     </select>
+
+    <select id="getReviewsByContentIdAndMemberId" resultMap="ReviewResultMap">
+        SELECT *
+        FROM review
+        WHERE member_id = #{memberId} AND content_id = #{contentId}
+    </select>
+
+    <resultMap id="ReviewResultMap" type="ssd.springcooler.gachiwatch.domain.Review">
+        <id property="reviewId" column="review_id" />
+        <result property="contentId" column="content_id" />
+        <result property="substance" column="substance" />
+        <result property="score" column="score" />
+        <result property="date" column="review_date" />
+        <result property="likes" column="likes" />
+        <association property="member" javaType="ssd.springcooler.gachiwatch.domain.Member">
+            <id property="memberId" column="member_id" />
+        </association>
+    </resultMap>
 
 </mapper>
