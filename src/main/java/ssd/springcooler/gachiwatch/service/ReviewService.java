@@ -15,5 +15,5 @@ public interface ReviewService {
 
     void insertReview(int contentId, int memberId, String reviewContent, int star);
 
-    void updateReview(int contentId, int memberId, String reviewContent, int star);
+    void updateReview(int reviewId, String reviewContent, int rate);
 }

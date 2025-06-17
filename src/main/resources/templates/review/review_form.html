@@ -108,7 +108,8 @@
         <!-- 선택된 별점을 담을 hidden input -->
         <input type="hidden" name="star" id="starInput" value="5" />
 
-        <!-- memberId와 contentId도 hidden으로 담기 -->
+        <!-- hidden으로 담아둘 정보들 -->
+        <input type="hidden" name="reviewId" th:value="${reviewId} ? ${reviewId} : ''" />
         <input type="hidden" name="memberId" th:value="${memberId}" />
         <input type="hidden" name="contentId" th:value="${contentId}" />
 

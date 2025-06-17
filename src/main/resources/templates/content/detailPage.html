@@ -70,6 +70,20 @@
             cursor: pointer;
         }
 
+         .profile-image {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .profile-image:hover {
+            box-shadow: 0 0 0 2px #4285f4;
+        }
+
         .register {
             background-color: black;
             color: white;
@@ -220,6 +234,14 @@
                 alert("통신 오류 발생: " + error.message);
             });
         }
+
+        function confirmDelete(url) {
+            const result = confirm('정말 삭제하시겠어요?\n복구 할 수 없습니다.');
+            if (result) {
+              window.location.href = url; // 확인 시 이동
+            }
+            // 취소 시 아무 일도 안 일어남
+         }
     </script>
 </head>
 <body>
@@ -241,10 +263,10 @@
 
         <!-- 로그인 했다면 -->
         <a th:if="${isLoggedIn}" th:href="@{/account/logout}"><button class="logout">Logout</button></a>
-        <!-- 아래는 나중에 다시 구현
-        <a th:if="${isLoggedIn}" th:href="@{/mypage}">
-            <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
-        </a> -->
+
+        <a th:if="${isLoggedIn}" th:href="@{/mypage/mypage}">
+            <img th:src="@{/image/profile_img_default.png}" alt="프로필" class="profile-image">
+        </a>
     </nav>
 </header>
 <main>
@@ -296,12 +318,16 @@
                 <img th:each="i : ${#numbers.sequence(1, memberReview.rate)}" th:src="@{/image/icon/full-star.png}" width=40px>
                 <br><br>
                 <span th:text="${memberReview.nickname}"></span> &emsp; <span th:text="${memberReview.date}"></span> &emsp;
-                <a th:href="@{/review/updateForm(contentId=${contentInfo.contentId}, substance=${memberReview.substance})}" style="text-decoration: none;">
+                <a th:href="@{/review/updateForm(reviewId=${memberReview.reviewId}, contentId=${contentInfo.contentId}, substance=${memberReview.substance})}" style="text-decoration: none;">
                     <input type="button" value="수정" style="width: 60px;">
                 </a>
-                <a th:href="@{/review/delete}">
-                    <input type="button" value="삭제" style="width: 60px;">
-                </a>
+
+                <script th:inline="javascript">
+                    const deleteUrl = /*[['/review/delete?reviewId=' + ${memberReview.reviewId} + '&contentId=' + ${contentInfo.contentId}]]*/ '';
+                </script>
+
+                <input type="button" value="삭제" style="width: 60px;" onclick="confirmDelete(deleteUrl)">
+
                 <br><span th:text="${memberReview.substance}" ></span><br>
             </div>
             <div th:if="${#lists.isEmpty(memberReview)}">
@@ -319,7 +345,7 @@
         <div th:each="review : ${reviewList}">
             <div class="review_box">
                 <img th:each="i : ${#numbers.sequence(1, review.rate)}" th:src="@{/image/icon/full-star.png}" width=40px>
-                <br><br>
+                <br>
                 <span th:text="${review.nickname}"></span> &emsp; <span th:text="${review.date}"></span> &emsp;
 
                 <!--review like, report button -->
@@ -330,7 +356,7 @@
                 <a th:href="@{/review/report(contentId=${contentInfo.contentId})}">
                     <input type="button" value="신고" style="width: 60px;">
                 </a>
-                <br><br>
+                <br>
                 <span th:text="${review.substance}" ></span>
             </div> <br><br>
         </div>

@@ -74,6 +74,20 @@
             cursor: pointer;
         }
 
+        .profile-image {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid #ccc;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.2s ease;
+        }
+
+        .profile-image:hover {
+            box-shadow: 0 0 0 2px #4285f4;
+        }
+
         .logout {
             background-color: #eee;
         }
@@ -82,7 +96,6 @@
            margin-right: 3%;
        }
        .platforms img {
-           width: 50px;
            margin-right: 1%;
        }
        .platforms {
@@ -90,15 +103,6 @@
 
        }
 
-       .selected {
-           margin-right: 15px;
-           padding: 8px 20px;
-           border-radius: 6px;
-           border: none;
-           background-color: #eee;
-           cursor: pointer;
-           font-size: 14px;
-       }
        main {
            background-color: #C6C9FF;
            margin-left: auto;
@@ -142,6 +146,52 @@
        .content a:hover {
             color: #C6C9FF;
        }
+
+        /* 기본 OTT 이미지 스타일 */
+        .ott-img {
+            width: 60px;
+            height: 60px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            object-fit: cover;
+            display: inline-block;
+            box-sizing: border-box;
+        }
+
+        /* 선택된 경우: 테두리 + 살짝 확대 효과 */
+        .ott-img.selected {
+            border: 3px solid #3498db;
+            transform: scale(1.3);
+
+        }
+        .selected-button {
+          background-color: #eee;
+          color: black;
+          border: 1px solid #ccc;
+          padding: 8px 12px;
+          border-radius: 6px;
+          margin: 4px;
+          cursor: pointer;
+          font-size: 14px;
+          transition: all 0.2s ease;
+          position: relative;
+        }
+
+        .selected-button .check-icon {
+          display: none;
+          margin-right: 6px;
+        }
+
+        .selected-button.active {
+          background-color: black;
+          color: white;
+        }
+
+        .selected-button.active .check-icon {
+          display: inline;
+        }
     </style>
 </head>
 <body>
@@ -163,24 +213,27 @@
 
         <!-- 로그인 했다면 -->
         <a th:if="${isLoggedIn}" th:href="@{/account/logout}"><button class="logout">Logout</button></a>
-        <!-- 아래는 나중에 다시 구현
-        <a th:if="${isLoggedIn}" th:href="@{/mypage}">
-            <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
-        </a> -->
+        <a th:if="${isLoggedIn}" th:href="@{/mypage/mypage}">
+            <img th:src="@{/image/profile_img_default.png}" alt="프로필" class="profile-image">
+        </a>
     </nav>
 </header>
 
 <hr> <h2>통합 콘텐츠</h2>
 <section class="platforms">
     &emsp;
-    <img th:src="@{/image/netflix.png}">
-    <img th:src="@{/image/watcha.png}">
-    <img th:src="@{/image/appletv.png}">
-    <img th:src="@{/image/wavve.png}">
-    <img th:src="@{/image/disney.png}">
-    <img th:src="@{/image/prime.png}"> <br><br>
-    &emsp;<button class="selected">TV 시리즈</button>
-    <button class="selected">영화</button>
+    <img th:src="@{/image/netflix.png}" class="ott-img" onclick="onOttClick(this, 'NETFLIX')" >
+    <img th:src="@{/image/watcha.png}" class="ott-img" onclick="onOttClick(this, 'WATCHA')" >
+    <img th:src="@{/image/appletv.png}" class="ott-img" onclick="onOttClick(this, 'APPLETV')" >
+    <img th:src="@{/image/wavve.png}" class="ott-img" onclick="onOttClick(this, 'WAVVE')" >
+    <img th:src="@{/image/disney.png}" class="ott-img" onclick="onOttClick(this, 'DISNEY')" >
+    <img th:src="@{/image/prime.png}" class="ott-img" onclick="onOttClick(this, 'AMAZON')" > <br><br>
+    &emsp;<button class="selected-button active" onclick="onTypeClick(this, 'TV')">
+    <span class="check-icon">✔️</span>TV 시리즈
+</button>
+    <button class="selected-button active" onclick="onTypeClick(this, 'MOVIE')">
+        <span class="check-icon">✔️</span>영화
+    </button>
 </section> <br>
 <main>
     <div th:each="content : ${contentList}" class="content">
@@ -190,5 +243,44 @@
         <br>&nbsp;평점 <span th:text="${content.rating}"></span>
     </div>
 </main>
+
+<script>
+    let selectedOtts = []; // 여러 OTT 선택 가능
+    let selectedType = null;
+    let selectedSort = "recent";
+    let selectedTypes = ["TV", "MOVIE"]; // 처음에 둘 다 선택된 상태
+
+    function onOttClick(element, ott) {
+        const isSelected = selectedOtts.includes(ott);
+
+        if (isSelected) {
+            // 이미 선택됨 → 배열에서 제거 + 스타일 제거
+            selectedOtts = selectedOtts.filter(item => item !== ott);
+            element.classList.remove("selected");
+        } else {
+            // 새로 선택 → 배열에 추가 + 스타일 추가
+            selectedOtts.push(ott);
+            element.classList.add("selected");
+        }
+
+        //fetchFilteredContent();
+    }
+    function onTypeClick(button, type) {
+        const isSelected = selectedTypes.includes(type);
+
+        if (isSelected) {
+            // 해제
+            selectedTypes = selectedTypes.filter(t => t !== type);
+            button.classList.remove("active");
+        } else {
+            // 다시 선택
+            selectedTypes.push(type);
+            button.classList.add("active");
+        }
+
+        //fetchFilteredContent(); // 선택 상태 반영
+    }
+
+</script>
 </body>
 </html>

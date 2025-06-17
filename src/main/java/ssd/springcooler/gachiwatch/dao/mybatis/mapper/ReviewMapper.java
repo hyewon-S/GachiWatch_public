@@ -10,7 +10,7 @@ public interface ReviewMapper {
 
     void insertReview(Review review);
 
-    void updateReview(Review review);
+    void updateReview(int reviewId, String substance, int rate, String date);
 
     void deleteReview(int reviewId);
 

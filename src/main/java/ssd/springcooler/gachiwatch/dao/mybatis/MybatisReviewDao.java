@@ -19,8 +19,8 @@ public class MybatisReviewDao implements ReviewDao {
     }
 
     @Override
-    public void updateReview(Review review){
-        reviewMapper.updateReview(review);
+    public void updateReview(int reviewId, String substance, int rate, String date){
+        reviewMapper.updateReview(reviewId, substance, rate, date);
     }
 
     @Override
