@@ -115,7 +115,9 @@ public String updateProfile(@AuthenticationPrincipal CustomUserDetails userDetai
             .build();
 
     // 서비스 호출
-    memberService.updateProfile(dto, profileImage);
+//    memberService.updateProfile(dto, profileImage);
+    memberService.updateProfile(dto);
+
 
     redirectAttributes.addFlashAttribute("result", "success");
     return "redirect:/mypage/mypage";

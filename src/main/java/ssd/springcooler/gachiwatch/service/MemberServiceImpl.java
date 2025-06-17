@@ -2,7 +2,6 @@ package ssd.springcooler.gachiwatch.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import ssd.springcooler.gachiwatch.dao.MemberDao;
 import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
 import ssd.springcooler.gachiwatch.domain.*;
@@ -163,35 +162,36 @@ public class MemberServiceImpl implements MemberService {
      * 프로필 수정
      */
     @Override
-    public void updateProfile(ProfileUpdateDto dto, MultipartFile profileImage) {
+    public void updateProfile(ProfileUpdateDto dto) {
         System.out.println("updateProfile 호출됨");
-        // 1. 프로필 이미지 처리
-        if (profileImage != null && !profileImage.isEmpty()) {
-            System.out.println("파일 저장 시작");
-            String profileImagePath = fileStorageService.store(profileImage);
-            System.out.println("저장된 파일 경로: " + profileImagePath);
-            dto.setProfileImage(profileImagePath);
-        } else {
-            dto.setProfileImage(null); // 변경 안함 처리
-        }
+//        // 1. 프로필 이미지 처리
+//        if (profileImage != null && !profileImage.isEmpty()) {
+//            System.out.println("파일 저장 시작");
+//            String profileImagePath = fileStorageService.store(profileImage);
+//            System.out.println("저장된 파일 경로: " + profileImagePath);
+//            dto.setProfileImage(profileImagePath);
+//        } else {
+//            dto.setProfileImage(null); // 변경 안함 처리
+//        }
 
         // 2. 닉네임 비어있으면 null 처리
         if (dto.getNickname() == null || dto.getNickname().isBlank()) {
             dto.setNickname(null);
         }
 
-        // 3. 비밀번호 처리
-        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
-                throw new IllegalArgumentException("비밀번호 확인이 일치하지 않습니다.");
-            }
-            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-        } else {
-            dto.setPassword(null); // 변경 안함
-        }
+//        // 3. 비밀번호 처리
+//        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+//            if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
+//                throw new IllegalArgumentException("비밀번호 확인이 일치하지 않습니다.");
+//            }
+//            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+//        } else {
+//            dto.setPassword(null); // 변경 안함
+//        }
 
         // 4. DAO 호출
-        memberDao.updateProfile(dto, profileImage);
+//        memberDao.updateProfile(dto, profileImage);
+        memberDao.updateProfile(dto);
     }
 
 

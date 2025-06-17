@@ -52,7 +52,7 @@ public class MyBatisMemberDao implements MemberDao {
     }
 
     @Override
-    public void updateProfile(ProfileUpdateDto dto, MultipartFile profileImage) {
+    public void updateProfile(ProfileUpdateDto dto) {
         memberMapper.updateProfile(dto);
     }
 

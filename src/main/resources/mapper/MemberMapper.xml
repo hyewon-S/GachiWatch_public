@@ -60,20 +60,19 @@
         SELECT COUNT(*) FROM member WHERE nickname = #{nickname}
     </select>
 
-    <!-- 4. 프로필 닉네임 변경 -->
-    <update id="updateNickname" parameterType="map">
-        UPDATE member SET nickname = #{nickname} WHERE member_id = #{memberId}
+    <!-- 3. 프로필 수정  -->
+    <update id="updateProfile" parameterType="ssd.springcooler.gachiwatch.dto.ProfileUpdateDto">
+        UPDATE member
+        SET nickname = #{nickname},
+        password = #{password}
+        WHERE member_id = #{memberId}
     </update>
 
-    <!-- 5. 비밀번호 변경 -->
-    <update id="updatePassword" parameterType="map">
-        UPDATE member SET password = #{password} WHERE member_id = #{memberId}
-    </update>
 
-    <!-- 6. 프로필 이미지 변경 -->
-    <update id="updateProfileImage" parameterType="map">
-        UPDATE member SET profileImage = #{profileImage} WHERE member_id = #{memberId}
-    </update>
+    <!--    &lt;!&ndash; 6. 프로필 이미지 변경 &ndash;&gt;-->
+<!--    <update id="updateProfileImage" parameterType="map">-->
+<!--        UPDATE member SET profileImage = #{profileImage} WHERE member_id = #{memberId}-->
+<!--    </update>-->
 
     <!-- 7. 구독 중인 OTT 플랫폼 변경
     <update id="updateSubscribedOTTs" parameterType="map">

@@ -20,7 +20,7 @@ public interface MemberDao {
     LoginDto findByKakaoEmail(String email);
 
     // 프로필
-    void updateProfile(ProfileUpdateDto dto, MultipartFile profileImage);
+    void updateProfile(ProfileUpdateDto dto);
     void updatePassword(Long memberId, String newPassword);
     void updateProfileImage(Long memberId, String imageUrl);
 

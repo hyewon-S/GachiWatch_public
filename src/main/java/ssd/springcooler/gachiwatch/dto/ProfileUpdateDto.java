@@ -13,7 +13,7 @@ public class ProfileUpdateDto {
     private String nickname;
     private String password;
     private String passwordConfirm;
-    private String profileImage;
+//    private String profileImage;
 
 }
 
