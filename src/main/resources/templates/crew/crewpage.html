@@ -2,12 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Gachi Watch - 파티 정보</title>
+    <title>Gachi Watch - 크루 정보</title>
     <style>
         body {
             margin: 0;
-            font-family: sans-serif;
-            background-color: ivory;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #e0e0e0;
         }
 
         header {
@@ -235,12 +235,16 @@
             <br>
             <div class="info-tag">인원 <span th:text="|${crew.getCurrentCount()} / ${crew.maxMember}|">3 / 4</span></div>
             <br>
-            <div class="info-tag">결제일 <span th:text="${#dates.format(crew.payDate, 'MM/dd')}">매달 7일</span></div>
+            <div class="info-tag">결제일 <span th:text="${#dates.format(crew.payDate, 'd')} + '일'">매달 7일</span></div>
             <br>
             <!--<div class="info-tag">최소기간 <span th:text="${crewDto.minPeriod}">6개월</span></div>-->
             <br>
             <img src="/image/netflix.png" alt="Netflix" />
-            <button class="group-button">그룹 설정</button>
+            <button
+                    class="group-button"
+                    th:onclick="'location.href=\'/crew/manage/' + ${crew.crewId} + '\';'">
+                그룹 설정
+            </button>
         </div>
 
         <div class="chat-box">
@@ -277,6 +281,7 @@
 
     // 페이지 로드 후 자동 스크롤
     window.onload = scrollToBottom;
+
 </script>
 </body>
 </html>

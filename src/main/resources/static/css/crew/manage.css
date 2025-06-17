@@ -1,6 +1,6 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f6f6f6;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #e0e0e0;
     margin: 0;
     padding: 0;
 }
@@ -97,6 +97,7 @@ header {
 
 /* 멤버 카드 */
 .member-card {
+    height: 170px;
     border: 2px solid #ccc;
     border-radius: 12px;
     padding: 12px;
@@ -226,3 +227,30 @@ header {
         .profile-image:hover {
             box-shadow: 0 0 0 2px #4285f4;
         }
+.ott-platforms {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.ott-platforms input[type="radio"] {
+    display: none;
+}
+
+.ott-platforms label {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.ott-platforms label img {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+}
+
+.ott-platforms input[type="radio"]:checked + label img {
+    border: 2px solid black;
+    transform: scale(1.1);
+}

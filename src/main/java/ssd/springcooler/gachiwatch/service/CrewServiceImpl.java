@@ -107,7 +107,11 @@ public class CrewServiceImpl implements CrewFacade {
     }
     public List<Member> getMembers(Long crewId) {
         //return crewDao.getMembers(crewId);
-        return null;
+        List<JoinedCrew> joinedCrewList = joinedCrewRepository.findAll();
+        List<Member> crewList = joinedCrewList.stream()
+                .map(JoinedCrew::getMember)  // 각 JoinedCrew에서 Crew 추출
+                .collect(Collectors.toList());
+        return crewList;
     }
 
     @Transactional
@@ -181,6 +185,15 @@ public class CrewServiceImpl implements CrewFacade {
     @Override
     public List<Member> getCrewMembers(Long crewId) {
         return crewMemberRepository.findAllByCrewId(crewId);
+    }
+
+    public List<Member> getCrewMembersByCrewId(Long crewId) {
+        List<JoinedCrew> joinedCrewList = joinedCrewRepository.findByCrewId(crewId);
+        List<Member> memberList = joinedCrewList.stream()
+                .map(JoinedCrew::getMember)
+                .collect(Collectors.toList());
+
+        return memberList;
     }
 
 }
