@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import ssd.springcooler.gachiwatch.service.EmailNotiService;
 
 
 @Configuration
@@ -79,4 +81,5 @@ public class SecurityConfig {
 //        multipartResolver.setMaxUploadSize(10 * 1024 * 1024); // 10MB
 //        return multipartResolver;
 //    }
+
 }
