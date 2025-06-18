@@ -10,10 +10,8 @@ import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
 import ssd.springcooler.gachiwatch.repository.MemberLikedContentRepository;
 import ssd.springcooler.gachiwatch.repository.MemberWatchedContentRepository;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ContentService {
@@ -159,5 +157,59 @@ public class ContentService {
         } else {
             watchedContentRepository.deleteByMemberIdAndContentId(memberId, contentId);
         }
+    }
+
+    // 추천 결과 (contentId + score)를 받아서 ContentDto 리스트로 변환하는 함수
+    public List<ContentDto> getContentsByRecommendation(List<Map<String, Object>> recommendList) {
+        if (recommendList == null || recommendList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<ContentDto> result = recommendList.stream()
+                .map(map -> {
+                    // content_id를 Integer로 안전하게 파싱
+                    Object contentIdObj = map.get("content_id");
+                    if (contentIdObj == null) return null;
+
+                    int contentId;
+                    if (contentIdObj instanceof Integer) {
+                        contentId = (Integer) contentIdObj;
+                    } else if (contentIdObj instanceof Number) {
+                        contentId = ((Number) contentIdObj).intValue();
+                    } else {
+                        try {
+                            contentId = Integer.parseInt(contentIdObj.toString());
+                        } catch (NumberFormatException e) {
+                            return null;
+                        }
+                    }
+
+                    // contentId로 Content 엔티티 조회
+                    Content content = contentDao.findById(contentId);
+                    if (content == null) return null;
+
+                    // Content -> ContentDto 변환 (기존 getContentDetail 메서드와 유사)
+                    List<String> genres = new ArrayList<>();
+                    for (int gId : content.getGenre()) {
+                        genres.add(Genre.fromGenreId(gId).getLabel());
+                    }
+                    List<String> platforms = new ArrayList<>();
+                    for (int pId : content.getPlatform()) {
+                        platforms.add(Platform.fromPlatformId(pId).getLabel());
+                    }
+                    return new ContentDto(content.getContentId(),
+                            content.getTitle(),
+                            content.getImgUrl(),
+                            String.format("%.1f", content.getRate()),
+                            content.getUploadDate().substring(0, 10),
+                            content.getCast(),
+                            content.getIntro(),
+                            genres,
+                            platforms);
+                })
+                .filter(dto -> dto != null) // null 필터링
+                .collect(Collectors.toList());
+
+        return result;
     }
 }
