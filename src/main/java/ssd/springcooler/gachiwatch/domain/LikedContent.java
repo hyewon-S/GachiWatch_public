@@ -4,31 +4,29 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "liked_content")
+@Table(name = "member_liked_content")
 public class LikedContent {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment 대응
+    private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @Column(name = "member_id")
+    private int memberId;
 
-    //나중에 활성화 content에서 오류남
-//    @ManyToOne
-//    @JoinColumn(name = "content_id", nullable = false)
-//    private Content content;
-//
-//    @Column(name = "liked_order")
-//    private int likedOrder;
-//
-//    public LikedContent(Member member, Content content, int likedOrder) {
-//        this.member = member;
-//        this.content = content;
-//        this.likedOrder = likedOrder;
-//    }
+    @Column(name = "content_id")
+    private int contentId;
 
+    public LikedContent(int memberId, int contentId) {
+        this.memberId = memberId;
+        this.contentId = contentId;
+    }
 }
+

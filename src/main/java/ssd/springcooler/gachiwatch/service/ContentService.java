@@ -2,12 +2,13 @@ package ssd.springcooler.gachiwatch.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ssd.springcooler.gachiwatch.dao.mybatis.MybatisContentDao;
-import ssd.springcooler.gachiwatch.domain.Content;
-import ssd.springcooler.gachiwatch.domain.Genre;
-import ssd.springcooler.gachiwatch.domain.Platform;
+import ssd.springcooler.gachiwatch.domain.*;
 import ssd.springcooler.gachiwatch.dto.ContentDto;
 import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
+import ssd.springcooler.gachiwatch.repository.MemberLikedContentRepository;
+import ssd.springcooler.gachiwatch.repository.MemberWatchedContentRepository;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,9 +23,17 @@ public class ContentService {
     @Autowired
     private final MybatisContentDao contentDao;
 
-    public ContentService(TMDBService tmdbService, MybatisContentDao contentDao) {
+    @Autowired
+    private final MemberLikedContentRepository likedContentRepository;
+
+    @Autowired
+    private final MemberWatchedContentRepository watchedContentRepository;
+
+    public ContentService(TMDBService tmdbService, MybatisContentDao contentDao, MemberLikedContentRepository likedContentRepository, MemberWatchedContentRepository watchedContentRepository) {
         this.tmdbService = tmdbService;
         this.contentDao = contentDao;
+        this.likedContentRepository = likedContentRepository;
+        this.watchedContentRepository = watchedContentRepository;
     }
 
     public void insertNewContent(int movie, int tv) {
@@ -112,5 +121,43 @@ public class ContentService {
         }
         return new ContentDto(oneContent.get(0).getContentId(), oneContent.get(0).getTitle(), oneContent.get(0).getImgUrl(), String.format("%.1f", oneContent.get(0).getRate()),
                 oneContent.get(0).getUploadDate().substring(0, 10), oneContent.get(0).getCast(), oneContent.get(0).getIntro(), genres, platforms);
+    }
+
+    public String checkHeart(int contentId, int memberId) {
+        String likedUrl = "/image/icon/icon-heart-black.png";
+        boolean isLiked = likedContentRepository.existsByMemberIdAndContentId(memberId, contentId);
+        if(isLiked) {
+            likedUrl = "/image/icon/icon-heart-red.png";
+        }
+        return likedUrl;
+    }
+
+    public String checkWatched(int contentId, int memberId) {
+        String watchedUrl = "/image/icon/icon-hidden.png";
+        boolean isWatched = watchedContentRepository.existsByMemberIdAndContentId(memberId, contentId);
+        if(isWatched) {
+            watchedUrl = "/image/icon/icon-eye.png";
+        }
+        return watchedUrl;
+    }
+
+    @Transactional
+    public void updateLiked(int contentId, int memberId, boolean isLiked) {
+        if(isLiked) {
+            LikedContent liked = new LikedContent(memberId, contentId);
+            likedContentRepository.save(liked);
+        } else {
+            likedContentRepository.deleteByMemberIdAndContentId(memberId, contentId);
+        }
+    }
+
+    @Transactional
+    public void updateWatched(int contentId, int memberId, boolean isWatched) {
+        if(isWatched) {
+            WatchedContent watched = new WatchedContent(memberId, contentId);
+            watchedContentRepository.save(watched);
+        } else {
+            watchedContentRepository.deleteByMemberIdAndContentId(memberId, contentId);
+        }
     }
 }

@@ -7,24 +7,21 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "watched_content")
+@Table(name = "member_watched_content")
 public class WatchedContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @Column(name = "member_id")
+    private int memberId;
 
-    //나중에 활성화 content에서 오류남
-//    @ManyToOne
-//    @JoinColumn(name = "content_id", nullable = false)
-//    private Content content;
-//
-//    public WatchedContent(Member member, Content content) {
-//        this.member = member;
-//        this.content = content;
-//    }
+    @Column(name = "content_id")
+    private int contentId;
+
+    public WatchedContent(int memberId, int contentId) {
+        this.memberId = memberId;
+        this.contentId = contentId;
+    }
 
 }

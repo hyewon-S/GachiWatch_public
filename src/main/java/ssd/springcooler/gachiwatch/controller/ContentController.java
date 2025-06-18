@@ -20,12 +20,9 @@ import ssd.springcooler.gachiwatch.service.ContentService;
 import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
 import ssd.springcooler.gachiwatch.service.ReviewServiceImpl;
 import ssd.springcooler.gachiwatch.service.TMDBService;
-
 import java.security.Principal;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 
 
 @Controller
@@ -67,8 +64,11 @@ public class ContentController {
             memberId = user.getMemberId();
 
             //유저가 좋아요를 눌렀는지, 봤어요를 눌렀는지 확인해줘야 함
-            model.addAttribute("heartUrl", "/image/icon/icon-heart-black.png");
-            model.addAttribute("eyeUrl", "/image/icon/icon-hidden.png");
+            String heartUrl = contentService.checkHeart(contentId, memberId);
+            model.addAttribute("heartUrl", heartUrl);
+
+            String eyeUrl = contentService.checkWatched(contentId, memberId);
+            model.addAttribute("eyeUrl", eyeUrl);
         } else {
             model.addAttribute("isLoggedIn", false);
         }
@@ -111,22 +111,16 @@ public class ContentController {
     @PostMapping("/likeUpdate")
     @ResponseBody
     public ResponseEntity<?> updateContentLike(@RequestParam int contentId, @RequestParam int memberId,
-                                            @RequestParam boolean isLiked,
-                                            Principal principal) {
-        System.out.println("contentId는 : " + contentId);
-        System.out.println("memberId는 : " + memberId);
-        System.out.println("isLike는" + isLiked);
+                                            @RequestParam boolean isLiked ) {
+        contentService.updateLiked(contentId, memberId, isLiked);
 
         return ResponseEntity.ok().build();
     }
     @PostMapping("/watchedUpdate")
     @ResponseBody
     public ResponseEntity<?> updateContentWatched(@RequestParam int contentId, @RequestParam int memberId,
-                                               @RequestParam boolean isWatched,
-                                               Principal principal) {
-        System.out.println("contentId는 : " + contentId);
-        System.out.println("memberId는 : " + memberId);
-        System.out.println("isWatched는 : " + isWatched);
+                                               @RequestParam boolean isWatched ) {
+        contentService.updateWatched(contentId, memberId, isWatched);
 
         return ResponseEntity.ok().build();
     }
