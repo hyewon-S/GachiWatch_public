@@ -201,7 +201,9 @@
     <section class="group-section" th:if="${user != null}">
         <h2>내 그룹</h2>
         <div class="carousel small-carousel">
-            <button class="carousel-btn left">&lt;</button>
+            <button class="carousel-btn left">
+                <img th:src="@{/image/left_button.png}" alt="왼쪽" style="width:24px; height:24px;">
+            </button>
             <div class="carousel-track">
                 <div th:if="${crews != null}" th:each="crew : ${crews}" style="text-align: center;">
                     <img th:src="@{'/image/' + ${crew.platform.name().toLowerCase()} + '.png'}" alt="그룹 썸네일" class="group-thumbnail">
@@ -211,6 +213,9 @@
                     </button>
                 </div>
             </div>
+            <button class="carousel-btn right">
+                <img th:src="@{/image/right_button.png}" alt="오른쪽" style="width:24px; height:24px;">
+            </button>
         </div>
     </section>
 
@@ -218,7 +223,9 @@
     <section class="carousel-section">
         <h2>실시간 트렌드</h2>
         <div class="carousel">
-            <button class="carousel-btn left">&lt;</button>
+            <button class="carousel-btn left">
+                <img th:src="@{/image/left_button.png}" alt="왼쪽" style="width:24px; height:24px;">
+            </button>
             <div class="carousel-track">
                 <div th:each="content : ${trendingContents}" style="flex: 0 0 16.66%;">
                     <a th:href="@{/content/detail(contentId=${content.id})}">
@@ -226,7 +233,9 @@
                     </a>
                 </div>
             </div>
-            <button class="carousel-btn right">&gt;</button>
+            <button class="carousel-btn right">
+                <img th:src="@{/image/right_button.png}" alt="오른쪽" style="width:24px; height:24px;">
+            </button>
         </div>
     </section>
 
@@ -234,7 +243,9 @@
     <section class="carousel-section" th:if="${user != null}">
         <h2>나를 위한 추천</h2>
         <div class="carousel">
-            <button class="carousel-btn left">&lt;</button>
+            <button class="carousel-btn left">
+                <img th:src="@{/image/left_button.png}" alt="왼쪽" style="width:24px; height:24px;">
+            </button>
             <div class="carousel-track">
                 <div th:each="content : ${formecontents}" style="flex: 0 0 16.66%;">
                     <a th:href="@{/content/detail(contentId=${content.id})}">
@@ -242,7 +253,9 @@
                     </a>
                 </div>
             </div>
-            <button class="carousel-btn right">&gt;</button>
+            <button class="carousel-btn right">
+                <img th:src="@{/image/right_button.png}" alt="오른쪽" style="width:24px; height:24px;">
+            </button>
         </div>
     </section>
 
@@ -250,7 +263,9 @@
     <section class="carousel-section" th:unless="${user != null}">
         <h2>최신 영화</h2>
         <div class="carousel">
-            <button class="carousel-btn left">&lt;</button>
+            <button class="carousel-btn left">
+                <img th:src="@{/image/left_button.png}" alt="왼쪽" style="width:24px; height:24px;">
+            </button>
             <div class="carousel-track">
                 <div th:each="content : ${latestMovieContents}" style="flex: 0 0 16.66%;">
                     <a th:href="@{/content/detail(contentId=${content.id})}">
@@ -258,7 +273,9 @@
                     </a>
                 </div>
             </div>
-            <button class="carousel-btn right">&gt;</button>
+            <button class="carousel-btn right">
+                <img th:src="@{/image/right_button.png}" alt="오른쪽" style="width:24px; height:24px;">
+            </button>
         </div>
     </section>
 </main>
@@ -273,7 +290,39 @@
                 }
             });
         });
+
+        // 캐러셀 좌우 이동 버튼 이벤트
+        document.querySelectorAll('.carousel').forEach(carousel => {
+            const track = carousel.querySelector('.carousel-track');
+            const items = track.querySelectorAll('div');
+            if (items.length === 0) return;
+
+            const itemWidth = items[0].offsetWidth + 5; // 5는 gap 보정
+            const scrollAmount = itemWidth * 2;
+
+            const leftBtn = carousel.querySelector('.carousel-btn.left');
+            const rightBtn = carousel.querySelector('.carousel-btn.right');
+
+            if (leftBtn && rightBtn) {
+                leftBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    track.scrollBy({
+                        left: -scrollAmount,
+                        behavior: 'smooth'
+                    });
+                });
+
+                rightBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    track.scrollBy({
+                        left: scrollAmount,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        });
     });
+
 </script>
 </body>
 </html>
