@@ -32,6 +32,9 @@
 <main class="crew-page">
     <!-- 좌측: 그룹 정보 -->
     <section class="crew-info">
+        <form th:action="@{/crew/manage/{id}(id=${crew.crewId})}" method="get" style="display: inline;">
+            <button type="submit" class="back-button">← 돌아가기</button>
+        </form>
         <form method="post" th:action="@{/crew/update}" th:object="${crewDto}">
             <label>그룹이름</label>
             <input type="text" th:value="${crew.crewName}" name="crewName" />
