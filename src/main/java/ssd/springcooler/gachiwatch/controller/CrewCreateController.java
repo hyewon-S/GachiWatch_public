@@ -53,15 +53,9 @@ public class CrewCreateController {
                               HttpSession session, RedirectAttributes redirectAttributes) {
                 Member captain = memberService.getMember(userDetails.getMember().getMemberId());
         Crew newCcrew = crewService.createCrew(crew, captain);
-        //ModelAndView mav = new ModelAndView();
-        //mav.setViewName("crew/crewpage");
-        //mav.addObject("crew", newCcrew);
-        //return mav;
 
-        // 리다이렉트 시 사용할 id 저장
         redirectAttributes.addAttribute("id", crew.getCrewId());
 
-        // redirect로 GET /crew/{id} 형태로 이동
         return "redirect:/crew/crewpage/" + crew.getCrewId();
     }
 

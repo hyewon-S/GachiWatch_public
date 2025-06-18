@@ -32,9 +32,8 @@ public class CrewJoinController {
 
     @PostMapping
     public String joinCrew(@RequestParam Long crewId, @AuthenticationPrincipal CustomUserDetails userDetails, Principal principal) {
-        // principal.getName() 등을 통해 현재 로그인 유저 정보 조회
         crewService.makeApplication(crewId, userDetails.getMember());
-        return "redirect:/crew/view"; // 또는 신청 완료 페이지로 리다이렉트
+        return "redirect:/crew/view";
     }
 
     @PostMapping("/deny")
@@ -58,9 +57,6 @@ public class CrewJoinController {
 
     @GetMapping
     public String showWaitingPage(@RequestParam Long crewId, @AuthenticationPrincipal CustomUserDetails userDetails, Principal principal, Model model) {
-        // principal.getName() 등을 통해 현재 로그인 유저 정보 조회
-        //crewService.makeApplication(crewId, userDetails.getMember());
-
         List<CrewJoinWaiting> crewJoinWaitingList = crewService.getWaitingList(crewId);
         List<Member> memberList = crewJoinWaitingList.stream()
                 .map(waiting -> memberService.getMember(waiting.getUserId()))
