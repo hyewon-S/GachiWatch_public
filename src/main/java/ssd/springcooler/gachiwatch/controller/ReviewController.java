@@ -2,15 +2,13 @@ package ssd.springcooler.gachiwatch.controller;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Review;
 import ssd.springcooler.gachiwatch.dto.ReviewDto;
@@ -83,5 +81,13 @@ public class ReviewController {
     public String delete(@RequestParam int reviewId, @RequestParam int contentId) {
         reviewService.deleteReview(reviewId);
         return "redirect:/content/detail?contentId=" + contentId;
+    }
+
+    @PostMapping("/likedUpdate")
+    @ResponseBody
+    public ResponseEntity<?> updateReviewLiked(@RequestParam int reviewId, @RequestParam int memberId,
+                                               @RequestParam int like, @RequestParam boolean isAdded) {
+        reviewService.updateLiked(reviewId, memberId, like, isAdded);
+        return ResponseEntity.ok().build();
     }
 }

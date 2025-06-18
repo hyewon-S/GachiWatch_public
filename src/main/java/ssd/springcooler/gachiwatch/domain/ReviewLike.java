@@ -15,4 +15,12 @@ public class ReviewLike {
 
     @Column(name = "review_id")
     private int reviewId;
+
+    @Column(name = "member_id")
+    private int memberId;
+
+    public ReviewLike(int reviewId, int memberId) {
+        this.reviewId = reviewId;
+        this.memberId = memberId;
+    }
 }

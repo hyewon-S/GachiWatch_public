@@ -23,4 +23,6 @@ public interface ReviewDao {
     List<Review> getReviewsByUserId(int userId);
 
     List<Review> getReviewsByContentIdAndMemberId(int memberId, int contentId);
+
+    void updateReviewLike(int reviewId, int like);
 }

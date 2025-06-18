@@ -1,12 +1,15 @@
 package ssd.springcooler.gachiwatch.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.ReviewDao;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Review;
+import ssd.springcooler.gachiwatch.domain.ReviewLike;
 import ssd.springcooler.gachiwatch.dto.ReviewDto;
 import ssd.springcooler.gachiwatch.repository.MemberRepository;
+import ssd.springcooler.gachiwatch.repository.ReviewLikeRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,6 +24,9 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private ReviewLikeRepository reviewLikeRepository;
 
     @Override
     public List<ReviewDto> getReviewsByUser(int memberId) {
@@ -77,5 +83,28 @@ public class ReviewServiceImpl implements ReviewService{
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd:HH:mm");
         String formatted = sdf.format(now);
         reviewDao.updateReview(reviewId, reviewContent, star, formatted);
+    }
+
+    @Transactional
+    @Override
+    public void updateLiked(int reviewId, int memberId, int like, boolean isAdded) {
+        reviewDao.updateReviewLike(reviewId, like);
+
+        if(isAdded) {
+            ReviewLike reviewLike = new ReviewLike(reviewId, memberId);
+            reviewLikeRepository.save(reviewLike);
+        } else {
+            reviewLikeRepository.deleteByReviewIdAndMemberId(reviewId, memberId);
+        }
+    }
+
+    @Override
+    public String checkReviewHeart(int memberId) {
+        boolean isLiked = reviewLikeRepository.existsByMemberId(memberId);
+        String likeUrl = "/image/icon/icon-heart-black.png";
+        if(isLiked) {
+            likeUrl = "/image/icon/icon-heart-red.png";
+        }
+        return likeUrl;
     }
 }

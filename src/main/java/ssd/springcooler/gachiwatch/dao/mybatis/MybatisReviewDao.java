@@ -47,4 +47,9 @@ public class MybatisReviewDao implements ReviewDao {
     public List<Review> getReviewsByContentIdAndMemberId(int memberId, int contentId) {
         return reviewMapper.getReviewsByContentIdAndMemberId(memberId, contentId);
     }
+
+    @Override
+    public void updateReviewLike(int reviewId, int like) {
+        reviewMapper.updateReviewLike(reviewId, like);
+    }
 }

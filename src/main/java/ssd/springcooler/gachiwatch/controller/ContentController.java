@@ -70,9 +70,12 @@ public class ContentController {
             String eyeUrl = contentService.checkWatched(contentId, memberId);
             model.addAttribute("eyeUrl", eyeUrl);
 
-            model.addAttribute("review_heartUrl", "/image/icon/icon-heart-black.png");
+            String reviewHeart = reviewService.checkReviewHeart(memberId);
+            model.addAttribute("review_heartUrl", reviewHeart);
+            model.addAttribute("isReported", true);
         } else {
             model.addAttribute("isLoggedIn", false);
+            model.addAttribute("isReported", false);
         }
 
 

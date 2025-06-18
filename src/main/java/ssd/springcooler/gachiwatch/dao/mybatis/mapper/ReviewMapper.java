@@ -1,6 +1,7 @@
 package ssd.springcooler.gachiwatch.dao.mybatis.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import ssd.springcooler.gachiwatch.domain.Review;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface ReviewMapper {
     List<Review> getReviewsByUserId(int userId);
 
     List<Review> getReviewsByContentIdAndMemberId(int memberId, int contentId);
+
+    void updateReviewLike(@Param("reviewId") int reviewId, @Param("like") int like);
 }

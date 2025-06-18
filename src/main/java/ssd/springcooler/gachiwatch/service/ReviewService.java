@@ -19,4 +19,8 @@ public interface ReviewService {
     void updateReview(int reviewId, String reviewContent, int rate);
 
     List<ReviewDto> commonLogicForReview(List<Review> reviewList, int memberId);
+
+    void updateLiked(int reviewId, int memberId, int like, boolean isAdded);
+
+    public String checkReviewHeart(int memberId);
 }
