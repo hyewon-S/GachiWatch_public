@@ -134,8 +134,9 @@ public class CrewServiceImpl implements CrewFacade {
         joinedCrewRepository.insertJoinedCrew(crew.getCrewId(), captain.getMemberId(), true);
         return crew;
     }
+    @Transactional
     public Crew updateCrew(Crew crew) {
-        return crewDao.updateCrew(crew);
+        return crewRepository.save(crew);
     }
     public boolean deleteCrew(Crew crew) {
         return crewDao.deleteCrew(crew);
