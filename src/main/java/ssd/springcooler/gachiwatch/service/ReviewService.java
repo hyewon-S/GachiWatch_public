@@ -22,5 +22,13 @@ public interface ReviewService {
 
     void updateLiked(int reviewId, int memberId, int like, boolean isAdded);
 
-    public String checkReviewHeart(int memberId);
+    String checkReviewHeart(int memberId);
+
+    void createReviewReport(int reviewId, int memberId, String substance);
+
+    boolean checkReported(int memberId, String reviewId);
+
+    void deleteReport(int reviewId, int memberId);
+
+    void checkReportedOverFive(int reviewId);
 }

@@ -23,8 +23,11 @@ public class ReviewReport {
 
 	private String substance;
 
-	@Column(name = "review_report_date")
-	private Date date;
+	public ReviewReport(int reviewId, int memberId, String substance) {
+		this.reviewId = reviewId;
+		this.memberId = memberId;
+		this.substance = substance;
+	}
 
 
 	@Override

@@ -403,10 +403,10 @@
                      onclick="alert('로그인이 필요합니다.')"
                      style="width: 30px;"/> <span th:unless="${isLoggedIn}" th:text="${review.likes}">0</span>
 
-                <a th:unless="${isReported}" th:href="@{/review/reportForm(reviewId=${review.reviewId}, substance=${review.substance}, contentId=${contentInfo.contentId})}">
+                <a th:unless="${review.isReported}" th:href="@{/review/reportForm(reviewId=${review.reviewId}, substance=${review.substance}, contentId=${contentInfo.contentId})}">
                     <input type="button" value="신고" style="width: 60px;">
                 </a>
-                <a th:if="${isReported}" th:href="@{/review/reportCancel(reviewId=${review.reviewId}, substance=${review.substance}, contentId=${contentInfo.contentId})}">
+                <a th:if="${review.isReported}" th:href="@{/review/reportCancel(reviewId=${review.reviewId}, contentId=${contentInfo.contentId})}">
                     <input type="button" value="신고 취소" style="width: 90px;" onclick="cancelReport()" id="reportBtn">
                 </a>
                 <br>

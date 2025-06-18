@@ -17,4 +17,5 @@ public class ReviewDto {
     private String rate;
     private String likes;
     private String nickname;
+    private boolean isReported;
 }

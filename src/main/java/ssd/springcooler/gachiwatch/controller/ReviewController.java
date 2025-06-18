@@ -66,8 +66,15 @@ public class ReviewController {
     @PostMapping ("/report")
     public String report(@RequestParam int reviewId, @RequestParam int contentId, @RequestParam String reviewContent, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Member user = memberService.findByEmail(userDetails.getUsername());
-        model.addAttribute("memberId", user.getMemberId());
-        System.out.println(reviewContent);
+        reviewService.createReviewReport(reviewId, user.getMemberId(), reviewContent);
+        reviewService.checkReportedOverFive(reviewId); //신고받은지 5회가 넘었나?
+        return "redirect:/content/detail?contentId=" + contentId;
+    }
+
+    @GetMapping ("/reportCancel")
+    public String reportCancel(@RequestParam int reviewId, @RequestParam int contentId, @AuthenticationPrincipal UserDetails userDetails) {
+        Member user = memberService.findByEmail(userDetails.getUsername());
+        reviewService.deleteReport(reviewId, user.getMemberId());
         return "redirect:/content/detail?contentId=" + contentId;
     }
 

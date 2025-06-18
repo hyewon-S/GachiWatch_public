@@ -72,7 +72,7 @@ public class ContentController {
 
             String reviewHeart = reviewService.checkReviewHeart(memberId);
             model.addAttribute("review_heartUrl", reviewHeart);
-            model.addAttribute("isReported", true);
+
         } else {
             model.addAttribute("isLoggedIn", false);
             model.addAttribute("isReported", false);
@@ -88,6 +88,11 @@ public class ContentController {
         //전체 review
         List<ReviewDto> reviewList = reviewService.getReviewsByContent(memberId, contentId);
         model.addAttribute("reviewList", reviewList);
+
+        for(ReviewDto review : reviewList) {
+            boolean isReported = reviewService.checkReported(memberId, review.getReviewId());
+            review.setReported(isReported);
+        }
 
         int total = 0;
         for(ReviewDto review : reviewList) {

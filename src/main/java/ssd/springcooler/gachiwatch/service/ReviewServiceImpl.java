@@ -7,9 +7,11 @@ import ssd.springcooler.gachiwatch.dao.ReviewDao;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Review;
 import ssd.springcooler.gachiwatch.domain.ReviewLike;
+import ssd.springcooler.gachiwatch.domain.ReviewReport;
 import ssd.springcooler.gachiwatch.dto.ReviewDto;
 import ssd.springcooler.gachiwatch.repository.MemberRepository;
 import ssd.springcooler.gachiwatch.repository.ReviewLikeRepository;
+import ssd.springcooler.gachiwatch.repository.ReviewReportRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +30,9 @@ public class ReviewServiceImpl implements ReviewService{
     @Autowired
     private ReviewLikeRepository reviewLikeRepository;
 
+    @Autowired
+    private ReviewReportRepository reviewReportRepository;
+
     @Override
     public List<ReviewDto> getReviewsByUser(int memberId) {
         return commonLogicForReview(reviewDao.getReviewsByUserId(memberId), memberId);
@@ -41,7 +46,7 @@ public class ReviewServiceImpl implements ReviewService{
             if(memberId == review.getMember().getMemberId() && memberId != 0) { continue; }
             Member member = memberRepository.findById(review.getMember().getMemberId()).orElse(null);
             reviewDtos.add(new ReviewDto(Integer.toString(review.getReviewId()), Integer.toString(review.getContentId()),
-                    review.getDate(), review.getSubstance(), Integer.toString(review.getScore()), Integer.toString(review.getLikes()), member.getNickname()));
+                    review.getDate(), review.getSubstance(), Integer.toString(review.getScore()), Integer.toString(review.getLikes()), member.getNickname(), false));
         }
         return reviewDtos;
     }
@@ -57,7 +62,7 @@ public class ReviewServiceImpl implements ReviewService{
         for (Review review : reviewList) {
             Member member = memberRepository.findById(memberId).orElse(null);
             reviewDtos.add(new ReviewDto(Integer.toString(review.getReviewId()), Integer.toString(review.getContentId()),
-                    review.getDate(), review.getSubstance(), Integer.toString(review.getScore()), Integer.toString(review.getLikes()), member.getNickname()));
+                    review.getDate(), review.getSubstance(), Integer.toString(review.getScore()), Integer.toString(review.getLikes()), member.getNickname(), false));
         }
         return reviewDtos;
     }
@@ -106,5 +111,33 @@ public class ReviewServiceImpl implements ReviewService{
             likeUrl = "/image/icon/icon-heart-red.png";
         }
         return likeUrl;
+    }
+
+    @Override
+    public void createReviewReport(int reviewId, int memberId, String substance) {
+        ReviewReport report = new ReviewReport(reviewId, memberId, substance);
+        reviewReportRepository.save(report);
+    }
+
+    @Override
+    public boolean checkReported(int memberId, String reviewId) {
+        return reviewReportRepository.existsByReviewIdAndMemberId(Integer.parseInt(reviewId), memberId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteReport(int reviewId, int memberId) {
+        reviewReportRepository.deleteByReviewIdAndMemberId(reviewId, memberId);
+    }
+
+    @Override
+    @Transactional
+    public void checkReportedOverFive(int reviewId) {
+        int count = reviewReportRepository.countByReviewId(reviewId);
+        if(count >= 5) {
+            reviewReportRepository.deleteByReviewId(reviewId);
+            reviewReportRepository.flush();
+            reviewDao.deleteReview(reviewId);
+        }
     }
 }
