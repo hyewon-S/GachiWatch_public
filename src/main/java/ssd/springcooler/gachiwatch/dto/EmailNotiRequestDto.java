@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @Setter
 public class EmailNotiRequestDto {
+    private Integer memberId;
     private String nickname;
     private List<Genre> preferredGenres; //String -> 에서 Genre로 변경
     private String email;

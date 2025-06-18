@@ -3,6 +3,7 @@ package ssd.springcooler.gachiwatch.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -36,5 +37,7 @@ public class Notification   {
     @Enumerated(EnumType.STRING)
     private NotificationStatus status; // 전송 상태 (예: SENT, FAILED 등)
 
+    @Column(name = "noti_date")
+    private LocalDate notiDate; //전송 날짜 (오늘 전송했는지 확인 위함)
 
 }
