@@ -136,7 +136,7 @@ public String updateProfile(@AuthenticationPrincipal CustomUserDetails userDetai
     }
 
     // 콘텐츠 목록 확인
-    @GetMapping("/mypage/my_content")
+    @GetMapping("/my_content")
     public String getMyContents(@RequestParam(defaultValue = "liked") String tab,
                                 @AuthenticationPrincipal UserDetails userDetails,
                                 Model model) {

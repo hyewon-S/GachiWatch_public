@@ -28,34 +28,7 @@ public class MemberServiceImpl implements MemberService {
         this.passwordEncoder = passwordEncoder;
         this.fileStorageService = fileStorageService;
     }
-//    // 생성자 주입 (요즘 권장하는 방법)
-//    public MemberServiceImpl(MemberRepository memberRepository) {
-//        this.memberRepository = memberRepository;
-//    }
 
-    /**
-     * 회원가입 처리: 회원 기본정보, 선호 장르, 구독 OTT 등록
-     */
-//    @Override
-//    public void register(MemberRegisterDto dto) {
-//        memberDao.insertMember(dto);
-////        memberDao.insertMemberGenres(dto.getMemberId(), dto.getGenreIds());
-////        memberDao.insertMemberOtts(dto.getMemberId(), dto.getOttIds());
-//    }
-
-//    @Override
-//    public void register(MemberRegisterDto dto) {
-//        Member member = Member.builder()
-//                .name(dto.getName())
-//                .gender(Gender.valueOf(dto.getGender()))
-//                .birthdate(dto.getBirthdate())
-//                .email(dto.getEmail())
-//                .password(dto.getPassword()) // 실제론 암호화 필요
-//                .nickname(dto.getNickname())
-//                .build();
-//
-//        memberDao.insertMember(member);
-//    }
     @Override
     public void register(MemberRegisterDto dto) {
 
@@ -72,7 +45,6 @@ public class MemberServiceImpl implements MemberService {
                 gender = Gender.NO_INFO;  // 알 수 없는 값은 NO_INFO로 처리
             }
         }
-
 
         // String → Platform enum 변환 (예외 잡고 null 필터링)
         List<Platform> platformList = dto.getSubscribedOtts().stream()
@@ -116,7 +88,6 @@ public class MemberServiceImpl implements MemberService {
 //                .preferredGenres(dto.getPreferredGenres() != null ? dto.getPreferredGenres() : new ArrayList<>())
                 .build();
 
-
 //        // 플랫폼 매핑
 //        platformList.forEach(platform -> {
 //            Member_Platform mp = Member_Platform.builder()
@@ -135,32 +106,26 @@ public class MemberServiceImpl implements MemberService {
 //            member.getPreferredGenres().add(mg);
 //        });
 
-        // 비밀번호 암호화도 잊지 말기!
+        // 비밀번호 암호화
         // member.setPassword(passwordEncoder.encode(member.getPassword()));
 
         memberRepository.save(member);
     }
 
+    // 이메일 검증
+    @Override
+    public boolean existsByEmail(String email) {
+        return memberRepository.existsByEmail(email); // JPA 기준, 혹은 MyBatis면 DAO 호출
+    }
 
-
-    /**
-     * 로그인 처리
-     *
-     * @return
-     */
-//    @Override
-//    public void login(LoginDto dto) {
-//        memberDao.findByEmailAndPassword(dto);
-//    }
+    /** 로그인 처리 */
     @Override
     public Member login(LoginDto loginDto) {
         return memberMapper.findByEmailAndPassword(loginDto);
     }
 
 
-    /**
-     * 프로필 수정
-     */
+    /** 프로필 수정 */
     @Override
     public void updateProfile(ProfileUpdateDto dto) {
         System.out.println("updateProfile 호출됨");
@@ -196,43 +161,38 @@ public class MemberServiceImpl implements MemberService {
 
 
 
-    /**
-     * 참여한 가치크루 목록 조회
-     */
+    /** 참여한 크루 목록 조회 */
     @Override
     public List<CrewDto> getMyCrews(int memberId) {
         return memberDao.selectMyCrews(memberId);
     }
 
+    /** '찜했어요' 콘텐츠 조회 */
     @Override
     public List<ContentSummaryDto> getLikedContents(int memberId) {
         //구현 필요
         return null;
     }
 
-    /**
-     * '봤어요' 콘텐츠 조회
-     */
+    /** '봤어요' 콘텐츠 조회 */
     @Override
     public List<ContentSummaryDto> getWatchedContents(int memberId) {
         return memberDao.selectWatchedContents(memberId);
     }
 
-    /**
-     * '봤어요' 콘텐츠 삭제
-     */
+    /** '봤어요' 콘텐츠 수정 */
     @Override
     public void deleteWatchedContent(int contentId) {
         memberDao.deleteWatchedContentById(contentId);
     }
 
+    /** 구독 중인 OTT 조회 */
     @Override
     public List<Platform> getSubscribedOttList(int memberId) {
         return memberMapper.getSubscribedOttList(memberId); // mapper에서 DB 조회
     }
-    /**
-     * 구독 중인 OTT 수정
-     */
+
+    /** 구독 중인 OTT 수정 */
     @Override
     public void updateSubscribedOtt(int memberId, List<Platform> ottList) {
         // 기존 OTT 삭제
@@ -243,9 +203,7 @@ public class MemberServiceImpl implements MemberService {
         // memberDao.insertMemberOtts(memberId, ottIds);
     }
 
-    /**
-     * 선호 장르 수정
-     */
+    /** 선호 장르 수정 */
     @Override
     public void updatePreferredGenre(int memberId, List<Genre> genreList) {
         // 기존 장르 삭제
@@ -256,9 +214,7 @@ public class MemberServiceImpl implements MemberService {
         // memberDao.insertMemberGenres(memberId, genreIds);
     }
 
-    /**
-     * 내가 신고당한 내역 조회
-     */
+    /** 내가 신고당한 내역 조회 */
     @Override
     public List<ReportDto> getReports(int memberId) {
         return memberDao.selectReportsAgainstMe(memberId);

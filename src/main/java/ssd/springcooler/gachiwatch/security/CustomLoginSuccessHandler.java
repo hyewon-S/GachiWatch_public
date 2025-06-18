@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,8 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 import ssd.springcooler.gachiwatch.domain.Member;
+import ssd.springcooler.gachiwatch.dto.EmailNotiRequestDto;
+import ssd.springcooler.gachiwatch.service.EmailNotiService;
 import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
 import org.springframework.security.core.context.SecurityContext;
 
@@ -61,6 +64,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 //                response.sendRedirect("/home");
 //            }
 //        }
+
 
         // AJAX 구분 없이 무조건 홈으로 리다이렉트
         response.sendRedirect("/home");

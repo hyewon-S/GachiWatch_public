@@ -9,16 +9,16 @@ import java.util.List;
 
 public interface MemberService {
 
-//    static String emailCheck(String email) {
-//        return email;
-//    }
-
     /**
      * 회원가입 처리
      * @param dto 회원가입 정보 DTO
      */
     void register(MemberRegisterDto dto);
 
+    /**
+     * 이메일 검증
+     */
+    boolean existsByEmail(String email);
 
     /**
      * 로그인 처리
@@ -32,7 +32,6 @@ public interface MemberService {
      * @param memberId 회원 ID
      * @param dto 수정할 프로필 정보 DTO
      */
-
     void updateProfile(ProfileUpdateDto dto);
 
     /**
@@ -50,16 +49,6 @@ public interface MemberService {
      */
     List<ContentSummaryDto> getLikedContents(int memberId);
 
-
-    /**
-     * 프로필 정보 수정
-     * @param memberId 회원 ID
-     * @param dto 수정할 프로필 정보 DTO
-     */
-//    void updateProfile(Long memberId, ProfileUpdateDto dto);
-
-//    List<CrewDto> getMyCrews(Long memberId);
-
     /**
      * '봤어요' 콘텐츠 목록 조회
      *
@@ -72,9 +61,6 @@ public interface MemberService {
      * '봤어요' 콘텐츠 개별 삭제
      */
     void deleteWatchedContent(int contentId);
-
-//    void deleteWatchedContent(int memberId, int contentId);
-
 
     List<Platform> getSubscribedOttList(int memberId);
     /**
@@ -103,6 +89,4 @@ public interface MemberService {
     Member getMember(int memberId);
 
     List<Genre> getPreferredGenres(int memberId);
-
-//    LoginDto login(String email, String password);
 }

@@ -138,8 +138,8 @@ header {
     margin-top: 10px;
 }
 
-.report-btn,
-.kick-btn {
+.accept-btn,
+.deny-btn {
     padding: 5px 10px;
     margin: 3px;
     font-size: 14px;
@@ -148,13 +148,13 @@ header {
     cursor: pointer;
 }
 
-.report-btn {
-    background-color: #333;
+.accept-btn {
+    background-color: #7b6ef6;
     color: #fff;
 }
 
-.kick-btn {
-    background-color: #e53935;
+.deny-btn {
+    background-color: #333;
     color: #fff;
 }
 

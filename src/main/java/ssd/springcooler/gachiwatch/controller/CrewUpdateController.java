@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
+import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
 
 import java.util.Optional;
 
@@ -16,6 +17,8 @@ import java.util.Optional;
 public class CrewUpdateController {
     @Autowired
     private CrewServiceImpl crewService;
+    @Autowired
+    private MemberServiceImpl memberService;
     public void setCrewServiceImpl(CrewServiceImpl crewService) {
         this.crewService = crewService;
     }
@@ -31,18 +34,16 @@ public class CrewUpdateController {
     }
 
     @PostMapping
-    public ModelAndView update(@Valid @ModelAttribute("crewReq") CrewCommand crewCommand, Errors errors) {
+    public String update(@Valid @ModelAttribute Crew crew, Errors errors) {
         if (errors.hasErrors()) {
-            ModelAndView mav = new ModelAndView("crew/updateForm");
-            return mav;
+            return "crew/updateForm";
         }
+        Crew oldCrew = crewService.getCrew(crew.getCrewId()).get();
 
-        Crew crew = new Crew();
-        //crew = crewService.updateCrew(crew);
+        //Crew crew = new Crew();
+        crew.setCaptain(memberService.getMember(oldCrew.getCaptain().getMemberId()));
+        crewService.updateCrew(crew);
 
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("crew/crewpage");
-        mav.addObject("crew", crew);
-        return mav;
+        return "redirect:/crew/manage/" + crew.getCrewId();
     }
 }

@@ -46,6 +46,9 @@ public class CrewServiceImpl implements CrewFacade {
     @Autowired
     private CrewJoinWaitingRepository crewJoinWaitingRepository;
 
+    @Autowired
+    private MemberServiceImpl memberService;
+
 
     public Optional<Crew> getCrew(Long crewId) {
         return crewRepository.findByCrewId(crewId);
@@ -114,6 +117,13 @@ public class CrewServiceImpl implements CrewFacade {
         return crewList;
     }
 
+    public List<CrewJoinWaiting> getWaitingList(Long crewId) {
+        List<CrewJoinWaiting> crewJoinWaitingList = crewJoinWaitingRepository.findByCrewId(crewId);
+        //List<Member> memberList = crewJoinWaitingList.stream()
+       //         .map(CrewJoinWaiting::getCrewId);
+        return crewJoinWaitingList;
+    }
+
     @Transactional
     public Crew createCrew(Crew crew, Member captain) {
         crew.setCaptain(captain);
@@ -124,8 +134,9 @@ public class CrewServiceImpl implements CrewFacade {
         joinedCrewRepository.insertJoinedCrew(crew.getCrewId(), captain.getMemberId(), true);
         return crew;
     }
+    @Transactional
     public Crew updateCrew(Crew crew) {
-        return crewDao.updateCrew(crew);
+        return crewRepository.save(crew);
     }
     public boolean deleteCrew(Crew crew) {
         return crewDao.deleteCrew(crew);
@@ -137,14 +148,18 @@ public class CrewServiceImpl implements CrewFacade {
         crewJoinWaitingRepository.save(crewJoinWaiting);
         return true;
     }
-    public boolean denyMember(Long crewId, Member member) {
-        //return waitingDao.deleteMember(crewId, member);
+
+    @Transactional
+    public boolean denyMember(Long crewId, Integer memberId) {
+        crewJoinWaitingRepository.deleteByCrewIdAndUserId(crewId, memberId);
         return true;
     }
 
-    public boolean acceptMember(Long crewId, Member member) {
-        //crewDao.insertMember(crewId, member);
-        //waitingDao.deleteMember(crewId, member);
+    @Transactional
+    public boolean acceptMember(Long crewId, Integer memberId) {
+        joinedCrewRepository.insertJoinedCrew(crewId, memberId, false);
+        crewJoinWaitingRepository.deleteByCrewIdAndUserId(crewId, memberId);
+
         return true;
     }
 

@@ -48,10 +48,21 @@
         }
 
         .party-info {
+            position: relative;
             width: 40%;
             border-right: 2px solid #eee;
+            padding-right: 60px;
+        }
+        .platform-image {
+            position: absolute;
+            top: 10px;
+            right: 10px;
         }
 
+        .platform-image img {
+            width: 40px;
+            height: auto;
+        }
         .party-info img {
             width: 60px;
             height: 60px;
@@ -60,7 +71,7 @@
 
         .party-info .price {
             font-size: 1.5rem;
-            margin: 1rem 0;
+            margin: 10px 0;
         }
 
         .info-tag {
@@ -231,15 +242,22 @@
 <div class="main">
         <div class="party-info">
             <h2 th:text="${crew.crewName}">파티 이름</h2>
-            <div class="price" th:text="${crew.payment}">17900원</div>
+            <img class="platform-image"
+                 th:src="@{'/image/' + ${crew.platform.name().toLowerCase()} + '.png'}"
+                 th:alt="${crew.platform.label}" />
+            <div class="price" th:text="${crew.payment} + '원'">17900원</div>
+            <br>
+            <div th:text="${crew.crewDesc}">크루 설명</div>
+            <br>
+            <div class="info-tag">크루장 <span th:text="${crew.captain.nickname}">멤버</span></div>
             <br>
             <div class="info-tag">인원 <span th:text="|${crew.getCurrentCount()} / ${crew.maxMember}|">3 / 4</span></div>
             <br>
             <div class="info-tag">결제일 <span th:text="${#dates.format(crew.payDate, 'd')} + '일'">매달 7일</span></div>
             <br>
-            <!--<div class="info-tag">최소기간 <span th:text="${crewDto.minPeriod}">6개월</span></div>-->
+            <div class="info-tag">분철 금액 <span th:text="${crew.calcPayFee()} + '원'">정보없음</span></div>
             <br>
-            <img src="/image/netflix.png" alt="Netflix" />
+            <!--<img src="/image/netflix.png" alt="Netflix" />-->
             <button
                     class="group-button"
                     th:onclick="'location.href=\'/crew/manage/' + ${crew.crewId} + '\';'">

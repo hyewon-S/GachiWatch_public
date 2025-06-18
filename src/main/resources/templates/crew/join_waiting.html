@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Gachi Watch - 크루 관리</title>
+    <link rel="stylesheet" href="/css/crew/join_waiting.css" />
+</head>
+<body>
+
+<header class="main-header">
+    <div class="logo-search">
+        <a th:href="@{/}">
+            <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
+        </a>
+        <input type="text" placeholder="콘텐츠, 키워드 입력" class="search-bar">
+        <button class="search-button">Search</button>
+    </div>
+    <nav class="nav-menu">
+        <a th:href="@{/content/search}">통합 콘텐츠</a>
+        <a th:href="@{/content/recommend}">추천 콘텐츠</a>
+        <a th:href="@{/crew/view}">공유 매칭</a>
+        <a th:href="@{/account/logout}">
+            <button class="logout">Logout</button>
+        </a>
+        <!-- 로그인 -> 홈화면 뷰 연결 위해 null-safe 처리 했습니다 -->
+        <a th:if="${user != null}" th:href="@{/mypage}">
+            <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
+        </a>
+    </nav>
+</header>
+
+<main class="crew-page">
+    <!-- 좌측: 그룹 정보 -->
+    <section class="crew-info">
+        <form th:action="@{/crew/manage/{id}(id=${crew.crewId})}" method="get" style="display: inline;">
+            <button type="submit" class="back-button">← 돌아가기</button>
+        </form>
+        <form method="post" th:action="@{/crew/update}" th:object="${crewDto}">
+            <label>그룹이름</label>
+            <input type="text" th:value="${crew.crewName}" name="crewName" />
+
+            <label>OTT 플랫폼</label>
+            <div class="ott-platforms" th:object="${crew}">
+                <div th:each="platform : ${platforms}">
+                    <input type="radio"
+                           th:field="*{platform}"
+                           th:id="${'platform_' + platform.name()}"
+                           th:value="${platform.name()}"
+                           th:disabled="${crew.platform.name() != platform.name()}"  />
+                    <label th:for="${'platform_' + platform.name()}">
+                        <img th:src="@{'/image/' + ${platform.name().toLowerCase()} + '.png'}"
+                             th:alt="${platform.label}" />
+                    </label>
+                </div>
+            </div>
+
+            <label>인원</label>
+            <input type="number" th:value="${crew.maxMember}" name="maxMember" />
+
+            <label>결제일</label>
+            <input type="text" th:value="${#dates.format(crew.payDate, 'd')} + '일'" name="payDate" />
+
+            <!--<button type="submit">변경</button>-->
+        </form>
+    </section>
+
+    <!-- 우측: 멤버 리스트 -->
+    <section class="member-list">
+        <div class="member-grid">
+            <div th:each="member : ${memberList}">
+                <div class="member-card" th:classappend="${member.memberId} == ${crew.captain.memberId} ? ' captain' : ''">
+                    <div class="profile-pic">
+                        <img src="/image/profile-placeholder.png" />
+                    </div>
+                    <div class="nickname" th:text="${member.nickname}">닉네임</div>
+
+
+                    <div class="actions" th:if="${loginUser.memberId} == ${crew.captain.memberId}">
+                        <form th:action="@{/crew/join/accept}" method="post">
+                            <input type="hidden" th:name="crewId" th:value="${crew.crewId}" />
+                            <input type="hidden" th:name="memberId" th:value="${member.memberId}" />
+                            <button type="submit" class="accept-btn">가입 승인</button>
+                        </form>
+
+                        <form th:action="@{/crew/join/deny}" method="post">
+                            <input type="hidden" th:name="crewId" th:value="${crew.crewId}" />
+                            <input type="hidden" th:name="memberId" th:value="${member.memberId}" />
+                            <button type="submit" class="deny-btn">가입 거절</button>
+                        </form>
+                    </div>
+                    <!--
+                    <div class="actions">
+                        <button class="accept-btn" th:if="${loginUser.memberId} == ${crew.captain.memberId}">가입 승인</button>
+                        <button class="deny-btn" th:if="${loginUser.memberId} == ${crew.captain.memberId}">가입 거절</button>
+                    </div> -->
+
+                    <div class="badge" th:if="${member.memberId} == ${crew.captain.memberId}">파티장</div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+
+</script>
+
+</body>
+</html>

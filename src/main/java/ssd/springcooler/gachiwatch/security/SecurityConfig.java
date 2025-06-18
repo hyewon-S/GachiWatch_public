@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import ssd.springcooler.gachiwatch.service.EmailNotiService;
 
 
 @Configuration
@@ -44,7 +46,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/", "/home", "/crew/view", "/account/login", "/account/signup", "/account/register_email_step1", "/account/register_step2", "/account/register_result" ,"/content/search", "/content/detail","/css/**", "/js/**", "/image/**").permitAll()
+                        .requestMatchers("/", "/home", "/crew/view", "/account/login", "/account/signup", "/account/register_email_step1", "/account/check-email", "/account/register_step2", "/account/register_result" ,"/content/search", "/content/detail","/css/**", "/js/**", "/image/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -79,4 +81,5 @@ public class SecurityConfig {
 //        multipartResolver.setMaxUploadSize(10 * 1024 * 1024); // 10MB
 //        return multipartResolver;
 //    }
+
 }

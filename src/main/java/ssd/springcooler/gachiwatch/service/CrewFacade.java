@@ -22,8 +22,8 @@ public interface CrewFacade {
     boolean deleteCrew(Crew crew);
 
     boolean makeApplication(Long crewId, Member member);
-    boolean denyMember(Long crewId, Member member);
-    boolean acceptMember(Long crewId, Member member);
+    boolean denyMember(Long crewId, Integer memberId);
+    boolean acceptMember(Long crewId, Integer memberId);
 
     boolean reportMember(Long crewId, Member member, String reason);
     boolean kickMember(Long crewId, Member member);
