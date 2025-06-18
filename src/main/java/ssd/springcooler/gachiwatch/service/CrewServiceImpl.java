@@ -46,6 +46,9 @@ public class CrewServiceImpl implements CrewFacade {
     @Autowired
     private CrewJoinWaitingRepository crewJoinWaitingRepository;
 
+    @Autowired
+    private MemberServiceImpl memberService;
+
 
     public Optional<Crew> getCrew(Long crewId) {
         return crewRepository.findByCrewId(crewId);
@@ -144,14 +147,26 @@ public class CrewServiceImpl implements CrewFacade {
         crewJoinWaitingRepository.save(crewJoinWaiting);
         return true;
     }
-    public boolean denyMember(Long crewId, Member member) {
+    public boolean denyMember(Long crewId, Integer memberId) {
         //return waitingDao.deleteMember(crewId, member);
         return true;
     }
 
-    public boolean acceptMember(Long crewId, Member member) {
+    @Transactional
+    public boolean acceptMember(Long crewId, Integer memberId) {
         //crewDao.insertMember(crewId, member);
         //waitingDao.deleteMember(crewId, member);
+        /*
+        Member member = memberService.getMember(memberId);
+        Crew crew = crewRepository.findByCrewId(crewId).get();
+        JoinedCrewId joinedCrewId = new JoinedCrewId(memberId, crewId);
+        JoinedCrew joinedCrew = new JoinedCrew(member, crew,false);
+        joinedCrew.setId(joinedCrewId);
+        */
+
+        joinedCrewRepository.insertJoinedCrew(crewId, memberId, false);
+        crewJoinWaitingRepository.deleteByCrewIdAndUserId(crewId, memberId);
+
         return true;
     }
 

@@ -13,4 +13,5 @@ public interface CrewJoinWaitingRepository extends JpaRepository<CrewJoinWaiting
 
     //Optional<CrewJoinWaiting> findByCrew_Id(Long crewId);
     List<CrewJoinWaiting> findByCrewId(Long crewId);
+    void deleteByCrewIdAndUserId(Long crewId, Integer userId);
 }

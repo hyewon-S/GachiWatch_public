@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.CrewJoinWaiting;
 import ssd.springcooler.gachiwatch.domain.Platform;
@@ -34,6 +35,18 @@ public class CrewJoinController {
         // principal.getName() 등을 통해 현재 로그인 유저 정보 조회
         crewService.makeApplication(crewId, userDetails.getMember());
         return "redirect:/crew/view"; // 또는 신청 완료 페이지로 리다이렉트
+    }
+
+    @PostMapping("/accept")
+    public String acceptMember(@RequestParam("crewId") Long crewId,
+                               @RequestParam("memberId") Integer memberId,
+                               RedirectAttributes redirectAttributes) {
+
+        crewService.acceptMember(crewId, memberId);
+        redirectAttributes.addFlashAttribute("message", "가입 승인 완료!");
+
+
+        return "redirect:/crew/join?crewId=" + crewId; // 예: 신청 목록 페이지로 리다이렉트
     }
 
     @GetMapping
