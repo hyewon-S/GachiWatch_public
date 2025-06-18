@@ -40,21 +40,21 @@ body {
     font-size: 14px;
 }
 
-.nav-menu a, .sign-in, .register, .logout, .profile-image {
+.nav-menu a, .log-in, .register, .logout, .profile-image {
     margin-left: 15px;
     text-decoration: none;
     color: #333;
     cursor: pointer;
 }
 
-.sign-in, .register, .logout {
+.log-in, .register, .logout {
     padding: 6px 12px;
     border-radius: 6px;
     border: none;
     cursor: pointer;
 }
 
-.sign-in {
+.log-in {
     background-color: #eee;
 }
 
@@ -119,7 +119,7 @@ body {
 
 .group-thumbnail {
     width: 120px;
-    height: 80px;
+    height: 120px; /*80*/
     border-radius: 8px;
     object-fit: cover;
 }
@@ -139,4 +139,20 @@ body {
     border: none;
     font-size: 24px;
     cursor: pointer;
+}
+
+.enter-crew-btn {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.enter-crew-btn:hover {
+    background-color: #0056b3;
 }
