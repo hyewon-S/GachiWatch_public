@@ -2,10 +2,17 @@ package ssd.springcooler.gachiwatch.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import ssd.springcooler.gachiwatch.domain.Member;
+import ssd.springcooler.gachiwatch.domain.Notification;
+import ssd.springcooler.gachiwatch.domain.NotificationStatus;
 import ssd.springcooler.gachiwatch.dto.EmailNotiDto;
 import ssd.springcooler.gachiwatch.dto.EmailNotiRequestDto;
 import org.springframework.mail.SimpleMailMessage;
+import ssd.springcooler.gachiwatch.repository.NotificationRepository;
+
+import java.time.LocalDateTime;
 
 @Service
 public class EmailNotiService {
@@ -15,6 +22,13 @@ public class EmailNotiService {
     @Autowired
     private TMDBService tmdbService;
 
+    @Autowired
+    private MemberService memberService;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Async //로그인시 속도 향상을 위해 추가
     public void sendRecommendationEmail(EmailNotiRequestDto dto) throws Exception {
         // 1. 추천 콘텐츠 조회
         EmailNotiDto content = tmdbService.getTopPopularContentByGenres(dto.getPreferredGenres());
@@ -39,5 +53,21 @@ public class EmailNotiService {
         message.setText(messageText);
 
         mailSender.send(message);
+
+        // 4. Notification DB 저장
+        Member member = memberService.findByEmail(dto.getEmail());
+
+        if (member != null) {
+            Notification notification = Notification.builder()
+                    .member(member)
+                    .email(dto.getEmail())
+                    .nickname(dto.getNickname())
+                    .content(messageText)
+                    .sentAt(LocalDateTime.now())
+                    .status(NotificationStatus.SENT)
+                    .build();
+
+            notificationRepository.save(notification);
+        }
     }
 }
