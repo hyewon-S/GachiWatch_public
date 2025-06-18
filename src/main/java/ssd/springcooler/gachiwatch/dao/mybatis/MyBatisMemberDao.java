@@ -20,7 +20,7 @@ public class MyBatisMemberDao implements MemberDao {
 //    @Override
 //    public void insertMember(MemberRegisterDto dto) {
 //        memberMapper.insertMember(dto);
-//    }
+////    }
     @Override
     public void insertMember(Member member) {
         memberMapper.insertMember(member);

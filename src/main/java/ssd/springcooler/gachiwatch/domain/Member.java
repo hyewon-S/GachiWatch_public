@@ -16,7 +16,6 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
-//@Table(name = "Member")
 public class Member implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -27,6 +26,7 @@ public class Member implements Serializable {
             sequenceName = "member_seq",
             allocationSize = 1
     )
+
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_gen")
     @Column(name="member_id")
     private Integer memberId; // 멤버 고유 ID
@@ -39,12 +39,11 @@ public class Member implements Serializable {
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name="gender_id")
-    //@Convert(converter = GenderConverter.class)
     private Gender gender; // 성별 (하나만 선택이라 list타입 할 필요 x)
+
     @Temporal(TemporalType.DATE)
     @Column(name="birth_date")
     private LocalDate birthdate; // 생년월일
-
 
     @ElementCollection
     @CollectionTable(name = "member_subscribed_ott", joinColumns = @JoinColumn(name = "member_id"))
@@ -58,18 +57,7 @@ public class Member implements Serializable {
     @Enumerated(EnumType.STRING)
     private List<Genre> preferredGenres = new ArrayList<>(); // // 선호 장르 리스트
 
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Member_Platform> subscribedOTTs = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Member_Genre> preferredGenres = new ArrayList<>();
-
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    //Review 클래스에서는 이렇게 설정돼 있어야 함
-    //@ManyToOne
-    //@JoinColumn(name = "member_id")
-    //private Member member;
     private List<Review> reviews = new ArrayList<>(); // 작성한 리뷰 리스트
 
     @ManyToMany
@@ -96,14 +84,10 @@ public class Member implements Serializable {
     )
     private List<Crew> joinedCrews = new ArrayList<>(); // 참여중인 크루 목록
 
-    public Integer getMemberId() {
-        return memberId;
-    }
-
     //임의로 추가
-    public int getUserId() {
-        return memberId;
-    }
+//    public int getUserId() {
+//        return memberId;
+//    }
 
 
 }

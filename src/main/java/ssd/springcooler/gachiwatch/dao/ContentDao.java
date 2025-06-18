@@ -21,17 +21,6 @@ public interface ContentDao {
     // 4. ID로 콘텐츠 조회
     Content findById(int id);
 
-    // 5. 콘텐츠 정보 업데이트
-    void updateContent(Content content);
-
-    // 6. 콘텐츠 삭제
-    void deleteContent(int id);
-
-    // 7. 복합 조건 검색 (장르별, 플랫폼별, 콘텐츠 타입별, 정렬 조건)
-    List<Content> search(List<Integer> genre, List<Integer> platform,
-                         String content_type, String range);
-    void deleteAllContents();
-
     List<Content> getAllContentList();
 
     List<Integer> findAllContentIds();

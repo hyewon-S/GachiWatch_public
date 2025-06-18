@@ -42,11 +42,12 @@ public class MypageController {
         this.crewService = crewService;
     }
 
-    @GetMapping("/home/home")
-    public String homeRedirect() {
-        return "home/home";
-    }
+//    @GetMapping("/home/home")
+//    public String homeRedirect() {
+//        return "home/home";
+//    }
 
+    /** 마이페이지 불러오기 */
     @GetMapping("/mypage")
     public String mypage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         Member member = memberService.findByEmail(userDetails.getUsername());
@@ -54,7 +55,7 @@ public class MypageController {
         return "mypage/mypage";
     }
 
-    // 프로필 수정 페이지 불러오기
+    /** 프로필 수정 페이지 불러오기 */
     @GetMapping("/my_profile")
     public String getProfile(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         Member member = memberService.findByEmail(userDetails.getUsername());
@@ -62,6 +63,7 @@ public class MypageController {
         return "mypage/my_profile";
     }
 
+    /** 프로필 수정 */
     @PostMapping("/my_profile")
     public String updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
                                 @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
@@ -95,16 +97,13 @@ public class MypageController {
                 .password(hasPassword ? password : null)
                 .build();
 
-        // 서비스 호출
-    //    memberService.updateProfile(dto, profileImage);
         memberService.updateProfile(dto);
-
 
         redirectAttributes.addFlashAttribute("result", "success");
         return "redirect:/mypage/mypage";
     }
 
-    // 내가 참여 중인 크루
+    /** 내 크루 페이지 불러오기 */
     @GetMapping("/my_crew")
     public String getMyCrews(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         Member member = memberService.findByEmail(userDetails.getUsername());
@@ -113,7 +112,7 @@ public class MypageController {
         return "mypage/my_crew";
     }
 
-    // 콘텐츠 목록 확인
+    /** 찜했어요/봤어요 콘텐츠 목록 페이지 불러오기 */
     @GetMapping("/my_content")
     public String getMyContents(@RequestParam(defaultValue = "liked") String tab,
                                 @AuthenticationPrincipal UserDetails userDetails,
@@ -133,7 +132,7 @@ public class MypageController {
         return "mypage/my_content";
     }
 
-    // 작성한 리뷰 목록 조회
+    /** 내 리뷰 페이지 불러오기 */
     @GetMapping("/my_review")
     public String getMyReviews(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         Member member = memberService.findByEmail(userDetails.getUsername());
@@ -142,14 +141,14 @@ public class MypageController {
         return "mypage/my_review";
     }
 
-    // 작성한 리뷰 삭제
+    /** 내 리뷰 삭제 */
     @DeleteMapping("/reviews/{reviewId}")
     public String deleteReview(@PathVariable int reviewId) {
         reviewService.deleteReview(reviewId);
         return "redirect:/mypage/review";
     }
 
-    // 구독 중인 OTT 목록 보여주는 화면
+    /** 내 구독 OTT 페이지 불러오기 */
     @GetMapping("/my_subscribed_ott")
     public String getMyOttList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Integer memberId = userDetails.getMemberId();
@@ -172,7 +171,7 @@ public class MypageController {
         return "mypage/my_subscribed_ott";
     }
 
-    // 구독 중인 OTT 목록 수정 & 저장
+    /** 내 구독 OTT 목록 수정 */
     @PostMapping("/my_subscribed_ott")
     public String updateMyOttList(@ModelAttribute MemberSubscribedOttDto dto, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Integer memberId = userDetails.getMemberId();
@@ -182,13 +181,13 @@ public class MypageController {
         return "redirect:/mypage/mypage";
     }
 
-    // 선호 장르 페이지 보여주기
+    /** 내 선호 장르 페이지 불러오기 */
     @GetMapping("/my_preferred_genre")
-    public String getMyGenres(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String getMyGenreList(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         Member member = memberService.findByEmail(userDetails.getUsername());
 
         List<Genre> allGenres = List.of(Genre.values());
-        List<Genre> selectedGenres = memberService.getPreferredGenres(member.getMemberId());
+        List<Genre> selectedGenres = memberService.findMyGenreList(member.getMemberId());
 
         model.addAttribute("allGenres", allGenres);
         model.addAttribute("selectedGenres", selectedGenres);
@@ -196,18 +195,25 @@ public class MypageController {
         return "mypage/my_preferred_genre";
     }
 
-    // 선호 장르 수정하기
+    /** 내 선호 장르 목록 수정 */
     @PostMapping("/my_preferred_genre")
-    public String updateGenre(@AuthenticationPrincipal UserDetails userDetails,
-                              @RequestParam List<Genre> genreList,
-                              Model model) {
+    public String updateMyGenreList(@AuthenticationPrincipal UserDetails userDetails,
+                                    @RequestParam(value = "genreList", required = false) List<Genre> genreList,
+                                    RedirectAttributes redirectAttributes) {
         Member member = memberService.findByEmail(userDetails.getUsername());
-        memberService.updatePreferredGenre(member.getMemberId(), genreList);
-        model.addAttribute("result", "success");
-      
-        return "redirect:/mypage/my_preferred_genre";
+
+        // null이면 빈 리스트로 처리
+        if (genreList == null) {
+            genreList = List.of();
+        }
+
+        memberService.updateMyGenreList(member.getMemberId(), genreList);
+        redirectAttributes.addFlashAttribute("result", "success");
+
+        return "redirect:/mypage/mypage";
     }
 
+    /** 내(가 받은) 신고 페이지 불러오기 */
     @GetMapping("/my_report")
     public String getReports(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         Member member = memberService.findByEmail(userDetails.getUsername());

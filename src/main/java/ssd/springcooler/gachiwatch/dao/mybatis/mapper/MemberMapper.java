@@ -14,8 +14,6 @@ public interface MemberMapper {
     // 회원가입
 //    void insertMember(MemberRegisterDto dto);
     void insertMember(Member member);
-    void insertMemberGenres(@Param("memberId") int memberId, @Param("genreIds") List<Long> genreIds);
-    void insertMemberOtts(@Param("memberId") int memberId, @Param("ottIds") List<Long> ottIds);
 
     // 로그인
     Member findByEmailAndPassword(LoginDto loginDto);

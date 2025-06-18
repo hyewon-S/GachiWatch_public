@@ -65,11 +65,6 @@ public class MybatisContentDao implements ContentDao {
         return contentList;
     }
 
-//    @Override 나중에 검색 기능 쓰게되면..
-//    public List<Content> findByKeyword(String keyword) {
-//        return contentMapper.findByKeyword(keyword);
-//    }
-
     @Override
     public Content findById(int id) {
         Content content = contentMapper.findById(id);
@@ -82,28 +77,6 @@ public class MybatisContentDao implements ContentDao {
         return content;
     }
 
-    @Override
-    public void updateContent(Content content) {
-        contentMapper.updateContent(content);
-    }
-
-    @Override
-    public void deleteContent(int id) {
-        contentMapper.deleteContent(id);
-    }
-
-    @Override
-    public void deleteAllContents() {
-        contentMapper.deleteAllContentGenres();
-        contentMapper.deleteAllContentOTTs();
-        contentMapper.deleteAllContents();
-
-    }
-
-    @Override
-    public List<Content> search(List<Integer> genre, List<Integer> platform, String content_type, String range) {
-        return contentMapper.search(genre, platform, content_type, range);
-    }
 
     @Override
     public List<Integer> findAllContentIds() {

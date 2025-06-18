@@ -108,6 +108,7 @@ public class AccountController {
         return "redirect:/account/register_result";
     }
 
+    /** 닉네임 중복 확인 */
     @GetMapping("/check-nickname")
     @ResponseBody
     public Map<String, Boolean> checkNickname(@RequestParam String nickname) {
@@ -115,26 +116,26 @@ public class AccountController {
         return Map.of("exists", exists);
     }
 
-
+    /** 회원가입 결과 alert 페이지 */
     @GetMapping("/register_result")
     public String registerResultPage() {
         return "account/register_result";
     }
 
-    // 로그인
+    /** 로그인 */
     @GetMapping("/login")
     public String showLoginForm() {
         return "account/login"; // 로그인 폼 보여주는 뷰 이름
     }
 
-    // 로그아웃
+    /** 로그아웃 */
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/home";
     }
 
-    // 회원 탈퇴
+    /** 회원 탈퇴 */
     @PostMapping("/delete")
     public String delete(@RequestParam int memberId, Model model) {
         boolean result = memberService.deleteMember(memberId);

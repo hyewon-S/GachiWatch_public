@@ -49,7 +49,9 @@ public interface MemberService {
 //    List<Platform> getSubscribedOttList(int memberId);
     void updateMyOttList(Integer memberId, List<Platform> newOttList); // 구독 OTT 저장
     /** 선호 장르 목록 수정 */
-    void updatePreferredGenre(int memberId, List<Genre> genreList);
+    List<Genre> findMyGenreList(Integer memberId);
+    void updateMyGenreList(int memberId, List<Genre> genreList);
+
 
     /** 내가 신고당한 내역 조회*/
     List<ReportDto> getReports(int memberId);
@@ -58,7 +60,7 @@ public interface MemberService {
 
     Member getMember(int memberId);
 
-    List<Genre> getPreferredGenres(int memberId);
+//    List<Genre> getPreferredGenres(int memberId);
 
 
 }
