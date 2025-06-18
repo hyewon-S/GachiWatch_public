@@ -73,7 +73,9 @@
 <body>
 <div class="container">
     <div class="logo-container">
-        <img src="/image/logo.png" alt="로고" class="logo-img">
+        <a th:href="@{/}">
+            <img src="/image/logo.png" alt="로고" class="logo-img">
+        </a>
     </div>
     <h1>회원가입</h1>
     <form id="signupForm" th:action="@{/account/register_result}" method="post" onsubmit="return handleSubmit();">
@@ -87,12 +89,12 @@
 
         <p><strong>구독중인 OTT 서비스를 선택해주세요</strong></p>
         <div class="ott-options">
-            <img src="/static/image/netflix.png" alt="Netflix" data-value="넷플릭스">
-            <img src="/static/image/watcha.png" alt="Watcha" data-value="왓챠">
-            <img src="/static/image/disney.png" alt="Disney" data-value="디즈니+">
-            <img src="/static/image/appletv.png" alt="Apple" data-value="애플티비+">
-            <img src="/static/image/wavve.png" alt="wavve" data-value="웨이브" style="height: 30px;">
-            <img src="/static/image/prime.png" alt="Amazon" data-value="아마존 프라임">
+            <img src="/image/netflix.png" alt="Netflix" data-value="넷플릭스">
+            <img src="/image/watcha.png" alt="Watcha" data-value="왓챠">
+            <img src="/image/disney.png" alt="Disney" data-value="디즈니+">
+            <img src="/image/appletv.png" alt="Apple" data-value="애플티비+">
+            <img src="/image/wavve.png" alt="wavve" data-value="웨이브">
+            <img src="/image/prime.png" alt="Amazon" data-value="아마존 프라임">
         </div>
 
         <p><strong>원하는 장르에 맞춰 추천해드릴게요</strong></p>

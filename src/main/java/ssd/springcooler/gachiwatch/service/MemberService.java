@@ -38,11 +38,16 @@ public interface MemberService {
     /** '봤어요' 콘텐츠 개별 삭제 */
     void deleteWatchedContent(int contentId);
 
-    List<Platform> getSubscribedOttList(int memberId);
-
     /** 구독 중인 OTT 목록 수정 */
-    void updateSubscribedOtt(int memberId, List<Platform> ottList);
+//    void updateSubscribedOtt(int memberId, List<Platform> ottList);
 
+//    List<Platform> findMyOttList(Long memberId);
+//    void updateMyOttList(Long memberId, List<Platform> newOttList);
+//    Long findIdByEmail(String email);
+
+    List<Platform> findMyOttList(Integer memberId); // 구독 OTT 조회
+//    List<Platform> getSubscribedOttList(int memberId);
+    void updateMyOttList(Integer memberId, List<Platform> newOttList); // 구독 OTT 저장
     /** 선호 장르 목록 수정 */
     void updatePreferredGenre(int memberId, List<Genre> genreList);
 
@@ -54,4 +59,6 @@ public interface MemberService {
     Member getMember(int memberId);
 
     List<Genre> getPreferredGenres(int memberId);
+
+
 }

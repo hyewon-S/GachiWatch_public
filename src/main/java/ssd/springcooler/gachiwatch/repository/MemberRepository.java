@@ -12,12 +12,12 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     @Query("SELECT m FROM Member m WHERE m.email = :email AND m.password = :password")
     Optional<Member> findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 
-    Optional<Member> findByEmail(String email);
-
     @Query("SELECT m FROM Member m LEFT JOIN FETCH m.preferredGenres WHERE m.email = :email")
     Optional<Member> findByEmailWithPreferredGenres(@Param("email") String email);
 
     boolean existsByEmail(String email);
 
     boolean existsByNickname(String nickname);
+
+    Optional<Member> findByEmail(String email);
 }

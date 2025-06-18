@@ -1,6 +1,7 @@
 package ssd.springcooler.gachiwatch.controller;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,7 @@ import ssd.springcooler.gachiwatch.security.CustomUserDetails;
 import ssd.springcooler.gachiwatch.service.MemberService;
 import ssd.springcooler.gachiwatch.service.ReviewService;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,72 +61,48 @@ public class MypageController {
         model.addAttribute("user", member);
         return "mypage/my_profile";
     }
-/*
-    // 프로필 수정 페이지 불러오기
-    @GetMapping("/my_profile")
-    public String getProfile(HttpSession session, Model model) {
-        Member user = (Member) session.getAttribute("user");
-        model.addAttribute("user", user);
-        return "mypage/my_profile"; // 화면 띄움
+
+    @PostMapping("/my_profile")
+    public String updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
+                                @RequestParam(value = "password", required = false) String password,
+                                @RequestParam(value = "passwordConfirm", required = false) String passwordConfirm,
+                                @RequestParam(value = "nickname", required = false) String nickname,
+                                RedirectAttributes redirectAttributes) {
+
+        int memberId = userDetails.getMember().getMemberId();
+
+        // 변경사항 체크
+        boolean hasImage = profileImage != null && !profileImage.isEmpty();
+        boolean hasPassword = password != null && !password.isBlank();
+        boolean hasNickname = nickname != null && !nickname.isBlank();
+
+        if (!hasImage && !hasPassword && !hasNickname) {
+            redirectAttributes.addFlashAttribute("error", "변경사항이 없습니다.");
+            return "redirect:/mypage/my_profile";
+        }
+
+        // 비밀번호 확인
+        if (hasPassword && (passwordConfirm == null || !password.equals(passwordConfirm))) {
+            redirectAttributes.addFlashAttribute("error", "비밀번호가 일치하지 않습니다.");
+            return "redirect:/mypage/my_profile";
+        }
+
+        // DTO 만들기
+        ProfileUpdateDto dto = ProfileUpdateDto.builder()
+                .memberId(memberId)
+                .nickname(hasNickname ? nickname : null)
+                .password(hasPassword ? password : null)
+                .build();
+
+        // 서비스 호출
+    //    memberService.updateProfile(dto, profileImage);
+        memberService.updateProfile(dto);
+
+
+        redirectAttributes.addFlashAttribute("result", "success");
+        return "redirect:/mypage/mypage";
     }
-*/
-    // 프로필 수정
-//    @PostMapping("/my_profile")
-//    public String updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
-//                                ProfileUpdateDto profileUpdateDto,
-//                                Model model) {
-//        int memberId = userDetails.getMember().getMemberId(); // 로그인한 사용자 ID 세션에서 안전하게 가져옴
-//        // 여기서 클라이언트가 넘긴 memberId
-//        profileUpdateDto.setMemberId(memberId); // 세션 정보로 덮어쓰기
-//
-//        memberService.updateProfile(profileUpdateDto); // 이제 믿을 수 있는 데이터
-//        model.addAttribute("result", "success");
-//        return "redirect:/mypage/mypage";
-//    }
-@PostMapping("/my_profile")
-public String updateProfile(@AuthenticationPrincipal CustomUserDetails userDetails,
-                            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
-                            @RequestParam(value = "password", required = false) String password,
-                            @RequestParam(value = "passwordConfirm", required = false) String passwordConfirm,
-                            @RequestParam(value = "nickname", required = false) String nickname,
-                            RedirectAttributes redirectAttributes) {
-
-    int memberId = userDetails.getMember().getMemberId();
-
-    // 변경사항 체크
-    boolean hasImage = profileImage != null && !profileImage.isEmpty();
-    boolean hasPassword = password != null && !password.isBlank();
-    boolean hasNickname = nickname != null && !nickname.isBlank();
-
-    if (!hasImage && !hasPassword && !hasNickname) {
-        redirectAttributes.addFlashAttribute("error", "변경사항이 없습니다.");
-        return "redirect:/mypage/my_profile";
-    }
-
-    // 비밀번호 확인
-    if (hasPassword && (passwordConfirm == null || !password.equals(passwordConfirm))) {
-        redirectAttributes.addFlashAttribute("error", "비밀번호가 일치하지 않습니다.");
-        return "redirect:/mypage/my_profile";
-    }
-
-    // DTO 만들기
-    ProfileUpdateDto dto = ProfileUpdateDto.builder()
-            .memberId(memberId)
-            .nickname(hasNickname ? nickname : null)
-            .password(hasPassword ? password : null)
-            .build();
-
-    // 서비스 호출
-//    memberService.updateProfile(dto, profileImage);
-    memberService.updateProfile(dto);
-
-
-    redirectAttributes.addFlashAttribute("result", "success");
-    return "redirect:/mypage/mypage";
-}
-
-
-
 
     // 내가 참여 중인 크루
     @GetMapping("/my_crew")
@@ -171,36 +149,37 @@ public String updateProfile(@AuthenticationPrincipal CustomUserDetails userDetai
         return "redirect:/mypage/review";
     }
 
+    // 구독 중인 OTT 목록 보여주는 화면
     @GetMapping("/my_subscribed_ott")
+    public String getMyOttList(Model model, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Integer memberId = userDetails.getMemberId();
 
-    public String getMyOtts(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        Member member = memberService.findByEmail(userDetails.getUsername());
-
-        List<Platform> ottList = Arrays.stream(Platform.values())
-                .filter(p -> p != Platform.NULL)
+        List<Platform> allOttList = Arrays.stream(Platform.values())
+                .filter(p -> p != Platform.NULL)  // NULL 제외
                 .toList();
-        List<Platform> subscribedOttList = memberService.getSubscribedOttList(member.getMemberId());
+
+        List<Platform> subscribedOttList = memberService.findMyOttList(memberId)
+                .stream()
+                .filter(p -> p != Platform.NULL) // NULL 제외
+                .toList();
 
         MemberSubscribedOttDto dto = new MemberSubscribedOttDto();
         dto.setOttList(subscribedOttList);
 
-        model.addAttribute("ottList", ottList);
+        model.addAttribute("ottList", allOttList);
         model.addAttribute("memberSubscribedOttDto", dto);
 
         return "mypage/my_subscribed_ott";
     }
 
-    // 구독중인 OTT 수정
+    // 구독 중인 OTT 목록 수정 & 저장
     @PostMapping("/my_subscribed_ott")
-    public String updateOtt(@RequestParam List<Platform> ottList,
+    public String updateMyOttList(@ModelAttribute MemberSubscribedOttDto dto, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Integer memberId = userDetails.getMemberId();
 
-                            @AuthenticationPrincipal UserDetails userDetails,
-                            Model model) {
-        Member member = memberService.findByEmail(userDetails.getUsername());
-        memberService.updateSubscribedOtt(member.getMemberId(), ottList);
+        memberService.updateMyOttList(memberId, dto.getOttList());
 
-        model.addAttribute("result", "success");
-        return "redirect:/mypage";
+        return "redirect:/mypage/mypage";
     }
 
     // 선호 장르 페이지 보여주기

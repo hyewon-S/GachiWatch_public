@@ -1,5 +1,6 @@
 package ssd.springcooler.gachiwatch.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.MemberDao;
@@ -57,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
                 .nickname(dto.getNickname())
                 .gender(gender)  // 위에서 변환한 값 사용
                 .birthdate(dto.getBirthdate())
-                .subscribedOTTs(platformList)
+                .subscribedOtts(platformList)
                 .preferredGenres(genreList)
                 .build();
 
@@ -87,37 +88,14 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void updateProfile(ProfileUpdateDto dto) {
         System.out.println("updateProfile 호출됨");
-//        // 프로필 이미지 처리
-//        if (profileImage != null && !profileImage.isEmpty()) {
-//            System.out.println("파일 저장 시작");
-//            String profileImagePath = fileStorageService.store(profileImage);
-//            System.out.println("저장된 파일 경로: " + profileImagePath);
-//            dto.setProfileImage(profileImagePath);
-//        } else {
-//            dto.setProfileImage(null); // 변경 안함 처리
-//        }
 
         // 닉네임 비어있으면 null 처리
         if (dto.getNickname() == null || dto.getNickname().isBlank()) {
             dto.setNickname(null);
         }
 
-//        // 3. 비밀번호 처리
-//        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-//            if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
-//                throw new IllegalArgumentException("비밀번호 확인이 일치하지 않습니다.");
-//            }
-//            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-//        } else {
-//            dto.setPassword(null); // 변경 안함
-//        }
-
-        // DAO 호출
-//        memberDao.updateProfile(dto, profileImage);
         memberDao.updateProfile(dto);
     }
-
-
 
     /** 참여한 크루 목록 조회 */
     @Override
@@ -144,22 +122,25 @@ public class MemberServiceImpl implements MemberService {
         memberDao.deleteWatchedContentById(contentId);
     }
 
-    /** 구독 중인 OTT 조회 */
-    @Override
-    public List<Platform> getSubscribedOttList(int memberId) {
-        return memberMapper.getSubscribedOttList(memberId); // mapper에서 DB 조회
+    @Transactional
+    public List<Platform> findMyOttList(Integer memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("회원 없음"));
+        return member.getSubscribedOtts();
     }
 
-    /** 구독 중인 OTT 수정 */
-    @Override
-    public void updateSubscribedOtt(int memberId, List<Platform> ottList) {
-        // 기존 OTT 삭제
-        memberDao.deleteMemberOtts(memberId);
-
-        // 새 OTT 저장 (String → ID 변환 로직이 필요하다면 서비스에서 처리)
-        // List<Long> ottIds = convertToOttIds(ottList);
-        // memberDao.insertMemberOtts(memberId, ottIds);
+    @Transactional
+    public void updateMyOttList(Integer memberId, List<Platform> newOttList) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("회원 없음"));
+        member.getSubscribedOtts().clear();
+        member.getSubscribedOtts().addAll(newOttList);
+        // 트랜잭션 안에서 자동 반영됨
     }
+
+
+
+
 
     /** 선호 장르 수정 */
     @Override

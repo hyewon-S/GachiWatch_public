@@ -113,7 +113,9 @@
 <body>
 <div class="login-container">
     <div class="logo">
-        <img src="/image/logo.png" alt="Gachi Watch 로고"> <!-- 실제 로고 경로로 바꿔 -->
+        <a th:href="@{/}">
+            <img src="/image/logo.png" alt="Gachi Watch 로고">
+        </a>
     </div>
 
     <form th:action="@{/account/login}" method="post">
@@ -130,14 +132,6 @@
         계정이 없으신가요?
         <a th:href="@{/account/register_email_step1}">회원가입</a>
     </div>
-
-    <div class="divider"><span>OR</span></div>
-
-    <form th:action="@{/oauth2/authorization/kakao}" method="get">
-        <button type="submit" class="kakao-btn">
-            <img src="/image/kakao_login_medium.png" alt="카카오로 로그인"> <!-- 카카오 아이콘 경로로 바꿔 -->
-        </button>
-    </form>
 </div>
 </body>
 </html>

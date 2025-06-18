@@ -71,7 +71,7 @@
 </head>
 <body>
 <form class="container" method="post" th:action="@{/mypage/my_preferred_genre}" th:object="${userGenreSettingDto}" onsubmit="return handleSubmit()">
-    <div class="back-button" onclick="location.href='/mypage'">←</div>
+    <div class="back-button" onclick="location.href='/mypage/mypage'">←</div>
     <div class="section-title">선호하는 장르</div>
     <div class="genre-options">
         <div th:each="genre : ${genreList}" th:classappend="${#lists.contains(userGenreSettingDto.genreList, genre)} ? 'genre-button selected' : 'genre-button'">

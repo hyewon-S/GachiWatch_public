@@ -7,6 +7,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @AllArgsConstructor
@@ -49,7 +50,7 @@ public class Member implements Serializable {
     @CollectionTable(name = "member_subscribed_ott", joinColumns = @JoinColumn(name = "member_id"))
     @Column(name = "platform")
     @Enumerated(EnumType.STRING)
-    private List<Platform> subscribedOTTs = new ArrayList<>(); // 구독 중인 OTT 리스트
+    private List<Platform> subscribedOtts = new ArrayList<>(); // 구독 중인 OTT 리스트
 
     @ElementCollection
     @CollectionTable(name = "member_preferred_genre", joinColumns = @JoinColumn(name = "member_id"))
@@ -95,19 +96,6 @@ public class Member implements Serializable {
     )
     private List<Crew> joinedCrews = new ArrayList<>(); // 참여중인 크루 목록
 
-    // 기본 생성자
-//    public Member() {}
-
-    // 사용자 지정 생성자
-//    public Member(String name, String password, String email, String nickname, Gender gender, LocalDate birthdate) {
-//        this.name = name;
-//        this.password = password;
-//        this.email = email;
-//        this.nickname = nickname;
-//        this.gender = gender;
-//        this.birthdate = birthdate;
-//    }
-
     public Integer getMemberId() {
         return memberId;
     }
@@ -116,40 +104,6 @@ public class Member implements Serializable {
     public int getUserId() {
         return memberId;
     }
-/*
-    // Getter & Setter 어노테이션으로 대체
 
-    // 프로필 이미지 수정
-    public void updateProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
-    // 닉네임 수정
-    public void updateNickname(String nickname) {
-        this.nickname = nickname;
-    }
-    // 비밀번호 수정
-    public void updatePassword(String password) {
-        this.password = password;
-    }
 
-    // 구독 서비스 수정
-    public void updateSubscribedOTTs(List<Platform> ottList) {
-        this.subscribedOTTs = new ArrayList<>(ottList);
-    }
-
-    // 선호 장르 수정
-    public void updatePreferredGenres(List<Genre> genres) {
-        this.preferredGenres = new ArrayList<>(genres);
-    }
-
-    // 시청한 콘텐츠 삭제
-    public void removeWatchedContents(Content content) {
-        watchedContents.remove(content);
-    }
-
-    // 리뷰 삭제
-    public void deleteReviews(Review review) {
-        reviews.remove(review);
-    }
-*/
 }
