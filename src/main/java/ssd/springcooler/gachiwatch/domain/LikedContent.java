@@ -28,5 +28,10 @@ public class LikedContent {
         this.memberId = memberId;
         this.contentId = contentId;
     }
+
+    @Override
+    public String toString() {
+        return "contentId = " + contentId + ", memberId = " + memberId;
+    }
 }
 
