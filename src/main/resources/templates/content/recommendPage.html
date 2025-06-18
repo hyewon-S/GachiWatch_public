@@ -198,7 +198,7 @@
 </section> <br>
 <main>
     <div th:each="content : ${recommendList}" class="content">
-        <a th:href="@{/content/detail(contentId=${content.id})}"><img th:src="@{${content.imageUrl}}" /></a>
+        <a th:href="@{/content/detail(contentId=${content.contentId})}"><img th:src="@{${content.thumbnailUrl}}" /></a>
 
     </div>
 </main>
