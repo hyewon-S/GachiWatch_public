@@ -27,8 +27,6 @@ public class CrewUpdateController {
     public String form(@ModelAttribute("crewReq") CrewCommand crewCommand, @RequestParam("crewId") String crewId) {
         Long cid = Long.parseLong(crewId);
         Optional<Crew> crew = crewService.getCrew(cid);
-        //crewCommand setting
-        /* ... */
 
         return "crew/updateForm";
     }
@@ -40,7 +38,6 @@ public class CrewUpdateController {
         }
         Crew oldCrew = crewService.getCrew(crew.getCrewId()).get();
 
-        //Crew crew = new Crew();
         crew.setCaptain(memberService.getMember(oldCrew.getCaptain().getMemberId()));
         crewService.updateCrew(crew);
 

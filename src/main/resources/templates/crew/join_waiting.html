@@ -59,8 +59,6 @@
 
             <label>결제일</label>
             <input type="text" th:value="${#dates.format(crew.payDate, 'd')} + '일'" name="payDate" />
-
-            <!--<button type="submit">변경</button>-->
         </form>
     </section>
 
@@ -88,12 +86,6 @@
                             <button type="submit" class="deny-btn">가입 거절</button>
                         </form>
                     </div>
-                    <!--
-                    <div class="actions">
-                        <button class="accept-btn" th:if="${loginUser.memberId} == ${crew.captain.memberId}">가입 승인</button>
-                        <button class="deny-btn" th:if="${loginUser.memberId} == ${crew.captain.memberId}">가입 거절</button>
-                    </div> -->
-
                     <div class="badge" th:if="${member.memberId} == ${crew.captain.memberId}">파티장</div>
                 </div>
             </div>

@@ -12,9 +12,7 @@ import java.util.Optional;
 public interface CrewFacade {
     Optional<Crew> getCrew(Long crewId);
     List<Crew> getCrewList();
-    //List<Crew> getCrewList(List<Platform> platforms);
 
-    Member getCaptain(Long crewId);
     List<Member> getMembers(Long crewId);
 
     Crew createCrew(Crew crew, Member captain);

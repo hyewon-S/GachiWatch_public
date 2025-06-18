@@ -31,73 +31,7 @@ public class CrewViewController {
     public void setCrewServiceImpl(CrewServiceImpl crewService) {
         this.crewService = crewService;
     }
-/*
-    @GetMapping
-    public String viewCrews(@RequestParam(defaultValue = "0") int page, Model model) {
-        if (page < 0) page = 0;
-        List<Platform> filteredPlatforms = Arrays.stream(Platform.values())
-                .filter(p -> p != Platform.NULL)
-                .collect(Collectors.toList());
 
-        model.addAttribute("platforms", filteredPlatforms);
-
-        Page<Crew> crewPage = crewService.getAllCrews(page);
-        model.addAttribute("crewPage", crewPage);
-        return "crew/view";
-    }
-
-    @GetMapping(params = "platform")
-    public String viewCrewsByPlatform(@RequestParam String platform,
-                                            @RequestParam(defaultValue = "0") int page,
-                                            Model model) {
-        if (page < 0) page = 0;
-
-        List<Platform> filteredPlatforms = Arrays.stream(Platform.values())
-                .filter(p -> p != Platform.NULL)
-                .collect(Collectors.toList());
-
-        model.addAttribute("platforms", filteredPlatforms);
-
-        // 플랫폼이 빈 문자열이거나 null인 경우 기본 조회로 처리하거나 빈 결과 처리
-        if (platform == null || platform.isBlank()) {
-            Page<Crew> crewPage = crewService.getAllCrews(page);
-            model.addAttribute("crewPage", crewPage);
-            return "crew/view";
-        }
-
-        Page<Crew> crewPage = crewService.getAllCrewsByPlatform(platform, page);
-        model.addAttribute("crewPage", crewPage);
-        model.addAttribute("selectedPlatform", platform);
-
-        return "crew/view";
-    }
-*/
-/*
-    @GetMapping
-    public String viewCrews(@RequestParam(required = false) String platform,
-                            @RequestParam(defaultValue = "0") int page,
-                            Model model) {
-        if (page < 0) page = 0;
-
-        // NULL 플랫폼 제거
-        List<Platform> filteredPlatforms = Arrays.stream(Platform.values())
-                .filter(p -> p != Platform.NULL)
-                .collect(Collectors.toList());
-        model.addAttribute("platforms", filteredPlatforms);
-
-        // 플랫폼이 없는 경우 전체 조회, 있으면 필터링 조회
-        Page<Crew> crewPage;
-        if (platform == null || platform.isBlank()) {
-            crewPage = crewService.getAllCrews(page);
-        } else {
-            crewPage = crewService.getAllCrewsByPlatform(platform, page);
-            model.addAttribute("selectedPlatform", platform); // 선택된 플랫폼 유지
-        }
-
-        model.addAttribute("crewPage", crewPage);
-        return "crew/view";
-    }
-*/
     @GetMapping
     public String viewCrews(@RequestParam(required = false) String platform,
                             @RequestParam(defaultValue = "0") int page,
@@ -120,7 +54,6 @@ public class CrewViewController {
             System.out.println("isAuthenticated = " + (auth != null && auth.isAuthenticated()));
 
             if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
-                // 비로그인 시 로그인 페이지로 리다이렉트 혹은 에러 처리
                 return "redirect:/account/login";
             }
 

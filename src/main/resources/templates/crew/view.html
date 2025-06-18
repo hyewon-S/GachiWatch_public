@@ -45,8 +45,7 @@
         </form>
     <form id="platformForm">
         <div class="form-group">
-            <!--<label>OTT 플랫폼</label>-->
-            <div class="ott-platforms"> <!-- th:object="${crewForm}">-->
+            <div class="ott-platforms">
                 <div th:each="platform : ${platforms}" class="platform-option">
                     <input type="radio"
                            name="platform"
@@ -88,7 +87,6 @@
         </div>
     </div>
 
-
     <!-- 페이지네이션 -->
     <div th:if="${crewPage.totalElements == 0}" style="text-align: center; margin-top: 2rem;">
         <p>조회된 크루가 없습니다.</p>
@@ -122,9 +120,7 @@
 
         radios.forEach((radio, idx) => {
             radio.addEventListener("change", function () {
-                // 모든 label에서 'selected' 클래스 제거
                 labels.forEach(label => label.classList.remove("selected"));
-                // 선택된 radio에 해당하는 label에만 클래스 추가
                 if (radio.checked) {
                     labels[idx].classList.add("selected");
                 }
@@ -133,13 +129,11 @@
     });
 
     function clearPlatformAndSubmit() {
-        // 폼 요소 가져오기
         const form = document.querySelector('#platformForm');
-        // platform 라디오 버튼들 모두 선택 해제
+
         const platforms = form.querySelectorAll('input[name="platform"]');
         platforms.forEach(radio => radio.checked = false);
 
-        // form 전송
         form.submit();
     }
 
@@ -151,7 +145,6 @@
 
     joinButtons.forEach(function (btn) {
         btn.addEventListener('click', function () {
-            // 각 버튼이 속한 크루 카드에서 crewId를 추출해야 함
             const crewCard = btn.closest('.party-card');
             const crewId = crewCard.getAttribute('data-crew-id');
 

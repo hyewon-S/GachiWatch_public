@@ -35,12 +35,7 @@ public class CrewPageController {
     public String handle() {
         return "redirect:/account/login";
     }
-/*
-    @GetMapping("/chat")
-    public String getChats() {
-        return "crew/crewpage";
-    }
-*/
+
     @RequestMapping("/chat")
     public String writeChat(@RequestParam Long crewId,
                             @RequestParam("message") String chatMessage,
@@ -54,7 +49,6 @@ public class CrewPageController {
 
         crewService.insertCrewChat(newChat);
 
-        // 5. 채팅 후 다시 해당 크루 페이지로 리다이렉트
         return "redirect:/crew/crewpage/" + crewId;
     }
 
@@ -74,17 +68,7 @@ public class CrewPageController {
 
 
         model.addAttribute("crew", crew);
-        //model.addAttribute("chatList", chatList);
         model.addAttribute("chatList", chatDtoList);
-
-        for (ChatDto chatDto : chatDtoList) {
-            System.out.println("Crew: " + chatDto.getCrew());
-            System.out.println("Member Nickname: " + (chatDto.getMember() != null ? chatDto.getMember().getNickname() : "null"));
-            System.out.println("Chat: " + chatDto.getChat());
-            System.out.println("Date: " + chatDto.getDate());
-            System.out.println("---------------------------");
-        }
-
 
         return "crew/crewpage";
     }

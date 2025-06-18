@@ -45,7 +45,6 @@ public class CrewManageController {
 
     @RequestMapping
     public String handle() {
-        //로그인 화면으로 보내기
         return "redirect:/account/login";
     }
 
