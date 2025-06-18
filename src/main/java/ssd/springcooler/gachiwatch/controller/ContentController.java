@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ssd.springcooler.gachiwatch.domain.Content;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
 import ssd.springcooler.gachiwatch.dto.ContentDto;
@@ -16,13 +17,15 @@ import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
 import ssd.springcooler.gachiwatch.dto.ForMeContentDto;
 import ssd.springcooler.gachiwatch.dto.ReviewDto;
 import ssd.springcooler.gachiwatch.security.CustomUserDetails;
-import ssd.springcooler.gachiwatch.service.ContentService;
-import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
-import ssd.springcooler.gachiwatch.service.ReviewServiceImpl;
-import ssd.springcooler.gachiwatch.service.TMDBService;
+import ssd.springcooler.gachiwatch.service.*;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 @Controller
@@ -39,6 +42,9 @@ public class ContentController {
 
     @Autowired
     private ReviewServiceImpl reviewService;
+
+    @Autowired
+    private RecommendationService recommendationService;
 
     @GetMapping("/search")
     public String search(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -133,10 +139,23 @@ public class ContentController {
         if(userDetails != null) {
             model.addAttribute("isLoggedIn", true);
             Member loginUser = memberService.findByEmail(userDetails.getUsername());
+
+            // 예시: 사용자가 가장 최근에 본 콘텐츠 제목으로 추천 요청
+            // (실제론 좋아요 누른 콘텐츠나 최근 본 콘텐츠 ID -> 제목 매핑 필요)
+            
+            String recentContentTitle = "에이리언";
+            Integer contentId = 1017163;
+            List<ContentDto> recommendList = recommendationService.getRecommendations(contentId, 20);
+
+            // 추천 API에서 반환하는 추천 콘텐츠 목록은 Map 형태(title, score 포함)
+            model.addAttribute("recommendList", recommendList);
+            /*
             List<ForMeContentDto> recommendList = tmdbService.getForMeContents(50, loginUser.getPreferredGenres());
 
             Collections.shuffle(recommendList);
             model.addAttribute("recommendList", recommendList);
+
+             */
         }
         return "content/recommendPage";
     }

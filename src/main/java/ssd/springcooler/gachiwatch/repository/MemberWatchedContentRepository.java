@@ -7,4 +7,6 @@ public interface MemberWatchedContentRepository extends JpaRepository<WatchedCon
     boolean existsByMemberIdAndContentId(int memberId, int contentId);
 
     void deleteByMemberIdAndContentId(int memberId, int contentId);
+
+    WatchedContent findByMemberId(int memberId);
 }
