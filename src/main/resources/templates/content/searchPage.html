@@ -45,20 +45,20 @@
            font-size: 14px;
        }
 
-       .nav-menu a, .sign-in, .register, .logout, .profile-image {
+       .nav-menu a, .log-in, .register, .logout, .profile-image {
            margin-left: 15px;
            text-decoration: none;
            color: #333;
            cursor: pointer;
        }
-       .sign-in, .register {
+       .log-in, .register {
             padding: 6px 12px;
             border-radius: 6px;
             border: none;
             cursor: pointer;
         }
 
-        .sign-in {
+        .log-in {
             background-color: #eee;
         }
 
@@ -338,7 +338,7 @@
         <a th:href="${isLoggedIn} ? (@{/content/recommend}) : (@{/account/login})">추천 콘텐츠</a>
         <a th:href="${isLoggedIn} ? (@{/crew/view}) : (@{/account/login})">공유 매칭</a>
         <!-- 로그인 안했다면 -->
-        <a th:unless="${isLoggedIn}" th:href="@{/account/login}"><button class="sign-in">Sign in</button></a>
+        <a th:unless="${isLoggedIn}" th:href="@{/account/login}"><button class="log-in">Login</button></a>
         <a th:unless="${isLoggedIn}" th:href="@{/account/register_email_step1}"><button class="register">Register</button></a>
 
         <!-- 로그인 했다면 -->
