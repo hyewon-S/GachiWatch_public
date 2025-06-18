@@ -9,79 +9,44 @@ import java.util.List;
 
 public interface MemberService {
 
-    /**
-     * 회원가입 처리
-     * @param dto 회원가입 정보 DTO
-     */
+    /** 회원가입 처리 */
     void register(MemberRegisterDto dto);
 
-    /**
-     * 이메일 검증
-     */
+    /** 이메일 검증 */
     boolean existsByEmail(String email);
 
-    /**
-     * 로그인 처리
-     */
+    /** 닉네임 검증 */
+    boolean isNicknameDuplicated(String nickname);
+
+    /** 로그인 처리 */
     Member login(LoginDto loginDto);
 
     Member findByEmail(String username);
 
-    /*
-     * 프로필 정보 수정
-     * @param memberId 회원 ID
-     * @param dto 수정할 프로필 정보 DTO
-     */
+    /** 프로필 정보 수정 */
     void updateProfile(ProfileUpdateDto dto);
 
-    /**
-     * 내가 참여 중인 가치크루 목록 조회
-     * @param memberId 회원 ID
-     * @return 참여 중인 Crew 목록
-     */
+    /** 내가 참여 중인 가치크루 목록 조회 */
     List<CrewDto> getMyCrews(int memberId);
 
-    /**
-     * '봤어요' 콘텐츠 목록 조회
-     *
-     * @param memberId 회원 ID
-     * @return 내가 본 콘텐츠 목록
-     */
+    /** '찜했어요' 콘텐츠 목록 조회 */
     List<ContentSummaryDto> getLikedContents(int memberId);
 
-    /**
-     * '봤어요' 콘텐츠 목록 조회
-     *
-     * @param memberId 회원 ID
-     * @return 내가 본 콘텐츠 목록
-     */
+    /** '봤어요' 콘텐츠 목록 조회 */
     List<ContentSummaryDto> getWatchedContents(int memberId);
 
-    /**
-     * '봤어요' 콘텐츠 개별 삭제
-     */
+    /** '봤어요' 콘텐츠 개별 삭제 */
     void deleteWatchedContent(int contentId);
 
     List<Platform> getSubscribedOttList(int memberId);
-    /**
-     * 구독 중인 OTT 목록 수정
-     * @param memberId 회원 ID
-     * @param ottList OTT ID 목록
-     */
+
+    /** 구독 중인 OTT 목록 수정 */
     void updateSubscribedOtt(int memberId, List<Platform> ottList);
 
-    /**
-     * 선호 장르 목록 수정
-     * @param memberId 회원 ID
-     * @param genreList 장르 ID 목록
-     */
+    /** 선호 장르 목록 수정 */
     void updatePreferredGenre(int memberId, List<Genre> genreList);
 
-    /**
-     * 내가 신고당한 내역 조회
-     * @param memberId 회원 ID
-     * @return 신고받은 내역 목록
-     */
+    /** 내가 신고당한 내역 조회*/
     List<ReportDto> getReports(int memberId);
 
     boolean deleteMember(int memberId);

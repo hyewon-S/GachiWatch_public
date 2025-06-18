@@ -46,32 +46,8 @@ public class MemberServiceImpl implements MemberService {
             }
         }
 
-        // String → Platform enum 변환 (예외 잡고 null 필터링)
-        List<Platform> platformList = dto.getSubscribedOtts().stream()
-                .map(name -> {
-                    try {
-//                        return Platform.fromDisplayName(String.valueOf(name));
-                        return Platform.valueOf(String.valueOf(name)); // ← 여기 수정!
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("[경고] 올바르지 않은 플랫폼 이름: " + name);
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .toList();
-
-        // String → Genre enum 변환 (예외 처리도 넣어줘)
-        List<Genre> genreList = dto.getPreferredGenres().stream()
-                .map(name -> {
-                    try {
-                        return Genre.fromDisplayName(String.valueOf(name));
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("[경고] 올바르지 않은 장르 이름: " + name);
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .toList();
+        List<Platform> platformList = dto.getSubscribedOtts();
+        List<Genre> genreList = dto.getPreferredGenres();
 
         // DTO → Entity 변환
         Member member = Member.builder()
@@ -83,31 +59,9 @@ public class MemberServiceImpl implements MemberService {
                 .birthdate(dto.getBirthdate())
                 .subscribedOTTs(platformList)
                 .preferredGenres(genreList)
-
-//                .subscribedOTTs(dto.getSubscribedOtts() != null ? dto.getSubscribedOtts() : new ArrayList<>())
-//                .preferredGenres(dto.getPreferredGenres() != null ? dto.getPreferredGenres() : new ArrayList<>())
                 .build();
 
-//        // 플랫폼 매핑
-//        platformList.forEach(platform -> {
-//            Member_Platform mp = Member_Platform.builder()
-//                    .member(member)
-//                    .platform(platform)
-//                    .build();
-//            member.getSubscribedOTTs().add(mp);
-//        });
-//
-//        // 장르 매핑
-//        genreList.forEach(genre -> {
-//            Member_Genre mg = Member_Genre.builder()
-//                    .member(member)
-//                    .genre(genre)
-//                    .build();
-//            member.getPreferredGenres().add(mg);
-//        });
-
-        // 비밀번호 암호화
-        // member.setPassword(passwordEncoder.encode(member.getPassword()));
+        System.out.println("DTO 장르 목록: " + dto.getPreferredGenres());
 
         memberRepository.save(member);
     }
@@ -118,18 +72,22 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.existsByEmail(email); // JPA 기준, 혹은 MyBatis면 DAO 호출
     }
 
+    // 닉네임 검증
+    public boolean isNicknameDuplicated(String nickname) {
+        return memberRepository.existsByNickname(nickname);
+    }
+
     /** 로그인 처리 */
     @Override
     public Member login(LoginDto loginDto) {
         return memberMapper.findByEmailAndPassword(loginDto);
     }
 
-
     /** 프로필 수정 */
     @Override
     public void updateProfile(ProfileUpdateDto dto) {
         System.out.println("updateProfile 호출됨");
-//        // 1. 프로필 이미지 처리
+//        // 프로필 이미지 처리
 //        if (profileImage != null && !profileImage.isEmpty()) {
 //            System.out.println("파일 저장 시작");
 //            String profileImagePath = fileStorageService.store(profileImage);
@@ -139,7 +97,7 @@ public class MemberServiceImpl implements MemberService {
 //            dto.setProfileImage(null); // 변경 안함 처리
 //        }
 
-        // 2. 닉네임 비어있으면 null 처리
+        // 닉네임 비어있으면 null 처리
         if (dto.getNickname() == null || dto.getNickname().isBlank()) {
             dto.setNickname(null);
         }
@@ -154,7 +112,7 @@ public class MemberServiceImpl implements MemberService {
 //            dto.setPassword(null); // 변경 안함
 //        }
 
-        // 4. DAO 호출
+        // DAO 호출
 //        memberDao.updateProfile(dto, profileImage);
         memberDao.updateProfile(dto);
     }

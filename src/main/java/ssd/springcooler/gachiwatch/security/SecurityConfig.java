@@ -46,7 +46,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/", "/home", "/crew/view", "/account/login", "/account/signup", "/account/register_email_step1", "/account/check-email", "/account/register_step2", "/account/register_result" ,"/content/search", "/content/detail","/css/**", "/js/**", "/image/**").permitAll()
+                        .requestMatchers("/",
+                                "/home", "/crew/view", "/account/login",
+                                "/account/signup", "/account/register_email_step1",
+                                "/account/check-email", "/account/register_step2",
+                                "/account/check-nickname",  "/account/register_result",
+                                "/content/search", "/content/detail","/css/**", "/js/**",
+                                "/image/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form

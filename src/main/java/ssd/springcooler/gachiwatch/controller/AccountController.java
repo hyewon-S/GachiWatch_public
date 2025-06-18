@@ -1,10 +1,13 @@
 package ssd.springcooler.gachiwatch.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ssd.springcooler.gachiwatch.domain.Genre;
@@ -14,9 +17,7 @@ import ssd.springcooler.gachiwatch.dto.LoginDto;
 import ssd.springcooler.gachiwatch.dto.MemberRegisterDto;
 import ssd.springcooler.gachiwatch.service.MemberService;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/account")
@@ -50,36 +51,52 @@ public class AccountController {
     @PostMapping("/register_step2")
     public String registerStep2(@ModelAttribute("member") MemberRegisterDto dto, HttpSession session) {
         session.setAttribute("tempMember", dto); // 임시 저장
-        return "account/register_step2"; // step2 화면으로 이동
+        return "account/register_step2";
     }
 
     /** STEP2에서 닉네임, ott, 장르 입력 받아 최종 회원가입 */
     @PostMapping("/register_result")
     public String registerFinal(@RequestParam String nickname,
-                                @RequestParam String subscribedOTTs,
-                                @RequestParam String preferredGenres,
+                                @RequestParam(required = false) String subscribedOTTs,
+                                @RequestParam(required = false) String preferredGenres,
                                 HttpSession session,
-                                RedirectAttributes redirectAttributes) {
+                                RedirectAttributes redirectAttributes,
+                                Model model) {
 
         MemberRegisterDto dto = (MemberRegisterDto) session.getAttribute("tempMember");
         if (dto == null) {
             return "redirect:/account/register_email_step1";
         }
 
+        // 닉네임 비었는지 체크
+        if (nickname == null || nickname.trim().isEmpty()) {
+            model.addAttribute("nicknameError", "닉네임은 필수입니다.");
+            model.addAttribute("prevNickname", nickname);
+            model.addAttribute("prevSubscribedOTTs", subscribedOTTs);
+            model.addAttribute("prevPreferredGenres", preferredGenres);
+            return "account/register_step2"; // 다시 폼으로
+        }
+
         dto.setNickname(nickname);
 
         // OTT, Genre 문자열 → Enum 리스트 변환
-        List<Platform> ottList = Arrays.stream(subscribedOTTs.split(","))
-                .map(String::trim)
+        List<Platform> ottList = Optional.ofNullable(subscribedOTTs)
                 .filter(s -> !s.isEmpty())
-                .map(Platform::fromDisplayName)
-                .toList();
+                .map(s -> Arrays.stream(s.split(","))
+                        .map(String::trim)
+                        .map(Platform::fromDisplayName)
+                        .toList())
+                .orElse(Collections.emptyList());
 
-        List<Genre> genreList = Arrays.stream(preferredGenres.split(","))
-                .map(String::trim)
+        List<Genre> genreList = Optional.ofNullable(preferredGenres)
                 .filter(s -> !s.isEmpty())
-                .map(Genre::fromDisplayName)
-                .toList();
+                .map(s -> Arrays.stream(s.split(","))
+                        .map(String::trim)
+                        .map(Genre::fromDisplayName)
+                        .toList())
+                .orElse(Collections.emptyList());
+
+        System.out.println("선택된 장르(raw): " + preferredGenres);
 
         dto.setSubscribedOtts(ottList);
         dto.setPreferredGenres(genreList);
@@ -87,14 +104,21 @@ public class AccountController {
         memberService.register(dto);
         session.removeAttribute("tempMember");
 
-        // 로그인 페이지로 redirect & JS alert 위한 플래그 전달
         redirectAttributes.addFlashAttribute("registerSuccess", true);
         return "redirect:/account/register_result";
     }
 
+    @GetMapping("/check-nickname")
+    @ResponseBody
+    public Map<String, Boolean> checkNickname(@RequestParam String nickname) {
+        boolean exists = memberService.isNicknameDuplicated(nickname);
+        return Map.of("exists", exists);
+    }
+
+
     @GetMapping("/register_result")
     public String registerResultPage() {
-        return "account/register_result"; // ← templates/account/register_result.html
+        return "account/register_result";
     }
 
     // 로그인

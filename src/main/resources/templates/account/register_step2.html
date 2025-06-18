@@ -4,43 +4,86 @@
     <meta charset="UTF-8">
     <title>회원가입 - Step 2</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; margin-top: 50px; }
-        .container { width: 500px; text-align: center; }
-        .btn { margin-top: 20px; padding: 10px 20px; background: black; color: white; border: none; cursor: pointer; width: 100%; }
-        .ott-options img { width: 50px; margin: 5px; cursor: pointer; }
-        .genre-options button {
-            margin: 5px; padding: 5px 10px; border-radius: 15px; border: 1px solid #999;
-            background-color: #eee; cursor: pointer;
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
         }
+
+        .logo-img {
+            width: 180px;
+            height: auto;
+            max-width: 100%;
+        }
+
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .container {
+            width: 500px;
+            text-align: center;
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .ott-options img {
+            width: 50px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .genre-options button {
+            margin: 5px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            border: 1px solid #999;
+            background-color: #eee;
+            cursor: pointer;
+        }
+
         .genre-options button.selected {
-            background-color: purple; color: white;
+            background-color: purple;
+            color: white;
         }
 
         .ott-options img.selected {
             border: 3px solid purple;
             border-radius: 8px;
             opacity: 0.8;
-            /* 원하는 스타일로 바꿔도 돼 */
         }
 
-    </style>
-    <script>
-        function toggleSelect(elem) {
-            elem.classList.toggle('selected');
+        #nickname-check-msg {
+            font-size: 0.9em;
+            margin-top: 5px;
         }
-    </script>
+    </style>
 </head>
 <body>
 <div class="container">
-    <h1>Gachi Watch<br>회원가입</h1>
+    <div class="logo-container">
+        <img src="/image/logo.png" alt="로고" class="logo-img">
+    </div>
+    <h1>회원가입</h1>
     <form id="signupForm" th:action="@{/account/register_result}" method="post" onsubmit="return handleSubmit();">
-
-    <div class="form-group">
-            <label for="nickname">닉네임</label>
-            <input type="nickname" id="nickname" name="nickname" required>
-            <button type="button">중복 확인</button>
+        <div class="form-group">
+            <div th:if="${nicknameError}" style="color: red; font-size: 0.9em; margin-bottom: 5px;" th:text="${nicknameError}"></div>
+            <p><strong>닉네임</strong></p>
+            <input type="text" id="nickname" name="nickname" required th:value="${prevNickname}">
+            <button type="button" onclick="checkNickname()">중복 확인</button>
+            <div id="nickname-check-msg"></div>
         </div>
-
 
         <p><strong>구독중인 OTT 서비스를 선택해주세요</strong></p>
         <div class="ott-options">
@@ -84,41 +127,72 @@
 </div>
 
 <script>
-    // OTT 선택 - 클릭 시 toggle + 저장
-    const ottImages = document.querySelectorAll('.ott-options img');
-    ottImages.forEach(img => {
+    // OTT 선택 토글
+    document.querySelectorAll('.ott-options img').forEach(img => {
         img.addEventListener('click', () => {
             img.classList.toggle('selected');
         });
     });
 
-    // 장르 선택 버튼 처리
-    const genreButtons = document.querySelectorAll('.genre-options button');
-    genreButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault(); // 버튼 submit 막기
-            btn.classList.toggle('selected');
-        });
-    });
-
-    // 제출 전 hidden 값 세팅
-    function handleSubmit() {
-    const selectedOTTs = Array.from(document.querySelectorAll('.ott-options img.selected'))
-        .map(img => img.dataset.value); // data-value 값
-
-    const selectedGenres = Array.from(document.querySelectorAll('.genre-options button.selected'))
-        .map(btn => btn.textContent.trim());
-
-    if(selectedOTTs.length === 0){
-        alert('적어도 하나 이상의 OTT를 선택해주세요!');
-        return false;
+    // 장르 선택 토글
+    function toggleSelect(button) {
+        button.classList.toggle('selected');
     }
 
-    document.getElementById('subscribedOTTs').value = selectedOTTs.join(',');
-    document.getElementById('preferredGenres').value = selectedGenres.join(',');
+    // 닉네임 중복 확인
+    function checkNickname() {
+        const nickname = document.getElementById('nickname').value.trim();
+        const msg = document.getElementById('nickname-check-msg');
 
-    return true;
-}
+        if (!nickname) {
+            msg.textContent = '닉네임을 입력해주세요.';
+            msg.style.color = 'red';
+            return;
+        }
+
+        console.log("중복 확인 요청 닉네임:", nickname);
+
+        fetch(`/account/check-nickname?nickname=${encodeURIComponent(nickname)}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("응답 확인:", data);
+                if (data.exists) {
+                    msg.textContent = '이미 사용 중인 닉네임입니다.';
+                    msg.style.color = 'red';
+                } else {
+                    msg.textContent = '사용 가능한 닉네임입니다.';
+                    msg.style.color = 'green';
+                }
+            })
+            .catch(() => {
+                console.error("중복 확인 오류:", err);
+                msg.textContent = '서버 오류로 확인에 실패했습니다.';
+                msg.style.color = 'red';
+            });
+    }
+
+    // 폼 제출 시 선택된 OTT/장르 → hidden input에 세팅
+    function handleSubmit() {
+        const nickname = document.getElementById('nickname').value.trim();
+        if (!nickname) {
+            alert('닉네임은 필수입니다.');
+            return false;
+        }
+
+        // 선택된 OTT
+        const selectedOTTs = Array.from(document.querySelectorAll('.ott-options img.selected'))
+            .map(img => img.dataset.value);
+
+        // 선택된 장르
+        const selectedGenres = Array.from(document.querySelectorAll('.genre-options button.selected'))
+            .map(btn => btn.textContent.trim());
+
+        // hidden input에 세팅
+        document.getElementById('subscribedOTTs').value = selectedOTTs.join(',');
+        document.getElementById('preferredGenres').value = selectedGenres.join(',');
+
+        return true; // 서버로 제출
+    }
 </script>
 
 </body>
