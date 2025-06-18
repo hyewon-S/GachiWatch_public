@@ -167,7 +167,6 @@ public class ContentService {
 
         List<ContentDto> result = recommendList.stream()
                 .map(map -> {
-                    // content_id를 Integer로 안전하게 파싱
                     Object contentIdObj = map.get("content_id");
                     if (contentIdObj == null) return null;
 
@@ -184,11 +183,9 @@ public class ContentService {
                         }
                     }
 
-                    // contentId로 Content 엔티티 조회
                     Content content = contentDao.findById(contentId);
                     if (content == null) return null;
 
-                    // Content -> ContentDto 변환 (기존 getContentDetail 메서드와 유사)
                     List<String> genres = new ArrayList<>();
                     for (int gId : content.getGenre()) {
                         genres.add(Genre.fromGenreId(gId).getLabel());
@@ -211,5 +208,9 @@ public class ContentService {
                 .collect(Collectors.toList());
 
         return result;
+    }
+
+    public List<LikedContent> getLikedContentsByUserId(Integer memberId) {
+        return likedContentRepository.findContentsByMemberId(memberId);
     }
 }

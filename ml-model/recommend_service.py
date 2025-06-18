@@ -8,7 +8,7 @@ cosine_sim = model_data['cosine_sim']
 titles = model_data['titles']
 content_ids = model_data['content_ids']  # 추가
 
-def recommend(title=None, content_id=None, top_n=5):
+def recommend(title=None, content_id=None, top_n=any):
     if content_id is not None:
         if content_id not in content_ids:
             return []
@@ -36,7 +36,7 @@ def recommend(title=None, content_id=None, top_n=5):
 def recommend_api():
     title = request.args.get("title")
     content_id = request.args.get("content_id", type=int)
-    top_n = request.args.get("top_n", default=5, type=int)
+    top_n = request.args.get("top_n", type=int)
 
     recs = recommend(title=title, content_id=content_id, top_n=top_n)
     if not recs:

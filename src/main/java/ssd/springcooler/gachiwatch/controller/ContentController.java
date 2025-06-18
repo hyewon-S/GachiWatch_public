@@ -9,7 +9,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ssd.springcooler.gachiwatch.dao.ContentDao;
 import ssd.springcooler.gachiwatch.domain.Content;
+import ssd.springcooler.gachiwatch.domain.LikedContent;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
 import ssd.springcooler.gachiwatch.dto.ContentDto;
@@ -22,10 +24,7 @@ import ssd.springcooler.gachiwatch.service.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Controller
@@ -137,15 +136,34 @@ public class ContentController {
         if(userDetails != null) {
             model.addAttribute("isLoggedIn", true);
             Member loginUser = memberService.findByEmail(userDetails.getUsername());
+            List<LikedContent> likedContentList = contentService.getLikedContentsByUserId(loginUser.getMemberId());
 
-            // 예시: 사용자가 가장 최근에 본 콘텐츠 제목으로 추천 요청
-            // (실제론 좋아요 누른 콘텐츠나 최근 본 콘텐츠 ID -> 제목 매핑 필요)
-            
-            String recentContentTitle = "에이리언";
-            Integer contentId = 1017163;
-            List<ContentDto> recommendList = recommendationService.getRecommendations(contentId, 20);
+            Set<ContentDto> contentSet = new HashSet<>();
+            Set<Integer> seenIds = new HashSet<>();
+            int count = 0;
+            for (LikedContent l: likedContentList) {
+                if (count > 2)
+                    break;
+                System.out.println(l.toString());
+                int contentId = l.getContentId();
 
-            // 추천 API에서 반환하는 추천 콘텐츠 목록은 Map 형태(title, score 포함)
+                if (seenIds.contains(contentId)) continue;
+                seenIds.add(contentId);
+
+                List<ContentDto> recommendations = recommendationService.getRecommendations(contentId, 30);
+
+                contentSet.addAll(recommendations);
+                count++;
+            }
+
+            //String recentContentTitle = "에이리언";
+            //Integer contentId = 1017163;
+
+            List<ContentDto> recommendList = new ArrayList<>(contentSet);
+
+            Collections.shuffle(recommendList);
+            recommendList = recommendList.subList(0, Math.min(50, recommendList.size()));
+
             model.addAttribute("recommendList", recommendList);
             /*
             List<ForMeContentDto> recommendList = tmdbService.getForMeContents(50, loginUser.getPreferredGenres());
