@@ -116,6 +116,12 @@
             scroll-snap-align: start;
         }
 
+        /* small-carousel 전용 캐러셀 트랙 설정 */
+        .small-carousel .carousel-track {
+            gap: 30px;
+            padding: 0 30px;
+        }
+
         .content-thumbnail {
             width: 165px;
             height: 247px;
@@ -132,12 +138,20 @@
 
         .group-name {
             margin-top: 8px;
-            font-size: 14px;
+            font-size: 15px; /*14*/
+            font-weight: 600;
             color: #333;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 120px;
+        }
+
+        .crew-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px; /* 세 요소(썸네일, 이름, 버튼) 사이의 간격 */
         }
 
         .carousel-btn {
@@ -205,7 +219,7 @@
                 <img th:src="@{/image/left_button.png}" alt="왼쪽" style="width:24px; height:24px;">
             </button>
             <div class="carousel-track">
-                <div th:if="${crews != null}" th:each="crew : ${crews}" style="text-align: center;">
+                <div th:if="${crews != null}" th:each="crew : ${crews}" style="text-align: center;  margin-right: 20px;" class="crew-item">
                     <img th:src="@{'/image/' + ${crew.platform.name().toLowerCase()} + '.png'}" alt="그룹 썸네일" class="group-thumbnail">
                     <div th:text="${crew.crewName}" class="group-name"></div>
                     <button type="button" class="enter-crew-btn" th:attr="data-crew-id=${crew.crewId}">
