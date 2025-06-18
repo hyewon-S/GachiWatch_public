@@ -9,15 +9,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ssd.springcooler.gachiwatch.domain.Crew;
+import ssd.springcooler.gachiwatch.domain.Genre;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
-import ssd.springcooler.gachiwatch.dto.CrewInfoDto;
-import ssd.springcooler.gachiwatch.dto.ForMeContentDto;
-import ssd.springcooler.gachiwatch.dto.LatestMovieDto;
-import ssd.springcooler.gachiwatch.dto.TrendingContentDto;
+import ssd.springcooler.gachiwatch.dto.*;
 import ssd.springcooler.gachiwatch.repository.JoinedCrewRepository;
 
 import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
+import ssd.springcooler.gachiwatch.service.EmailNotiService;
 import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
 import ssd.springcooler.gachiwatch.service.TMDBService;
 
@@ -38,6 +37,9 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
 
     @Autowired
     private CrewServiceImpl crewService;
+
+    @Autowired
+    private EmailNotiService emailNotiService;
 
     @Autowired
     public MainController(TMDBService tmdbService) {
@@ -107,11 +109,23 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
             model.addAttribute("user", loginUser);
 
             try {
+                //최신 트렌드
                 List<TrendingContentDto> trending = tmdbService.getTrendingContents(20);
                 model.addAttribute("trendingContents", trending);
 
+                //나를 위한 추천
                 List<ForMeContentDto> formecontents = tmdbService.getForMeContents(20, loginUser.getPreferredGenres());
                 model.addAttribute("formecontents", formecontents);
+
+                // === [이메일 추천 발송] === 사용자가 로그인하면 이메일 전송
+                EmailNotiRequestDto emailDto = new EmailNotiRequestDto();
+                emailDto.setNickname(loginUser.getNickname());
+                emailDto.setEmail(loginUser.getEmail());
+                emailDto.setPreferredGenres(loginUser.getPreferredGenres());
+
+                emailNotiService.sendRecommendationEmail(emailDto); // 예외처리 안에서 호출
+                // ==========================
+
 
             } catch (Exception e) {
                 e.printStackTrace();
