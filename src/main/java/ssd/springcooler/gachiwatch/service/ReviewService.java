@@ -1,5 +1,6 @@
 package ssd.springcooler.gachiwatch.service;
 
+import ssd.springcooler.gachiwatch.domain.Review;
 import ssd.springcooler.gachiwatch.dto.ReviewDto;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface ReviewService {
     void insertReview(int contentId, int memberId, String reviewContent, int star);
 
     void updateReview(int reviewId, String reviewContent, int rate);
+
+    List<ReviewDto> commonLogicForReview(List<Review> reviewList, int memberId);
 }

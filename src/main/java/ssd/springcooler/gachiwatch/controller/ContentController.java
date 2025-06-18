@@ -69,6 +69,8 @@ public class ContentController {
 
             String eyeUrl = contentService.checkWatched(contentId, memberId);
             model.addAttribute("eyeUrl", eyeUrl);
+
+            model.addAttribute("review_heartUrl", "/image/icon/icon-heart-black.png");
         } else {
             model.addAttribute("isLoggedIn", false);
         }

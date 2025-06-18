@@ -1,51 +1,31 @@
 package ssd.springcooler.gachiwatch.domain;//리뷰 신고 정보
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
+@Entity
+@Getter
+@NoArgsConstructor
+@Table(name = "review_report")
 public class ReviewReport {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int reportId;
-	private int memberId; //신고한 사용자
-	private int reviewId; //신고된 리뷰
-	private String substance; //신고 사유
-	private Date date; //신고 날짜
-	
-	public int getReportId() {
-		return reportId;
-	}
 
-	public void setReportId(int reportId) {
-		this.reportId = reportId;
-	}
+	@Column(name = "member_id")
+	private int memberId;
 
-	public int getMemberId() {
-		return memberId;
-	}
+	@Column(name = "review_id")
+	private int reviewId;
 
-	public void setMemberId(int memberId) {
-		this.memberId = memberId;
-	}
+	private String substance;
 
-	public int getReviewId() {
-		return reviewId;
-	}
+	@Column(name = "review_report_date")
+	private Date date;
 
-	public void setReviewId(int reviewId) {
-		this.reviewId = reviewId;
-	}
-
-	public String getSubstance() {
-		return substance;
-	}
-
-	public void setSubstance(String substance) { this.substance = substance; }
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
 
 	@Override
 	public String toString() {

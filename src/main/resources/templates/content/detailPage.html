@@ -242,6 +242,22 @@
             }
             // 취소 시 아무 일도 안 일어남
          }
+
+        function toggleReviewHeart(reviewId, memberId) {
+            const icon = document.getElementById("review-heart");
+            const isRed = icon.src.includes("icon-heart-red.png");
+
+            // 아이콘 바꾸기
+            if (isRed) {
+                icon.src = "/image/icon/icon-heart-black.png";
+                updateContentLike(contentId, memberId, false);
+                alert("좋아요가 취소 되었습니다.");
+            } else {
+                icon.src = "/image/icon/icon-heart-red.png";
+                updateContentLike(contentId, memberId, true);
+                alert("좋아요가 되었습니다.");
+            }
+        }
     </script>
 </head>
 <body>
@@ -348,11 +364,16 @@
                 <br>
                 <span th:text="${review.nickname}"></span> &emsp; <span th:text="${review.date}"></span> &emsp;
 
-                <!--review like, report button -->
 
-                <a th:href="@{/review/like(contentId=${contentInfo.contentId})}" style="text-decoration: none;">
-                    <img th:src="@{/image/icon/icon-heart-red.png}" style="width: 30px;"> <span th:text="${review.likes}">0</span>
-                </a> &emsp;
+                <!-- 좋아요 버튼 -->
+                <img id="review-heart" th:if="${isLoggedIn}" th:src="@{${review_heartUrl}}"
+                     th:attr="onclick=|toggleReviewHeart(${review.reviewId}, ${user.memberId})|"
+                     style="width: 30px;"/> <span th:if="${isLoggedIn}" th:text="${review.likes}">0</span>
+
+                <img th:unless="${isLoggedIn}" th:src="@{/image/icon/icon-heart-red.png}"
+                     onclick="alert('로그인이 필요합니다.')"
+                     style="width: 30px;"/> <span th:unless="${isLoggedIn}" th:text="${review.likes}">0</span>
+
                 <a th:href="@{/review/reportForm(reviewId=${review.reviewId}, substance=${review.substance}, contentId=${contentInfo.contentId})}">
                     <input type="button" value="신고" style="width: 60px;">
                 </a>

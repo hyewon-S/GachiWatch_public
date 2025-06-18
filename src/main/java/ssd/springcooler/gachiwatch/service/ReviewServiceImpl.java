@@ -24,14 +24,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public List<ReviewDto> getReviewsByUser(int memberId) {
-        List<Review> reviewList = reviewDao.getReviewsByUserId(memberId);
-        List<ReviewDto> reviewDtos = new ArrayList<>();
-        for (Review review : reviewList) {
-            Member member = memberRepository.findById(memberId).orElse(null);
-            reviewDtos.add(new ReviewDto(Integer.toString(review.getReviewId()), Integer.toString(review.getContentId()),
-                    review.getDate(), review.getSubstance(), Integer.toString(review.getScore()), Integer.toString(review.getLikes()), member.getNickname()));
-        }
-        return reviewDtos;
+        return commonLogicForReview(reviewDao.getReviewsByUserId(memberId), memberId);
     }
 
     @Override
@@ -49,8 +42,11 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public List<ReviewDto> getReviewsByContentAndUser(int memberId, int contentId) {
-        List<Review> reviewList = reviewDao.getReviewsByContentIdAndMemberId(memberId, contentId);
-        //아래 로직은 따로 메소드로 묶을까 고민중!!
+        return commonLogicForReview(reviewDao.getReviewsByContentIdAndMemberId(memberId, contentId), memberId);
+    }
+
+    @Override
+    public List<ReviewDto> commonLogicForReview(List<Review> reviewList, int memberId) {
         List<ReviewDto> reviewDtos = new ArrayList<>();
         for (Review review : reviewList) {
             Member member = memberRepository.findById(memberId).orElse(null);

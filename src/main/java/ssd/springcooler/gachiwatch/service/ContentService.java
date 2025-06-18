@@ -109,6 +109,9 @@ public class ContentService {
 
     public ContentDto getContentInfo(int contentId) throws Exception {
         List<Content> oneContent = tmdbService.getDetailedInfo("movie", List.of(contentId));
+        if(oneContent.get(0).getTitle().equals("")) { //그럼 이건 tv 프로그램 -> 다시 요청보냄
+            oneContent = tmdbService.getDetailedInfo("tv", List.of(contentId));
+        }
         contentDao.createContent(oneContent);
         List<String> genres = new ArrayList<>();
         for (int gId : oneContent.get(0).getGenre()) {
