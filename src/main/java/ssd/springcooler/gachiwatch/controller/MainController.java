@@ -117,13 +117,21 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
                 List<ForMeContentDto> formecontents = tmdbService.getForMeContents(20, loginUser.getPreferredGenres());
                 model.addAttribute("formecontents", formecontents);
 
-                // === [이메일 추천 발송] === 사용자가 로그인하면 이메일 전송
-                EmailNotiRequestDto emailDto = new EmailNotiRequestDto();
-                emailDto.setNickname(loginUser.getNickname());
-                emailDto.setEmail(loginUser.getEmail());
-                emailDto.setPreferredGenres(loginUser.getPreferredGenres());
+                // === [이메일 추천 발송] ===
+                List<Genre> preferredGenres = loginUser.getPreferredGenres();
+                String nickname = loginUser.getNickname();
+                String email = loginUser.getEmail();
 
-                emailNotiService.sendRecommendationEmail(emailDto); // 예외처리 안에서 호출
+                if (nickname != null && email != null &&
+                        preferredGenres != null && !preferredGenres.isEmpty()) {
+
+                    EmailNotiRequestDto emailDto = new EmailNotiRequestDto();
+                    emailDto.setNickname(nickname);
+                    emailDto.setEmail(email);
+                    emailDto.setPreferredGenres(preferredGenres);
+
+                    emailNotiService.sendRecommendationEmail(emailDto);
+                }
                 // ==========================
 
 
