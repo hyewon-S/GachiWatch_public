@@ -12,13 +12,15 @@
         member_id,
         substance,
         review_date,
-        score
+        score,
+        likes
         ) VALUES (
         #{contentId},
         #{member.memberId},
         #{substance},
         TO_DATE(#{date}, 'YYYY-MM-DD:HH24:MI'),
-        #{score}
+        #{score},
+        0
         )
     </insert>
 

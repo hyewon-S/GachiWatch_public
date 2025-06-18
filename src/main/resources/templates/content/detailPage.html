@@ -351,7 +351,7 @@
                 <!--review like, report button -->
 
                 <a th:href="@{/review/like(contentId=${contentInfo.contentId})}" style="text-decoration: none;">
-                    <img th:src="@{/image/icon/icon-heart-red.png}" style="width: 30px;"> <span >0</span>
+                    <img th:src="@{/image/icon/icon-heart-red.png}" style="width: 30px;"> <span th:text="${review.likes}">0</span>
                 </a> &emsp;
                 <a th:href="@{/review/reportForm(reviewId=${review.reviewId}, substance=${review.substance}, contentId=${contentInfo.contentId})}">
                     <input type="button" value="신고" style="width: 60px;">
