@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>리뷰 신고하기</title>
+    <style>
+        body {
+          margin: 0;
+          font-family: 'Arial', sans-serif;
+          background-color: #f9f9f9;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 20px;
+        }
+
+
+        .back-button {
+          position: absolute;
+          left: 10px;
+          font-size: 24px;
+          cursor: pointer;
+        }
+
+        .title {
+          font-size: 24px;
+          font-weight: bold;
+          margin: 20px 0;
+          text-align: center;
+        }
+
+        .save-button {
+          position: absolute;
+          right: 10px;
+          background-color: #333;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          padding: 8px 16px;
+          cursor: pointer;
+          margin-right: 3%;
+        }
+
+        .review-label {
+          font-weight: bold;
+          margin-bottom: 10px;
+        }
+
+        .review-input {
+          width: 500px;
+          height: 150px;
+          background-color: #aaa;
+          border: none;
+          padding: 10px;
+          font-size: 16px;
+          resize: none;
+          color: white;
+        }
+
+        .review-section {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 30px;
+        }
+        .review-input::placeholder {
+          color: #eee;
+        }
+    </style>
+</head>
+<body>
+
+<form id="ratingForm" method="post" th:action="@{/review/report}">
+    <br><div class="back-button" onclick="history.back()">&emsp;&emsp;←</div><br>
+
+    <button class="save-button" type="submit" onclick="alert('신고되었습니다.')">저장</button>
+    <br>
+    <div class="review_form">
+        <div class="title">리뷰 신고하기</div>
+
+        <!-- hidden으로 담아둘 정보들 -->
+        <input type="hidden" name="reviewId" th:value="${reviewId} ? ${reviewId} : ''" />
+        <input type="hidden" name="memberId" th:value="${memberId}" />
+        <input type="hidden" name="contentId" th:value="${contentId}" />
+        <div class="review-section" >
+            <div class="review-label" th:text="'신고할 리뷰 내용 ➡️ ' + ${substance}">리뷰 신고 내용</div>
+            <textarea class="review-input" name="reviewContent" placeholder="신고 내용을 입력해주세요."></textarea>
+        </div>
+    </div>
+</form>
+</body>
+</html>

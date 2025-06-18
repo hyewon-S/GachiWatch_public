@@ -55,6 +55,24 @@ public class ReviewController {
         return "review/review_form";
     }
 
+    @GetMapping("/reportForm")
+    public String reportForm(@RequestParam int reviewId, @RequestParam int contentId, @RequestParam String substance, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+            if( userDetails != null) {
+                model.addAttribute("reviewId", reviewId);
+                model.addAttribute("substance", substance);
+                model.addAttribute("contentId", contentId);
+            }
+            return "review/reportForm";
+    }
+
+    @PostMapping ("/report")
+    public String report(@RequestParam int reviewId, @RequestParam int contentId, @RequestParam String reviewContent, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        Member user = memberService.findByEmail(userDetails.getUsername());
+        model.addAttribute("memberId", user.getMemberId());
+        System.out.println(reviewContent);
+        return "redirect:/content/detail?contentId=" + contentId;
+    }
+
     @PostMapping("/update")
     public String update(@RequestParam int star, @RequestParam int contentId, @RequestParam int reviewId, @RequestParam String reviewContent) {
         reviewService.updateReview(reviewId, reviewContent, star);
