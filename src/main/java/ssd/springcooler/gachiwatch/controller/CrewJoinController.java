@@ -37,6 +37,14 @@ public class CrewJoinController {
         return "redirect:/crew/view"; // 또는 신청 완료 페이지로 리다이렉트
     }
 
+    @PostMapping("/deny")
+    public String denyMember(@RequestParam("crewId") Long crewId,
+                             @RequestParam("memberId") Integer memberId,
+                             RedirectAttributes redirectAttributes) {
+        crewService.denyMember(crewId, memberId);
+        return "redirect:/crew/join?crewId=" + crewId;
+    }
+
     @PostMapping("/accept")
     public String acceptMember(@RequestParam("crewId") Long crewId,
                                @RequestParam("memberId") Integer memberId,
@@ -45,8 +53,7 @@ public class CrewJoinController {
         crewService.acceptMember(crewId, memberId);
         redirectAttributes.addFlashAttribute("message", "가입 승인 완료!");
 
-
-        return "redirect:/crew/join?crewId=" + crewId; // 예: 신청 목록 페이지로 리다이렉트
+        return "redirect:/crew/join?crewId=" + crewId;
     }
 
     @GetMapping
