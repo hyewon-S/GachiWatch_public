@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ssd.springcooler.gachiwatch.domain.Member;
-import ssd.springcooler.gachiwatch.domain.Review;
+import ssd.springcooler.gachiwatch.domain.Platform;
 import ssd.springcooler.gachiwatch.dto.ContentDto;
 import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
 import ssd.springcooler.gachiwatch.dto.ForMeContentDto;
@@ -23,7 +23,10 @@ import ssd.springcooler.gachiwatch.service.TMDBService;
 
 import java.security.Principal;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
+
 
 @Controller
 @RequestMapping("/content")
@@ -141,6 +144,57 @@ public class ContentController {
         }
         return "content/recommendPage";
     }
+
+    @ResponseBody
+    @GetMapping("/filter")
+    public List<ContentSummaryDto> filterContents(
+            @RequestParam(required = false) List<String> ott,
+            @RequestParam(required = false) List<String> type,
+            @RequestParam(defaultValue = "default") String sort
+    ) {
+        List<ContentSummaryDto> all = contentService.getContentSummary();
+        List<Platform> ottList = List.of(Platform.NETFLIX, Platform.WAVVE, Platform.WATCHA, Platform.APPLE, Platform.AMAZON, Platform.DISNEY);
+        List<String> typeList = List.of("TV", "MOVIE");
+
+//ott가 비었으면 추가 동작 하지 말기
+// type이 null 또는 빈 경우, 아무것도 선택되지 않은 상태이므로 빈 결과 반환
+        if (type == null || type.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<ContentSummaryDto> filtered = all.stream()
+                .filter(c -> ott == null || ott.isEmpty() ||  // 필터 없으면 전체 통과
+                        c.getOtt().stream().anyMatch(ott::contains)) // 하나라도 포함되면 OK
+                .filter(c -> type.contains(c.getContentType().toUpperCase()))
+                .toList();
+
+        return filtered;
+//        Stream<ContentSummaryDto> stream = all.stream();
+//
+//        if (ott != null && !ott.isEmpty()) {
+//            stream = stream.filter(c -> ott.contains(c.getOtt()));
+//        }
+//
+//        if (type != null && !type.isEmpty()) {
+//            stream = stream.filter(c -> type.contains(c.getContentType()));
+//        }
+//
+//        // 정렬
+//        switch (sort) {
+//            case "rating":
+//                stream = stream.sorted(Comparator.comparing(Content::getRating).reversed());
+//                break;
+//            case "recent":
+//                stream = stream.sorted(Comparator.comparing(Content::getReleaseDate).reversed());
+//                break;
+//            case "default":
+//            default:
+//                // 아무 정렬도 하지 않음 (초기 순서 유지)
+//                break;
+//        }
+
+    }
+
 
     //API 에서 콘텐츠 받아와서 DB에 데이터 넣어둠
     //자정마다 실행됨!

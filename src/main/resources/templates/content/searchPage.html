@@ -110,25 +110,32 @@
            width: 91%;
            height: auto;
            border-radius: 10px;
-           padding: 1%;
-           display: grid;
-           grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-           gap: 16px;
        }
+
+       #contentContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+  padding: 1%;
+  justify-items: center; /* 중앙 정렬 */
+}
+
        .content {
            background-color: rgb(246, 251, 255);
            border-radius: 7px;
-           width: fit-content;
            padding: 10px;
            margin: 10px;
            display: inline-block;
+           width: 100%;
+            box-sizing: border-box;
        }
 
        .content img {
-           width: 160px;
+           width: 100%;
             margin-top: 10px;
             margin-bottom: 5px;
             border-radius: 10px;
+  height: auto;
        }
 
        h2 {
@@ -166,13 +173,25 @@
             transform: scale(1.3);
 
         }
+        /* 필터 바 전체: 수평 정렬, 오른쪽 정렬 포함 */
+        .filter-bar {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+        }
+
+        .filter-bar .sort-select {
+            margin-left: auto;
+            }
+
+        /* 버튼 스타일 재사용 */
         .selected-button {
-          background-color: #eee;
+          background-color: white;
           color: black;
           border: 1px solid #ccc;
           padding: 8px 12px;
           border-radius: 6px;
-          margin: 4px;
+          margin-right: 6px;
           cursor: pointer;
           font-size: 14px;
           transition: all 0.2s ease;
@@ -192,7 +211,118 @@
         .selected-button.active .check-icon {
           display: inline;
         }
+
+        /* 드롭다운도 버튼처럼 보이게 */
+        .sort-select {
+          background-color: white;
+          color: black;
+          border: 1px solid #ccc;
+          padding: 8px 12px;
+          border-radius: 6px;
+          font-size: 14px;
+          cursor: pointer;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          background-image: url('/img/down-arrow.svg');
+          background-repeat: no-repeat;
+          background-position: right 10px center;
+          padding-right: 30px;
+        }
+        .type-buttons {
+            margin-left: 4%;
+        }
+
     </style>
+    <script>
+        let selectedOtts = []; // 여러 OTT 선택 가능
+        let selectedType = null;
+        let selectedSort = "default";
+        let selectedTypes = ["TV", "MOVIE"]; // 처음에 둘 다 선택된 상태
+
+        function onOttClick(element, ott) {
+            const isSelected = selectedOtts.includes(ott);
+
+            if (isSelected) {
+                // 이미 선택됨 → 배열에서 제거 + 스타일 제거
+                selectedOtts = selectedOtts.filter(item => item !== ott);
+                element.classList.remove("selected");
+            } else {
+                // 새로 선택 → 배열에 추가 + 스타일 추가
+                selectedOtts.push(ott);
+                element.classList.add("selected");
+            }
+
+            fetchFilteredContent();
+        }
+
+        function onTypeClick(button, type) {
+            const isSelected = selectedTypes.includes(type);
+
+            if (isSelected) {
+                // 해제
+                selectedTypes = selectedTypes.filter(t => t !== type);
+                button.classList.remove("active");
+            } else {
+                // 다시 선택
+                selectedTypes.push(type);
+                button.classList.add("active");
+            }
+
+            fetchFilteredContent(); // 선택 상태 반영
+        }
+
+        function onSortChange(sortValue) {
+            selectedSort = sortValue;
+            fetchFilteredContent(); // 정렬 반영
+        }
+
+        function fetchFilteredContent() {
+          const loading = document.getElementById("loadingIndicator");
+          loading.style.display = "block"; // 표시
+
+          const params = new URLSearchParams();
+          selectedOtts.forEach(ott => params.append("ott", ott));
+          selectedTypes.forEach(type => params.append("type", type));
+          if (selectedSort !== "default") params.append("sort", selectedSort);
+
+          fetch(`/content/filter?${params.toString()}`)
+            .then(res => res.json())
+            .then(data => {
+              updateContentList(data);
+            })
+            .finally(() => {
+              loading.style.display = "none"; // 숨기기
+            });
+        }
+
+        function updateContentList(contentList) {
+          const container = document.getElementById("contentContainer");
+          container.innerHTML = ""; // 초기화
+
+          contentList.forEach(content => {
+            const div = document.createElement("div");
+            div.className = "content";  // 여기 class로!!
+
+            div.innerHTML = `
+              <a href="/content/detail?contentId=${content.contentId}">
+                <img src="${content.thumbnailUrl}" />
+              </a>
+              <br>&nbsp;
+              <a href="/content/detail?contentId=${content.contentId}">
+                <b>${content.title}</b>
+              </a>
+              <br>&nbsp;평점 <span>${content.rating}</span>
+            `;
+
+            container.appendChild(div);
+          });
+
+          // ✅ 아무 콘텐츠도 추가되지 않았을 경우
+          if (container.innerHTML.trim() === "") {
+            container.innerHTML = `<p style="text-align:center; font-weight:bold;">‼️ 조건에 맞는 콘텐츠가 없습니다.</p>`;
+          }
+        }
+    </script>
 </head>
 <body>
 <header class="main-header">
@@ -220,67 +350,46 @@
 </header>
 
 <hr> <h2>통합 콘텐츠</h2>
+<div id="loadingIndicator" style="display: none; text-align: center; font-weight: bold;">
+    🔄 콘텐츠 불러오는 중...
+</div>
 <section class="platforms">
     &emsp;
     <img th:src="@{/image/netflix.png}" class="ott-img" onclick="onOttClick(this, 'NETFLIX')" >
     <img th:src="@{/image/watcha.png}" class="ott-img" onclick="onOttClick(this, 'WATCHA')" >
-    <img th:src="@{/image/appletv.png}" class="ott-img" onclick="onOttClick(this, 'APPLETV')" >
+    <img th:src="@{/image/appletv.png}" class="ott-img" onclick="onOttClick(this, 'APPLE')" >
     <img th:src="@{/image/wavve.png}" class="ott-img" onclick="onOttClick(this, 'WAVVE')" >
     <img th:src="@{/image/disney.png}" class="ott-img" onclick="onOttClick(this, 'DISNEY')" >
-    <img th:src="@{/image/prime.png}" class="ott-img" onclick="onOttClick(this, 'AMAZON')" > <br><br>
-    &emsp;<button class="selected-button active" onclick="onTypeClick(this, 'TV')">
-    <span class="check-icon">✔️</span>TV 시리즈
-</button>
-    <button class="selected-button active" onclick="onTypeClick(this, 'MOVIE')">
-        <span class="check-icon">✔️</span>영화
-    </button>
-</section> <br>
+    <img th:src="@{/image/prime.png}" class="ott-img" onclick="onOttClick(this, 'AMAZON')" >
+</section>
+<!-- TV/영화 버튼 + 정렬 드롭다운을 감싸는 컨테이너 -->
+    <div class="filter-bar">
+        <!-- TV/영화 필터 버튼 -->
+        <div class="type-buttons">
+            <button class="selected-button active" onclick="onTypeClick(this, 'TV')">
+                <span class="check-icon">✔️</span>TV 시리즈
+            </button>
+            <button class="selected-button active" onclick="onTypeClick(this, 'MOVIE')">
+                <span class="check-icon">✔️</span>영화
+            </button>
+        </div>
+
+        <!-- 정렬 드롭다운 -->
+        <select id="sort-select" onchange="onSortChange(this.value)" class="sort-select" style="margin-right: 6%;">
+            <option value="default" selected>기본</option>
+            <option value="rating">별점순</option>
+            <option value="recent">최신순</option>
+        </select><br>
+    </div>
 <main>
-    <div th:each="content : ${contentList}" class="content">
-        <a th:href="@{/content/detail(contentId=${content.contentId})}"><img th:src="@{${content.thumbnailUrl}}" /></a>
-        <br>&nbsp;
-        <a th:href="@{/content/detail(contentId=${content.contentId})}"><b th:text="${content.title}"></b></a>
-        <br>&nbsp;평점 <span th:text="${content.rating}"></span>
+    <div id="contentContainer">
+        <div th:each="content : ${contentList}" class="content">
+            <a th:href="@{/content/detail(contentId=${content.contentId})}"><img th:src="@{${content.thumbnailUrl}}" /></a>
+            <br>&nbsp;
+            <a th:href="@{/content/detail(contentId=${content.contentId})}"><b th:text="${content.title}"></b></a>
+            <br>&nbsp;평점 <span th:text="${content.rating}"></span>
+        </div>
     </div>
 </main>
-
-<script>
-    let selectedOtts = []; // 여러 OTT 선택 가능
-    let selectedType = null;
-    let selectedSort = "recent";
-    let selectedTypes = ["TV", "MOVIE"]; // 처음에 둘 다 선택된 상태
-
-    function onOttClick(element, ott) {
-        const isSelected = selectedOtts.includes(ott);
-
-        if (isSelected) {
-            // 이미 선택됨 → 배열에서 제거 + 스타일 제거
-            selectedOtts = selectedOtts.filter(item => item !== ott);
-            element.classList.remove("selected");
-        } else {
-            // 새로 선택 → 배열에 추가 + 스타일 추가
-            selectedOtts.push(ott);
-            element.classList.add("selected");
-        }
-
-        //fetchFilteredContent();
-    }
-    function onTypeClick(button, type) {
-        const isSelected = selectedTypes.includes(type);
-
-        if (isSelected) {
-            // 해제
-            selectedTypes = selectedTypes.filter(t => t !== type);
-            button.classList.remove("active");
-        } else {
-            // 다시 선택
-            selectedTypes.push(type);
-            button.classList.add("active");
-        }
-
-        //fetchFilteredContent(); // 선택 상태 반영
-    }
-
-</script>
 </body>
 </html>

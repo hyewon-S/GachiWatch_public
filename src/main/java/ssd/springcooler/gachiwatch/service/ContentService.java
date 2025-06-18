@@ -69,7 +69,11 @@ public class ContentService {
         List<Content> contentList = contentDao.getAllContentList();
         List<ContentSummaryDto> contentSummary = new ArrayList<ContentSummaryDto>();
         for(Content cS : contentList) {
-            contentSummary.add(new ContentSummaryDto(cS.getContentId(), cS.getTitle(), cS.getImgUrl(), String.format("%.1f", cS.getRate())));
+            List<String> ott = new ArrayList<>();
+            for(Integer pId : cS.getPlatform()) {
+                ott.add(Platform.fromPlatformId(pId).name());
+            }
+            contentSummary.add(new ContentSummaryDto(cS.getContentId(), cS.getTitle(), cS.getImgUrl(), String.format("%.1f", cS.getRate()), ott, cS.getContentType()));
         }
         return contentSummary;
     }
