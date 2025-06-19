@@ -11,6 +11,7 @@ import ssd.springcooler.gachiwatch.repository.*;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -302,11 +303,24 @@ public class MemberServiceImpl implements MemberService {
         member.setPreferredGenres(genreList); // 기존 리스트 clear 후 새로 추가
     }
 
+    @Transactional
     @Override
-    public boolean deleteMember(int memberId) {
-        //구현 필요
-        return false;
+    public void deleteMemberByEmail(String email) {
+        Optional<Member> memberOpt = memberRepository.findByEmail(email);
+
+        memberOpt.ifPresent(member -> {
+            member.getLikedContents().clear();
+            member.getWatchedContents().clear();
+            member.getJoinedCrews().clear();
+            memberRepository.delete(member);
+        });
     }
+
+//    @Override
+//    public boolean deleteMember(int memberId) {
+//        //구현 필요
+//        return false;
+//    }
 
     @Override
     public Member getMember(int memberId) {

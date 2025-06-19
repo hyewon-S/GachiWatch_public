@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -136,10 +138,14 @@ public class AccountController {
     }
 
     /** 회원 탈퇴 */
-    @PostMapping("/delete")
-    public String delete(@RequestParam int memberId, Model model) {
-        boolean result = memberService.deleteMember(memberId);
-        model.addAttribute("result", result ? "success" : "fail");
+    @GetMapping("/delete")
+    public String delete(@AuthenticationPrincipal Member member, HttpSession session) {
+        if (member != null) {
+            memberService.deleteMemberByEmail(member.getEmail());
+            session.invalidate(); // 세션 끊기
+            SecurityContextHolder.clearContext(); // Spring Security 인증 해제
+        }
         return "redirect:/home";
     }
+
 }

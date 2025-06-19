@@ -48,7 +48,7 @@ public interface MemberService {
     List<Genre> findMyGenreList(Integer memberId);
     void updateMyGenreList(int memberId, List<Genre> genreList);
 
-    boolean deleteMember(int memberId);
+    void deleteMemberByEmail(String email);
 
     Member getMember(int memberId);
 
