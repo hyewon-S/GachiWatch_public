@@ -22,6 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CrewCommand {
+    Long crewId;
     Member captain;
     @NotBlank(message = "크루 이름은 필수입니다.")
     String crewName;
