@@ -1,6 +1,8 @@
 package ssd.springcooler.gachiwatch.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -99,6 +101,23 @@ public class CrewManageController {
         model.addAttribute("memberList", members);
 
         return "crew/manage";
+    }
+
+    @PostMapping("/exit/{crewId}")
+    public ResponseEntity<String> exitCrew(
+            @PathVariable Long crewId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Member member = userDetails.getMember();
+
+        try {
+            crewService.deleteMemberByMemberId(crewId, member.getMemberId());
+            return ResponseEntity.ok("탈퇴 완료");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("크루를 찾을 수 없습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("탈퇴 중 오류 발생");
+        }
     }
 
 }

@@ -189,4 +189,13 @@ public class CrewServiceImpl implements CrewFacade {
         return memberList;
     }
 
+    @Transactional
+    public boolean deleteMemberByMemberId(Long crewId, Integer memberId) {
+        int deletedCount = joinedCrewRepository.deleteByCrewIdAndMemberId(crewId, memberId);
+        if (deletedCount > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -76,7 +76,7 @@
             <input type="number" id="payment" th:field="*{payment}" th:value="*{payment}" />
             <p th:if="${#fields.hasErrors('payment')}" th:errors="*{payment}" style="color: red;"></p>
 
-            <button type="submit">변경</button>
+            <button type="submit"  th:if="${loginUser.memberId} == ${crew.captain.memberId}">변경</button>
         </form>
     </section>
 
@@ -99,7 +99,8 @@
                 </div>
             </div>
         </div>
-        <button class="join-manage-btn" th:attr="data-crewid=${crew.crewId}">가입 관리</button>
+        <button class="join-manage-btn" th:if="${loginUser.memberId} == ${crew.captain.memberId}" th:attr="data-crewid=${crew.crewId}">가입 관리</button>
+        <button class="crew-exit-btn" th:if="${loginUser.memberId} != ${crew.captain.memberId}" th:attr="data-crewid=${crew.crewId}">크루 탈퇴</button>
     </section>
 
     <!-- 강퇴 확인 모달 -->
@@ -111,6 +112,13 @@
         </div>
     </div>
 
+    <div id="crewExitModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <p>정말 크루를 탈퇴하시겠습니까?</p>
+            <button id="confirmExitBtn">탈퇴하기</button>
+            <button id="cancelExitBtn">취소</button>
+        </div>
+    </div>
 </main>
 
 <script th:inline="javascript">
@@ -181,6 +189,60 @@
         modal.style.display = 'none';
         selectedMemberId = null;
     }
+});
+    document.addEventListener('DOMContentLoaded', () => {
+    const exitModal = document.getElementById('crewExitModal');
+    const confirmExitBtn = document.getElementById('confirmExitBtn');
+    const cancelExitBtn = document.getElementById('cancelExitBtn');
+    const exitBtn = document.querySelector('.crew-exit-btn');
+
+    let crewId = null;
+
+    if (exitBtn) {
+        exitBtn.addEventListener('click', () => {
+            crewId = exitBtn.dataset.crewid;
+            if (!crewId) {
+                alert('크루 ID를 찾을 수 없습니다.');
+                return;
+            }
+            exitModal.style.display = 'flex';
+        });
+    }
+
+    cancelExitBtn.addEventListener('click', () => {
+        exitModal.style.display = 'none';
+        crewId = null;
+    });
+
+    confirmExitBtn.addEventListener('click', async () => {
+        if (!crewId) return;
+
+        try {
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+            const response = await fetch(`/crew/manage/exit/${crewId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken || ''
+                },
+                body: JSON.stringify({})
+            });
+
+            if (response.ok) {
+                alert('크루를 탈퇴했습니다.');
+                window.location.href = '/crew/view'; // 탈퇴 후 이동할 페이지
+            } else {
+                const errorText = await response.text();
+                alert(`탈퇴 실패: ${errorText}`);
+            }
+        } catch (e) {
+            console.error(e);
+            alert('탈퇴 요청 중 오류가 발생했습니다.');
+        } finally {
+            exitModal.style.display = 'none';
+            crewId = null;
+        }
+    });
 });
 </script>
 

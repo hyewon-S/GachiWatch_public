@@ -284,6 +284,22 @@ search-button {
       background-color: #45a049;
 }
 
+.crew-exit-btn {
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 16px;
+      background-color: #ff6347;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+}
+
+.crew-exit-btn:hover {
+      background-color: #ff0000;
+}
+
 .back-button {
     margin: 10px 0 0 10px;
     display: inline-block;
