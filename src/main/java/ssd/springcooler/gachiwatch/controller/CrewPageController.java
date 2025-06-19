@@ -36,6 +36,7 @@ public class CrewPageController {
         return "redirect:/account/login";
     }
 
+    /*
     @RequestMapping("/chat")
     public String writeChat(@RequestParam Long crewId,
                             @RequestParam("message") String chatMessage,
@@ -50,7 +51,7 @@ public class CrewPageController {
         crewService.insertCrewChat(newChat);
 
         return "redirect:/crew/crewpage/" + crewId;
-    }
+    }*/
 
     @GetMapping("/{id}")
     public String viewCrewPage(@PathVariable Long id, Model model) {

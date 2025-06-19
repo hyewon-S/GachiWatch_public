@@ -52,7 +52,8 @@ public class SecurityConfig {
                                 "/account/check-email", "/account/register_step2",
                                 "/account/check-nickname",  "/account/register_result",
                                 "/content/search", "/content/detail","/css/**", "/js/**",
-                                "/image/**").permitAll()
+                                "/image/**",
+                                "/ws/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
