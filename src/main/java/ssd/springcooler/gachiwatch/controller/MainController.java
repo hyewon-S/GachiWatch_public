@@ -8,23 +8,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ssd.springcooler.gachiwatch.domain.Crew;
-import ssd.springcooler.gachiwatch.domain.Genre;
-import ssd.springcooler.gachiwatch.domain.Member;
-import ssd.springcooler.gachiwatch.domain.Platform;
+import ssd.springcooler.gachiwatch.domain.*;
 import ssd.springcooler.gachiwatch.dto.*;
 import ssd.springcooler.gachiwatch.repository.JoinedCrewRepository;
 
-import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
-import ssd.springcooler.gachiwatch.service.EmailNotiService;
-import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
-import ssd.springcooler.gachiwatch.service.TMDBService;
+import ssd.springcooler.gachiwatch.service.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Controller
@@ -40,6 +32,12 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
 
     @Autowired
     private EmailNotiService emailNotiService;
+
+    @Autowired
+    private ContentService contentService;
+
+    @Autowired
+    private RecommendationService recommendationService;
 
     @Autowired
     public MainController(TMDBService tmdbService) {
@@ -72,8 +70,14 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
                 model.addAttribute("trendingContents", trending);
 
                 //나를 위한 추천
-                List<ForMeContentDto> formecontents = tmdbService.getForMeContents(20, loginUser.getPreferredGenres());
-                model.addAttribute("formecontents", formecontents);
+                List<LikedContent> likedContentList = contentService.getLikedContentsByUserId(loginUser.getMemberId());
+                List<ContentDto> recommendList = recommendationService.getRecommendations(likedContentList.get(0).getContentId(), 30);
+
+                Collections.shuffle(recommendList);
+                recommendList = recommendList.subList(0, Math.min(20, recommendList.size()));
+
+                model.addAttribute("formecontents", recommendList);
+
 
                 // === [이메일 추천 발송] ===
                 List<Genre> preferredGenres = loginUser.getPreferredGenres();
