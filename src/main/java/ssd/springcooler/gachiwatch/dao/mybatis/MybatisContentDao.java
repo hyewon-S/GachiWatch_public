@@ -37,8 +37,6 @@ public class MybatisContentDao implements ContentDao {
             contentMapper.insertPlatform(contentId, platformId);
         }
     }
-
-    //장르랑 플랫폼은 따로 가져와서 주입
     @Override
     public List<Content> getContentList(List<Integer> ids) {
         List<Content> contentList = contentMapper.getContentList(ids);
@@ -50,9 +48,6 @@ public class MybatisContentDao implements ContentDao {
         }
         return contentList;
     }
-
-    //장르랑 플랫폼은 따로 가져와서 주입
-    //여기서 개수 지정할까 고민중임
     @Override
     public List<Content> getAllContentList() {
         List<Content> contentList = contentMapper.getAllContentList();
@@ -64,7 +59,6 @@ public class MybatisContentDao implements ContentDao {
         }
         return contentList;
     }
-
     @Override
     public Content findById(int id) {
         Content content = contentMapper.findById(id);
@@ -76,8 +70,6 @@ public class MybatisContentDao implements ContentDao {
         }
         return content;
     }
-
-
     @Override
     public List<Integer> findAllContentIds() {
         return contentMapper.findAllContentIds();

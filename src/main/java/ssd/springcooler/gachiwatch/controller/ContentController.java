@@ -128,7 +128,6 @@ public class ContentController {
     public ResponseEntity<?> updateContentLike(@RequestParam int contentId, @RequestParam int memberId,
                                             @RequestParam boolean isLiked ) {
         contentService.updateLiked(contentId, memberId, isLiked);
-
         return ResponseEntity.ok().build();
     }
     @PostMapping("/watchedUpdate")
@@ -136,7 +135,6 @@ public class ContentController {
     public ResponseEntity<?> updateContentWatched(@RequestParam int contentId, @RequestParam int memberId,
                                                @RequestParam boolean isWatched ) {
         contentService.updateWatched(contentId, memberId, isWatched);
-
         return ResponseEntity.ok().build();
     }
 
@@ -194,11 +192,8 @@ public class ContentController {
             @RequestParam(defaultValue = "default") String sort
     ) {
         List<ContentSummaryDto> all = contentService.getContentSummary();
-        List<Platform> ottList = List.of(Platform.NETFLIX, Platform.WAVVE, Platform.WATCHA, Platform.APPLE, Platform.AMAZON, Platform.DISNEY);
-        List<String> typeList = List.of("TV", "MOVIE");
 
-//ott가 비었으면 추가 동작 하지 말기
-// type이 null 또는 빈 경우, 아무것도 선택되지 않은 상태이므로 빈 결과 반환
+        // type이 null 또는 빈 경우, 아무것도 선택되지 않은 상태이므로 빈 결과 반환
         if (type == null || type.isEmpty()) {
             return Collections.emptyList();
         }
@@ -209,33 +204,36 @@ public class ContentController {
                 .filter(c -> type.contains(c.getContentType().toUpperCase()))
                 .toList();
 
+        //sorting 구현은 아직
         return filtered;
-//        Stream<ContentSummaryDto> stream = all.stream();
-//
-//        if (ott != null && !ott.isEmpty()) {
-//            stream = stream.filter(c -> ott.contains(c.getOtt()));
-//        }
-//
-//        if (type != null && !type.isEmpty()) {
-//            stream = stream.filter(c -> type.contains(c.getContentType()));
-//        }
-//
-//        // 정렬
-//        switch (sort) {
-//            case "rating":
-//                stream = stream.sorted(Comparator.comparing(Content::getRating).reversed());
-//                break;
-//            case "recent":
-//                stream = stream.sorted(Comparator.comparing(Content::getReleaseDate).reversed());
-//                break;
-//            case "default":
-//            default:
-//                // 아무 정렬도 하지 않음 (초기 순서 유지)
-//                break;
-//        }
-
     }
 
+    @PostMapping ("/keyword")
+    public String keyword(@RequestParam(required = false) String keyword, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            model.addAttribute("isLoggedIn", true);
+        } else {
+            model.addAttribute("isLoggedIn", false);
+        }
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // 예외 처리 or 메시지 전달
+            System.out.println("⚠️ 키워드가 비어있습니다.");
+            model.addAttribute("err", true);
+            model.addAttribute("count", 0);
+            return "content/keywordResultPage";
+        }
+        try {
+            List<ContentSummaryDto> contentList = tmdbService.runKeywordSearch(keyword);
+            model.addAttribute("contentList", contentList);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("count", contentList.size());
+        } catch (Exception e) {
+            System.out.println("❌ 키워드 검색 실패");
+            model.addAttribute("err", true);
+            model.addAttribute("count", 0);
+        }
+        return "content/keywordResultPage";
+    }
 
     //API 에서 콘텐츠 받아와서 DB에 데이터 넣어둠
     //자정마다 실행됨!

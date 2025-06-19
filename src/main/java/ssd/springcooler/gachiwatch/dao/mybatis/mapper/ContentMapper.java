@@ -14,8 +14,6 @@ public interface ContentMapper {
 
     List<Content> getContentList(List<Integer> ids);
 
-    List<Content> findByKeyword(String keyword);
-
     Content findById(int id);
 
     void updateContent(Content content);
