@@ -14,4 +14,6 @@ public interface MemberLikedContentRepository extends JpaRepository<LikedContent
 
     @Query("SELECT l FROM LikedContent l WHERE l.memberId = :memberId")
     List<LikedContent> findContentsByMemberId(@Param("memberId") Integer memberId);
+
+    List<LikedContent> findByMemberId(int memberId);
 }

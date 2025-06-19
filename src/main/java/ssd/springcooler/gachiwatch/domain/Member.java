@@ -84,10 +84,5 @@ public class Member implements Serializable {
     )
     private List<Crew> joinedCrews = new ArrayList<>(); // 참여중인 크루 목록
 
-    //임의로 추가
-//    public int getUserId() {
-//        return memberId;
-//    }
-
 
 }

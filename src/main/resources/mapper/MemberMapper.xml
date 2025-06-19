@@ -5,59 +5,11 @@
 
 <mapper namespace="ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper">
 
-
-    <!-- 1. 회원가입 -
-    <insert id="insertMember" parameterType="ssd.springcooler.gachiwatch.dto.MemberRegisterDto">
-        INSERT INTO member (
-        name, gender_id, birthDate, email, password, nickname,
-        subscribedOTTs, preferedGenres, profileImage
-        ) VALUES (
-        #{name}, #{genderId}, #{birthDate}, #{email}, #{password}, #{nickname},
-        #{subscribedOtts}, #{preferredGenres}, #{profileImage}
-        )
-    </insert>-->
-
-    <insert id="insertMember" parameterType="ssd.springcooler.gachiwatch.domain.Member">
-        INSERT INTO member (name, gender, birthdate, email, password, nickname)
-        VALUES (#{name}, #{gender}, #{birthdate}, #{email}, #{password}, #{nickname})
-    </insert>
-
-<!--    <insert id="insert">-->
-<!--        <![CDATA[-->
-<!--	    insert into USER (EMAIL, PASSWORD, NICKNAME, PHONE_NUM)-->
-<!--	    values (#{email}, #{password}, #{nickname}, #{phone_num})-->
-<!--	    ]]>-->
-<!--    </insert>-->
-
-    <!-- 이메일 중복버튼 구현을 위한 조회 쿼리문 -->
-    <select id="email_check" resultType="String">
-        select EMAIL
-        from USER
-        where EMAIL=#{email}
-    </select>
-
-    <!-- 회원 가입 버튼 클릭 시 email, nickname, phone_num 중복 체크 -->
-    <select id="registerCheck" resultType="String">
-        select NICKNAME
-        from USER
-        where NICKNAME=#{nickname}
-    </select>
-
-    <!-- 2. 이메일로 회원 조회 (로그인용) -->
-<!--    <select id="findByEmail" parameterType="String" resultType="ssd.springcooler.gachiwatch.domain.Member">-->
-<!--        SELECT * FROM member WHERE email = #{email}-->
-<!--    </select>-->
     <select id="findByEmailAndPassword"
             parameterType="ssd.springcooler.gachiwatch.dto.LoginDto"
             resultType="ssd.springcooler.gachiwatch.domain.Member">
         SELECT * FROM member
         WHERE email = #{email} AND password = #{password}
-    </select>
-
-
-    <!-- 3. 닉네임 중복 확인 -->
-    <select id="existsByNickname" parameterType="String" resultType="int">
-        SELECT COUNT(*) FROM member WHERE nickname = #{nickname}
     </select>
 
     <!-- 3. 프로필 수정  -->
@@ -67,98 +19,4 @@
         password = #{password}
         WHERE member_id = #{memberId}
     </update>
-
-
-    <!--    &lt;!&ndash; 6. 프로필 이미지 변경 &ndash;&gt;-->
-<!--    <update id="updateProfileImage" parameterType="map">-->
-<!--        UPDATE member SET profileImage = #{profileImage} WHERE member_id = #{memberId}-->
-<!--    </update>-->
-
-    <!-- 7. 구독 중인 OTT 플랫폼 변경
-    <update id="updateSubscribedOTTs" parameterType="map">
-        UPDATE member SET subscribedOTTs = #{subscribedOTTs} WHERE member_id = #{memberId}
-    </update>-->
-    <select id="getSubscribedOttList" resultType="ssd.springcooler.gachiwatch.domain.Platform">
-        SELECT platform
-        FROM member_subscribed_ott
-        WHERE member_id = #{memberId}
-    </select>
-
-    <delete id="deleteMemberOtts" parameterType="int">
-        DELETE FROM member_subscribed_ott WHERE member_id = #{memberId}
-    </delete>
-
-
-
-    <!-- 8. 선호 장르 변경
-    <update id="updatePreferredGenres" parameterType="map">
-        UPDATE member SET preferedGenres = #{preferredGenres} WHERE member_id = #{memberId}
-    </update>-->
-
-    <!-- 9. 회원 탈퇴 -->
-    <delete id="deleteMember" parameterType="Long">
-        DELETE FROM member WHERE member_id = #{memberId}
-    </delete>
-
-    <!-- 10. 내가 작성한 리뷰 전체 조회 -->
-    <select id="findReviewsByMemberId" parameterType="Long" resultType="ssd.springcooler.gachiwatch.domain.Review">
-        SELECT * FROM review WHERE member_id = #{memberId}
-    </select>
-
-    <!-- 11. 리뷰 삭제 -->
-    <delete id="deleteReview" parameterType="Long">
-        DELETE FROM review WHERE review_id = #{reviewId}
-    </delete>
-
-    <!-- 12. 내가 본 콘텐츠 전체 조회 -->
-    <select id="findWatchedContentsByMemberId" parameterType="Long" resultType="ssd.springcooler.gachiwatch.domain.Content">
-        SELECT c.*
-        FROM watched_content wc
-        JOIN content c ON wc.content_id = c.content_id
-        WHERE wc.member_id = #{memberId}
-    </select>
-
-    <!-- 13. 내가 본 콘텐츠 삭제 -->
-    <delete id="deleteWatchedContent" parameterType="map">
-        DELETE FROM watched_content
-        WHERE member_id = #{memberId} AND content_id = #{contentId}
-    </delete>
-
-    <!-- 14. 내가 참여 중인 가치크루 조회 -->
-    <select id="findCrewsByMemberId" parameterType="Long" resultType="ssd.springcooler.gachiwatch.domain.Crew">
-        SELECT c.*
-        FROM crew c
-        JOIN crew_member cm ON c.crew_id = cm.crew_id
-        WHERE cm.member_id = #{memberId}
-    </select>
-
-    <!-- 15. 내가 좋아요한 콘텐츠 조회 -->
-    <select id="findLikedContentsByMemberId" parameterType="Long" resultType="ssd.springcooler.gachiwatch.domain.Content">
-        SELECT c.*
-        FROM content_like cl
-        JOIN content c ON cl.content_id = c.content_id
-        WHERE cl.member_id = #{memberId}
-    </select>
-
-    <!-- 16. 내가 신고한 내역 조회 domain 패키지에 report 없어서 주석 처리
-    <select id="findReportsByMemberId" parameterType="Long" resultType="com.example.domain.Report">
-        SELECT * FROM report WHERE reporter_id = #{memberId}
-    </select>
--->
-
-    <!-- 17. 내가 신고당한 내역 및 횟수 조회 -->
-    <select id="findReportedCountAndList" parameterType="Long" resultMap="ReportedResultMap">
-        SELECT r.*, COUNT(*) OVER() as total_count
-        FROM report r
-        WHERE reported_id = #{memberId}
-    </select>
-
-    <resultMap id="ReportedResultMap" type="ssd.springcooler.gachiwatch.dto.ReportedDetailDto">
-        <result property="reportId" column="report_id"/>
-        <result property="reason" column="reason"/>
-        <result property="reportedDate" column="reported_date"/>
-        <result property="totalCount" column="total_count"/>
-    </resultMap>
-
-
 </mapper>

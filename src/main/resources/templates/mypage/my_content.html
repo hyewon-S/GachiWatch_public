@@ -6,193 +6,242 @@
     <title>Gachi Watch - 콘텐츠 목록</title>
     <style>
         body {
-          font-family: sans-serif;
-          background-color: #fafafa;
-          margin: 0;
-          padding: 0;
+            font-family: sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 0;
         }
+
         .back-button {
-          padding: 1rem 2rem;
-          cursor: pointer;
-          font-size: 1.8rem;
-          font-weight: bold;
-          display: inline-block;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: inline-block;
         }
+
         .tab-container {
-          display: flex;
-          justify-content: center;
-          margin-top: 0.5rem;
-          border-bottom: 2px solid #ccc;
-          position: relative;
+            display: flex;
+            justify-content: center;
+            margin-top: 0.5rem;
+            border-bottom: 2px solid #ccc;
         }
+
         .tab-button {
-          margin: 0 2rem;
-          padding: 1rem 0;
-          font-size: 1.1rem;
-          cursor: pointer;
-          border: none;
-          background: none;
-          color: #999;
-          font-weight: bold;
-          position: relative;
+            margin: 0 2rem;
+            padding: 1rem 0;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: #999;
+            font-weight: bold;
+            position: relative;
         }
+
         .tab-button.active {
-          color: #6a0dad;
+            color: #6a0dad;
         }
+
         .tab-button.active::after {
-          content: "";
-          position: absolute;
-          bottom: -2px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 200px;
-          height: 3px;
-          background-color: #6a0dad;
-          border-radius: 2px;
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background-color: #6a0dad;
+            border-radius: 2px;
         }
+
+        .ott-img {
+            width: 60px;
+            height: 60px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            object-fit: cover;
+            box-sizing: border-box;
+        }
+
+        .ott-img.selected {
+            border: 3px solid #3498db;
+            transform: scale(1.2);
+        }
+
         .filter-bar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 1rem 2rem;
-          flex-wrap: wrap;
+            display: flex;
+            align-items: center;
+            margin: 10px 0 10px 4%;
         }
-        .ott-filters {
-          display: flex;
-          gap: 0.5rem;
-          flex-wrap: wrap;
+
+        .selected-button {
+            background-color: white;
+            color: black;
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-right: 6px;
+            cursor: pointer;
+            font-size: 14px;
         }
-        .ott-button {
-          width: 40px;
-          height: 40px;
-          border-radius: 8px;
-          background-color: transparent;
-          border: none;
-          cursor: pointer;
-          opacity: 0.5;
-          transition: opacity 0.3s;
+
+        .selected-button.active {
+            background-color: black;
+            color: white;
         }
-        .ott-button.selected {
-          opacity: 1;
+
+        .selected-button .check-icon {
+            display: none;
+            margin-right: 6px;
         }
-        .dropdowns {
-          display: flex;
-          gap: 1rem;
-          align-items: center;
+
+        .selected-button.active .check-icon {
+            display: inline;
         }
-        select {
-          padding: 0.5rem;
-          border-radius: 6px;
-          border: 1px solid #ccc;
-        }
+
         .content-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-          gap: 1rem;
-          padding: 1rem 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            padding: 1rem 2rem;
         }
+
         .content-card {
-          background: white;
-          border-radius: 12px;
-          padding: 0.5rem;
-          text-align: center;
-          box-shadow: 0 0 5px rgba(0,0,0,0.05);
-          cursor: pointer;
+            background: white;
+            border-radius: 12px;
+            padding: 0.5rem;
+            text-align: center;
+            box-shadow: 0 0 5px rgba(0,0,0,0.05);
+            cursor: pointer;
         }
+
         .content-card img {
-          width: 100%;
-          border-radius: 8px;
+            width: 100%;
+            border-radius: 8px;
         }
+
         .content-title {
-          font-size: 0.9rem;
-          margin-top: 0.5rem;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
         }
+
         .content-rating {
-          font-size: 0.8rem;
-          color: gray;
+            font-size: 0.8rem;
+            color: gray;
         }
     </style>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const tabs = document.querySelectorAll(".tab-button");
-          const sortSelect = document.querySelector(".dropdowns select");
-
-          tabs.forEach((tab) => {
-            tab.addEventListener("click", () => {
-              tabs.forEach((t) => t.classList.remove("active"));
-              tab.classList.add("active");
-
-              const isLikedTab = tab.textContent.includes("찜했어요");
-              sortSelect.innerHTML = isLikedTab ? `
-                <option selected>최근 찜한 순</option>
-                <option>조회수 높은 순</option>
-                <option>평균 별점 높은 순</option>
-              ` : `
-                <option selected>최근 찜한 순</option>
-                <option>조회수 높은 순</option>
-                <option>나의 별점 높은 순</option>
-              `;
-            });
-          });
-
-          const ottButtons = document.querySelectorAll(".ott-button");
-          ottButtons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-              btn.classList.toggle("selected");
-            });
-          });
-
-          const contentCards = document.querySelectorAll(".content-card");
-          contentCards.forEach(card => {
-            card.addEventListener("click", () => {
-              const contentId = card.getAttribute("data-id");
-              location.href = `/content/detail/` + contentId;
-            });
-          });
-        });
-    </script>
 </head>
 <body>
+
 <div class="back-button" onclick="location.href='/mypage/mypage'">←</div>
+
 <div class="tab-container">
-    <button class="tab-button active">찜했어요</button>
-    <button class="tab-button">봤어요</button>
+    <button class="tab-button" th:classappend="${tab} == 'liked' ? ' active'" onclick="switchTab('liked')">찜했어요</button>
+    <button class="tab-button" th:classappend="${tab} == 'watched' ? ' active'" onclick="switchTab('watched')">봤어요</button>
 </div>
 
-<div class="filter-bar">
-    <div class="ott-filters">
-        <button class="ott-button"><img src="/images/netflix.png" alt="N" width="40" /></button>
-        <button class="ott-button"><img src="/images/watcha.png" alt="W" width="40" /></button>
-        <button class="ott-button"><img src="/images/disney.png" alt="D" width="40" /></button>
-        <button class="ott-button"><img src="/images/tving.png" alt="T" width="40" /></button>
-        <button class="ott-button"><img src="/images/wavve.png" alt="V" width="40" /></button>
-        <button class="ott-button"><img src="/images/prime.png" alt="P" width="40" /></button>
+<form id="filterForm" th:action="@{/mypage/my_content}" method="get">
+    <input type="hidden" name="tab" th:value="${tab}" />
+    <input type="hidden" name="sort" th:value="${sort}" />
+    <input type="hidden" name="otts" id="ottInput" th:value="${#strings.listJoin(otts, ',')}" />
+    <input type="hidden" name="types" id="typeInput" th:value="${#strings.listJoin(types, ',')}" />
+
+    <section class="platforms" style="margin-left: 4%;">
+        <img th:src="@{/image/netflix.png}" class="ott-img" onclick="onOttClick(this, 'NETFLIX')" th:classappend="${otts.contains('NETFLIX')} ? ' selected' : ''"/>
+        <img th:src="@{/image/watcha.png}" class="ott-img" onclick="onOttClick(this, 'WATCHA')" th:classappend="${otts.contains('WATCHA')} ? ' selected' : ''"/>
+        <img th:src="@{/image/appletv.png}" class="ott-img" onclick="onOttClick(this, 'APPLE')" th:classappend="${otts.contains('APPLE')} ? ' selected' : ''"/>
+        <img th:src="@{/image/wavve.png}" class="ott-img" onclick="onOttClick(this, 'WAVVE')" th:classappend="${otts.contains('WAVVE')} ? ' selected' : ''"/>
+        <img th:src="@{/image/disney.png}" class="ott-img" onclick="onOttClick(this, 'DISNEY')" th:classappend="${otts.contains('DISNEY')} ? ' selected' : ''"/>
+        <img th:src="@{/image/prime.png}" class="ott-img" onclick="onOttClick(this, 'AMAZON')" th:classappend="${otts.contains('AMAZON')} ? ' selected' : ''"/>
+    </section>
+
+    <div class="filter-bar">
+        <div class="type-buttons">
+            <button type="button" class="selected-button" onclick="onTypeClick(this, 'TV')" th:classappend="${types.contains('TV')} ? ' active'">
+                <span class="check-icon">✔️</span>TV 시리즈
+            </button>
+            <button type="button" class="selected-button" onclick="onTypeClick(this, 'MOVIE')" th:classappend="${types.contains('MOVIE')} ? ' active'">
+                <span class="check-icon">✔️</span>영화
+            </button>
+        </div>
     </div>
-    <div class="dropdowns">
-        <select>
-            <option selected>최근 찜한 순</option>
-            <option>조회수 높은 순</option>
-            <option>평균 별점 높은 순</option>
-        </select>
-        <select>
-            <option>전체</option>
-            <option>TV 시리즈</option>
-            <option>영화</option>
-        </select>
-    </div>
-</div>
+</form>
 
 <div class="content-grid">
-    <div class="content-card" data-id="1">
-        <img src="https://via.placeholder.com/100x140" alt="포스터">
-        <div class="content-title">작품 제목</div>
-        <div class="content-rating">별점 5.0</div>
-    </div>
-    <div class="content-card" data-id="2">
-        <img src="https://via.placeholder.com/100x140" alt="포스터">
-        <div class="content-title">작품 제목</div>
-        <div class="content-rating">별점 4.8</div>
+    <div class="content-card" th:each="content : ${contentList}" th:attr="data-id=${content.contentId}">
+        <img th:src="${content.thumbnailUrl}" alt="포스터" />
+        <div class="content-title" th:text="${content.title}">작품 제목</div>
+        <div class="content-rating" th:text="'별점 ' + ${content.rating}">별점</div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("filterForm");
+
+        let selectedOtts = [...document.querySelectorAll(".ott-img.selected")]
+            .map(img => img.getAttribute("onclick").match(/'([^']+)'/)[1]);
+        let selectedTypes = [...document.querySelectorAll(".selected-button.active")]
+            .map(btn => btn.getAttribute("onclick").match(/'([^']+)'/)[1]);
+
+        function updateFilterInputs() {
+            document.getElementById("ottInput").value = selectedOtts.join(",");
+            document.getElementById("typeInput").value = selectedTypes.join(",");
+        }
+
+        function submitWithFilters() {
+            updateFilterInputs();
+            form.submit();
+        }
+
+        window.switchTab = function(tabName) {
+            const url = new URL(window.location.href);
+            url.searchParams.set("tab", tabName);
+            url.searchParams.set("otts", selectedOtts.join(","));
+            url.searchParams.set("types", selectedTypes.join(","));
+            window.location.href = url.toString();
+        };
+
+        window.onOttClick = function(elem, platform) {
+            if (elem.classList.contains("selected")) {
+                selectedOtts = selectedOtts.filter(p => p !== platform);
+                elem.classList.remove("selected");
+            } else {
+                selectedOtts.push(platform);
+                elem.classList.add("selected");
+            }
+            submitWithFilters();
+        };
+
+        window.onTypeClick = function(elem, type) {
+            event.preventDefault();
+
+            const isActive = elem.classList.contains("active");
+
+            if (isActive && selectedTypes.length > 1) {
+                selectedTypes = selectedTypes.filter(t => t !== type);
+                elem.classList.remove("active");
+            } else if (!isActive) {
+                selectedTypes.push(type);
+                elem.classList.add("active");
+            }
+
+            submitWithFilters();
+        };
+
+        updateFilterInputs();
+
+        document.querySelectorAll(".content-card").forEach(card => {
+            card.addEventListener("click", () => {
+                const id = card.getAttribute("data-id");
+                location.href = `/content/detail/${id}`;
+            });
+        });
+    });
+</script>
+
 </body>
 </html>

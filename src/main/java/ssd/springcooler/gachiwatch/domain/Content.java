@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
 
+@Table(name = "content")
 @Getter
 @Entity
 @Setter
@@ -25,13 +26,13 @@ public class Content {
 	private String imgUrl;
 
 	@ElementCollection
-	@CollectionTable(name = "content_genre", joinColumns = @JoinColumn(name = "genre_id"))
-	@Column(name = "genre")
+	@CollectionTable(name = "content_genre", joinColumns = @JoinColumn(name = "content_id"))
+	@Column(name = "genre_id")
 	private List<Integer> genre;
 
 	@ElementCollection
-	@CollectionTable(name = "content_platform", joinColumns = @JoinColumn(name = "content_id"))
-	@Column(name = "platform")
+	@CollectionTable(name = "content_ott", joinColumns = @JoinColumn(name = "content_id"))
+	@Column(name = "platform_id")
 	private List<Integer> platform;
 
 	public Content() {}

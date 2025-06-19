@@ -24,6 +24,7 @@ import ssd.springcooler.gachiwatch.service.ReviewService;
 
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,11 +42,6 @@ public class MypageController {
         this.reviewService = reviewService;
         this.crewService = crewService;
     }
-
-//    @GetMapping("/home/home")
-//    public String homeRedirect() {
-//        return "home/home";
-//    }
 
     /** 마이페이지 불러오기 */
     @GetMapping("/mypage")
@@ -115,22 +111,39 @@ public class MypageController {
     /** 찜했어요/봤어요 콘텐츠 목록 페이지 불러오기 */
     @GetMapping("/my_content")
     public String getMyContents(@RequestParam(defaultValue = "liked") String tab,
+                                @RequestParam(required = false) String otts,
+                                @RequestParam(required = false) String types,
                                 @AuthenticationPrincipal UserDetails userDetails,
                                 Model model) {
+
         Member member = memberService.findByEmail(userDetails.getUsername());
         int memberId = member.getMemberId();
 
-        if ("liked".equals(tab)) {
-            List<ContentSummaryDto> likeContent = memberService.getLikedContents(memberId);
-            model.addAttribute("likedList", likeContent);
-        } else if ("watched".equals(tab)) {
-            List<ContentSummaryDto> watchedList = memberService.getWatchedContents(memberId);
-            model.addAttribute("watchedList", watchedList);
-        }
+        List<String> selectedOtts = (otts == null || otts.isBlank())
+                ? List.of("NETFLIX", "WATCHA", "APPLE", "WAVVE", "DISNEY", "AMAZON")
+                : Arrays.asList(otts.split(","));
 
+        List<String> selectedTypes = (types == null || types.isBlank())
+                ? List.of("MOVIE", "TV")
+                : Arrays.asList(types.split(","));
+
+        List<ContentSummaryDto> contentList =
+                "liked".equals(tab)
+                        ? memberService.getLikedContents(memberId, selectedOtts, selectedTypes)
+                        : memberService.getWatchedContents(memberId, selectedOtts, selectedTypes);
+
+        model.addAttribute("contentList", contentList);
         model.addAttribute("tab", tab);
+        model.addAttribute("otts", selectedOtts);
+        model.addAttribute("types", selectedTypes);
+
+        // 필요하면 로그로 변경
+        System.out.println("선택된 OTT: " + selectedOtts);
+        System.out.println("선택된 타입: " + selectedTypes);
+
         return "mypage/my_content";
     }
+
 
     /** 내 리뷰 페이지 불러오기 */
     @GetMapping("/my_review")
@@ -158,8 +171,6 @@ public class MypageController {
         }
         return "redirect:/mypage/my_review";
     }
-
-
 
     /** 내 구독 OTT 페이지 불러오기 */
     @GetMapping("/my_subscribed_ott")
@@ -224,14 +235,5 @@ public class MypageController {
         redirectAttributes.addFlashAttribute("result", "success");
 
         return "redirect:/mypage/mypage";
-    }
-
-    /** 내(가 받은) 신고 페이지 불러오기 */
-    @GetMapping("/my_report")
-    public String getReports(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        Member member = memberService.findByEmail(userDetails.getUsername());
-        List<ReportDto> reportList = memberService.getReports(member.getMemberId());
-        model.addAttribute("reportList", reportList);
-        return "mypage/my_report";
     }
 }
