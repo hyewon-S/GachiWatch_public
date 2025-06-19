@@ -143,7 +143,8 @@
        }
 
        h2 {
-           margin-left: 45%;
+            text-align: center;
+            margin: 1.5rem 0;
        }
        .content a {
             text-decoration-line: none;
@@ -185,6 +186,7 @@
 </header>
 
 <hr> <h2>추천 콘텐츠</h2>
+<!--
 <section class="platforms">
     &emsp;
     <img th:src="@{/image/netflix.png}">
@@ -196,8 +198,13 @@
     &emsp;<button class="selected">TV 시리즈</button>
     <button class="selected">영화</button>
 </section> <br>
+-->
 <main>
-    <div th:each="content : ${recommendList}" class="content">
+    <div th:if="${#lists.isEmpty(recommendList)}">
+        <h2 style="text-align: center; margin-top: 2rem; display: block;">추천 콘텐츠가 없습니다.</h2>
+        <h2 style="text-align: center; margin-top: 2rem; display: block;">좋아하는 콘텐츠에 좋아요를 눌러주세요.</h2>
+    </div>
+    <div th:unless="${#lists.isEmpty(recommendList)}" th:each="content : ${recommendList}" class="content">
         <a th:href="@{/content/detail(contentId=${content.contentId})}"><img th:src="@{${content.thumbnailUrl}}" /></a>
 
     </div>
