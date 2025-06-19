@@ -8,9 +8,10 @@ import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
 import ssd.springcooler.gachiwatch.domain.*;
 import ssd.springcooler.gachiwatch.dto.*;
 import ssd.springcooler.gachiwatch.repository.MemberRepository;
+import ssd.springcooler.gachiwatch.repository.ReviewRepository;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 //@RequiredArgsConstructor -> 오류가 발생하는 듯 하여 주석 처리해두었습니다.
@@ -21,13 +22,15 @@ public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
     private final PasswordEncoder passwordEncoder;
     private final FileStorageService fileStorageService;
+    private final ReviewRepository reviewRepository;
 
-    protected MemberServiceImpl(MemberDao memberDao, MemberRepository memberRepository, MemberMapper memberMapper, PasswordEncoder passwordEncoder, FileStorageService fileStorageService) {
+    protected MemberServiceImpl(MemberDao memberDao, MemberRepository memberRepository, MemberMapper memberMapper, PasswordEncoder passwordEncoder, FileStorageService fileStorageService, ReviewRepository reviewRepository) {
         this.memberDao = memberDao;
         this.memberRepository = memberRepository;
         this.memberMapper = memberMapper;
         this.passwordEncoder = passwordEncoder;
         this.fileStorageService = fileStorageService;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -139,7 +142,28 @@ public class MemberServiceImpl implements MemberService {
     }
 
 
+    @Override
+    public List<MemberReviewDto> findMyReviews(int memberId, String sort) {
+        List<Review> reviews = "desc".equalsIgnoreCase(sort) ?
+                reviewRepository.findByMember_MemberIdOrderByScoreDesc(memberId) :
+                reviewRepository.findByMember_MemberIdOrderByScoreAsc(memberId);
 
+        return reviews.stream()
+                .map(MemberReviewDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    @Override
+    public void deleteMyReviews(int memberId, List<Integer> reviewIds) {
+        // 해당 리뷰가 본인 리뷰인지 검증하고 삭제
+        List<Review> toDelete = reviewRepository.findAllById(reviewIds)
+                .stream()
+                .filter(r -> r.getMember().getMemberId() == memberId)
+                .collect(Collectors.toList());
+
+        reviewRepository.deleteAll(toDelete);
+    }
 
     // 선호 장르 조회
     @Transactional

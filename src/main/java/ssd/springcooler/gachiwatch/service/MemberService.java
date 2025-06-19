@@ -1,5 +1,6 @@
 package ssd.springcooler.gachiwatch.service;
 
+import jakarta.transaction.Transactional;
 import ssd.springcooler.gachiwatch.domain.Genre;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
@@ -38,17 +39,16 @@ public interface MemberService {
     /** '봤어요' 콘텐츠 개별 삭제 */
     void deleteWatchedContent(int contentId);
 
-    /** 구독 중인 OTT 목록 수정 */
-//    void updateSubscribedOtt(int memberId, List<Platform> ottList);
+    /** 리뷰 */
+    @Transactional
+    void deleteMyReviews(int memberId, List<Integer> reviewIds);
+    List<MemberReviewDto> findMyReviews(int memberId, String sort);
 
-//    List<Platform> findMyOttList(Long memberId);
-//    void updateMyOttList(Long memberId, List<Platform> newOttList);
-//    Long findIdByEmail(String email);
-
+    /** 구독 중인 OTT 목록 */
     List<Platform> findMyOttList(Integer memberId); // 구독 OTT 조회
-//    List<Platform> getSubscribedOttList(int memberId);
     void updateMyOttList(Integer memberId, List<Platform> newOttList); // 구독 OTT 저장
-    /** 선호 장르 목록 수정 */
+
+    /** 선호 장르 목록 */
     List<Genre> findMyGenreList(Integer memberId);
     void updateMyGenreList(int memberId, List<Genre> genreList);
 
@@ -59,8 +59,5 @@ public interface MemberService {
     boolean deleteMember(int memberId);
 
     Member getMember(int memberId);
-
-//    List<Genre> getPreferredGenres(int memberId);
-
 
 }

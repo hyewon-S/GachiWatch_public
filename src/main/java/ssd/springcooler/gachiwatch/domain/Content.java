@@ -1,7 +1,6 @@
 package ssd.springcooler.gachiwatch.domain;//콘텐츠에 관한 정보
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,15 +12,28 @@ import java.util.List;
 @Setter
 public class Content {
 	@Id
+	@Column(name = "content_id")
 	private int contentId;
 	private String title;
 	private String intro;
+	@Column(name = "casts")
 	private String cast;
 	private Double rate;
+	@Column(name = "upload_date")
 	private String uploadDate;
+	@Column(name = "content_type")
 	private String contentType;
+	@Column(name = "img_url")
 	private String imgUrl;
+
+	@ElementCollection
+	@CollectionTable(name = "content_genre", joinColumns = @JoinColumn(name = "genre_id"))
+	@Column(name = "genre")
 	private List<Integer> genre;
+
+	@ElementCollection
+	@CollectionTable(name = "content_platform", joinColumns = @JoinColumn(name = "content_id"))
+	@Column(name = "platform")
 	private List<Integer> platform;
 
 	public Content() {}

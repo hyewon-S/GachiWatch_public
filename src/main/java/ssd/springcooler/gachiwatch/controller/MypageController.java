@@ -134,19 +134,32 @@ public class MypageController {
 
     /** 내 리뷰 페이지 불러오기 */
     @GetMapping("/my_review")
-    public String getMyReviews(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String getMyReviews(@AuthenticationPrincipal UserDetails userDetails,
+                               @RequestParam(value = "sort", defaultValue = "desc") String sort,
+                               Model model) {
         Member member = memberService.findByEmail(userDetails.getUsername());
-        List<ReviewDto> reviewList = reviewService.getReviewsByUser(member.getMemberId());
+        List<MemberReviewDto> reviewList = memberService.findMyReviews(member.getMemberId(), sort);
         model.addAttribute("reviewList", reviewList);
+        model.addAttribute("currentSort", sort);
         return "mypage/my_review";
     }
 
     /** 내 리뷰 삭제 */
-    @DeleteMapping("/reviews/{reviewId}")
-    public String deleteReview(@PathVariable int reviewId) {
-        reviewService.deleteReview(reviewId);
-        return "redirect:/mypage/review";
+    @PostMapping("/delete_reviews")
+    public String deleteMyReviews(@AuthenticationPrincipal UserDetails userDetails,
+                                  @RequestParam(name = "reviewIds", required = false) List<Integer> reviewIds,
+                                  RedirectAttributes redirectAttributes) {
+        if (reviewIds != null && !reviewIds.isEmpty()) {
+            Member member = memberService.findByEmail(userDetails.getUsername());
+            memberService.deleteMyReviews(member.getMemberId(), reviewIds);
+            redirectAttributes.addFlashAttribute("message", "리뷰가 삭제되었습니다.");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "선택된 리뷰가 없습니다.");
+        }
+        return "redirect:/mypage/my_review";
     }
+
+
 
     /** 내 구독 OTT 페이지 불러오기 */
     @GetMapping("/my_subscribed_ott")
