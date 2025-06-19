@@ -78,7 +78,7 @@
             <input type="number" id="payment" th:field="*{payment}" th:value="*{payment}" />
             <p th:if="${#fields.hasErrors('payment')}" th:errors="*{payment}" style="color: red;"></p>
 
-            <button type="submit">변경</button>
+            <button type="submit"  th:if="${loginUser.memberId} == ${crew.captain.memberId}">변경</button>
         </form>
     </section>
 
@@ -86,7 +86,7 @@
     <section class="member-list">
         <div class="member-grid">
             <div th:each="member : ${memberList}">
-                <div class="member-card" th:classappend="${member.memberId} == ${crew.captain.memberId} ? ' captain' : ''">
+                <div class="member-card" th:classappend="${member.memberId} == ${crew.captain.memberId} ? ' captain' : ''" th:attr="data-member-id=${member.memberId}">
                     <div class="profile-pic">
                         <img src="/image/profile-placeholder.png" />
                     </div>
@@ -101,16 +101,151 @@
                 </div>
             </div>
         </div>
-        <button class="join-manage-btn" th:attr="data-crewid=${crew.crewId}">가입 관리</button>
+        <button class="join-manage-btn" th:if="${loginUser.memberId} == ${crew.captain.memberId}" th:attr="data-crewid=${crew.crewId}">가입 관리</button>
+        <button class="crew-exit-btn" th:if="${loginUser.memberId} != ${crew.captain.memberId}" th:attr="data-crewid=${crew.crewId}">크루 탈퇴</button>
     </section>
+
+    <!-- 강퇴 확인 모달 -->
+    <div id="kickConfirmModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <p>정말 이 멤버를 강퇴하시겠습니까?</p>
+            <button id="confirmKickBtn">강퇴하기</button>
+            <button id="cancelKickBtn">취소</button>
+        </div>
+    </div>
+
+    <div id="crewExitModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <p>정말 크루를 탈퇴하시겠습니까?</p>
+            <button id="confirmExitBtn">탈퇴하기</button>
+            <button id="cancelExitBtn">취소</button>
+        </div>
+    </div>
 </main>
 
 <script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', () => {
     document.querySelector(".join-manage-btn").addEventListener("click", function () {
-    const crewId = this.dataset.crewid;
-      window.location.href = "/crew/join?crewId=" + crewId;
+        const crewId = this.dataset.crewid;
+        window.location.href = "/crew/join?crewId=" + crewId;
     });
 
+    const modal = document.getElementById('kickConfirmModal');
+    const confirmBtn = document.getElementById('confirmKickBtn');
+    const cancelBtn = document.getElementById('cancelKickBtn');
+    let selectedMemberId = null;
+
+    // 강퇴 버튼 클릭 시 모달 오픈
+    document.querySelectorAll('.kick-btn').forEach(btn => {
+        btn.addEventListener('click', event => {
+            const memberCard = event.target.closest('.member-card');
+            selectedMemberId = memberCard?.getAttribute('data-member-id');
+            if (!selectedMemberId) {
+                alert('멤버 정보를 찾을 수 없습니다.');
+                return;
+            }
+            openModal();
+        });
+    });
+
+    // 취소 버튼 → 모달 닫기
+    cancelBtn.addEventListener('click', closeModal);
+
+    // 강퇴 확인 → 서버 요청
+    confirmBtn.addEventListener('click', async () => {
+        if (!selectedMemberId) return;
+
+        try {
+            const crewId = document.querySelector('.join-manage-btn').dataset.crewid; // 또는 다른 방법으로 crewId 확보
+
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+            const response = await fetch(`/crew/manage/kick/${selectedMemberId}?crewId=${crewId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken || ''
+                },
+                body: JSON.stringify({})
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                alert(`강퇴 실패: ${errorMessage}`);
+            } else {
+                alert('강퇴되었습니다.');
+                location.reload();
+            }
+        } catch (error) {
+            console.error(error);
+            alert('서버 요청 중 오류가 발생했습니다.');
+        } finally {
+            closeModal();
+        }
+    });
+
+    function openModal() {
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        modal.style.display = 'none';
+        selectedMemberId = null;
+    }
+});
+    document.addEventListener('DOMContentLoaded', () => {
+    const exitModal = document.getElementById('crewExitModal');
+    const confirmExitBtn = document.getElementById('confirmExitBtn');
+    const cancelExitBtn = document.getElementById('cancelExitBtn');
+    const exitBtn = document.querySelector('.crew-exit-btn');
+
+    let crewId = null;
+
+    if (exitBtn) {
+        exitBtn.addEventListener('click', () => {
+            crewId = exitBtn.dataset.crewid;
+            if (!crewId) {
+                alert('크루 ID를 찾을 수 없습니다.');
+                return;
+            }
+            exitModal.style.display = 'flex';
+        });
+    }
+
+    cancelExitBtn.addEventListener('click', () => {
+        exitModal.style.display = 'none';
+        crewId = null;
+    });
+
+    confirmExitBtn.addEventListener('click', async () => {
+        if (!crewId) return;
+
+        try {
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+            const response = await fetch(`/crew/manage/exit/${crewId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken || ''
+                },
+                body: JSON.stringify({})
+            });
+
+            if (response.ok) {
+                alert('크루를 탈퇴했습니다.');
+                window.location.href = '/crew/view'; // 탈퇴 후 이동할 페이지
+            } else {
+                const errorText = await response.text();
+                alert(`탈퇴 실패: ${errorText}`);
+            }
+        } catch (e) {
+            console.error(e);
+            alert('탈퇴 요청 중 오류가 발생했습니다.');
+        } finally {
+            exitModal.style.display = 'none';
+            crewId = null;
+        }
+    });
+});
 </script>
 
 </body>

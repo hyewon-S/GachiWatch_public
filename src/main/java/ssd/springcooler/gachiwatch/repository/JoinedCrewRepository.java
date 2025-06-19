@@ -32,4 +32,9 @@ public interface JoinedCrewRepository extends JpaRepository<JoinedCrew, JoinedCr
 
     @Query("SELECT jc FROM JoinedCrew jc WHERE jc.crew.id = :crewId ORDER BY jc.isLeader DESC")
     List<JoinedCrew> findByCrewId(Long crewId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM JoinedCrew jc WHERE jc.crew.id = :crewId AND jc.member.memberId = :memberId")
+    int deleteByCrewIdAndMemberId(@Param("crewId") Long crewId, @Param("memberId") Integer memberId);
 }

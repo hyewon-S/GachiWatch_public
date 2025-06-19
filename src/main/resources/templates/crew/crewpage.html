@@ -291,7 +291,51 @@
 
 
 </div>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+<script th:inline="javascript">
+    const crewId = /*[[${crew.crewId}]]*/ 0;
+    const memberId = /*[[${user.memberId}]]*/ 0;
+    const nickname = /*[[${user.nickname}]]*/ '사용자';
+
+    const socket = new SockJS('/ws');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, function (frame) {
+        stompClient.subscribe(`/topic/chatroom/${crewId}`, function (chatMessage) {
+            const msg = JSON.parse(chatMessage.body);
+            appendMessage(msg);
+        });
+    });
+
+    function sendMessage() {
+        const input = document.querySelector('.chat-input');
+        const content = input.value;
+        if (content.trim() === '') return;
+
+        stompClient.send("/app/chat.send/" + crewId, {}, JSON.stringify({
+            chat: content,
+            member: { memberId: memberId, nickname: nickname }
+        }));
+        input.value = '';
+    }
+
+    function appendMessage(msg) {
+        const container = document.getElementById("chat-container");
+        const entry = document.createElement("div");
+        entry.classList.add("chat-entry");
+        entry.innerHTML = `<div>
+            <div><strong>${msg.member.nickname}</strong></div>
+            <div class="chat-content">${msg.chat}</div>
+        </div>`;
+        container.appendChild(entry);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    document.querySelector(".chat-input-container").addEventListener("submit", function (e) {
+        e.preventDefault();
+        sendMessage();
+    });
     function scrollToBottom() {
         const container = document.getElementById("chat-container");
         if (container) {

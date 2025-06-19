@@ -4,6 +4,7 @@ import lombok.*;
 import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.Member;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -11,7 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Builder
-public class ChatDto {
+public class ChatDto implements Serializable {
     private Crew crew;
     private Member member;
     private String chat;

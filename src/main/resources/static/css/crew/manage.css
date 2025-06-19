@@ -284,6 +284,22 @@ search-button {
       background-color: #45a049;
 }
 
+.crew-exit-btn {
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 16px;
+      background-color: #ff6347;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+}
+
+.crew-exit-btn:hover {
+      background-color: #ff0000;
+}
+
 .back-button {
     margin: 10px 0 0 10px;
     display: inline-block;
@@ -299,4 +315,19 @@ search-button {
     cursor: pointer;
     display: inline-block;
     width: auto;
+}
+
+.modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
 }
