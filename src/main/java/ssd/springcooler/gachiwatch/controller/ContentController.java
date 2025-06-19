@@ -164,22 +164,12 @@ public class ContentController {
                 count++;
             }
 
-            //String recentContentTitle = "에이리언";
-            //Integer contentId = 1017163;
-
             List<ContentDto> recommendList = new ArrayList<>(contentSet);
 
             Collections.shuffle(recommendList);
             recommendList = recommendList.subList(0, Math.min(50, recommendList.size()));
 
             model.addAttribute("recommendList", recommendList);
-            /*
-            List<ForMeContentDto> recommendList = tmdbService.getForMeContents(50, loginUser.getPreferredGenres());
-
-            Collections.shuffle(recommendList);
-            model.addAttribute("recommendList", recommendList);
-
-             */
         }
         return "content/recommendPage";
     }

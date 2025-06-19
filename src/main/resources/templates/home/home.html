@@ -264,8 +264,8 @@
             </button>
             <div class="carousel-track">
                 <div th:each="content : ${formecontents}" style="flex: 0 0 16.66%;">
-                    <a th:href="@{/content/detail(contentId=${content.id})}">
-                        <img th:src="${content.imageUrl}" alt="콘텐츠 썸네일" class="content-thumbnail">
+                    <a th:href="@{/content/detail(contentId=${content.contentId})}">
+                        <img th:src="${content.thumbnailUrl}" alt="콘텐츠 썸네일" class="content-thumbnail">
                     </a>
                 </div>
             </div>

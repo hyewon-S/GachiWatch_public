@@ -25,8 +25,8 @@
             <button class="logout">Logout</button>
         </a>
         <!-- 로그인 -> 홈화면 뷰 연결 위해 null-safe 처리 했습니다 -->
-        <a th:if="${user != null}" th:href="@{/mypage}">
-            <img th:src="@{'/image/' + ${user.profileImage}}" alt="사용자 프로필" class="profile-image">
+        <a th:href="@{/mypage/mypage}">
+            <img th:src="@{'/image/' + ${user.profileImage}}" alt="프로필" class="profile-image">
         </a>
     </nav>
 </header>
