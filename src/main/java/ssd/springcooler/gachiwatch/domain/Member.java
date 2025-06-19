@@ -35,7 +35,7 @@ public class Member implements Serializable {
     private String password; // 비밀번호
     private String email; // 이메일
     private String nickname; // 닉네임
-    private String profileImage; // 프로필 사진
+//    private String profileImage; // 프로필 사진
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name="gender_id")

@@ -70,11 +70,14 @@ public class MemberServiceImpl implements MemberService {
         List<Platform> platformList = dto.getSubscribedOtts();
         List<Genre> genreList = dto.getPreferredGenres();
 
+        String encodedPassword = passwordEncoder.encode(dto.getPassword());
+
         // DTO → Entity 변환
         Member member = Member.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
-                .password(dto.getPassword())
+                .password(encodedPassword)  // 암호화된 비밀번호 저장
+//                .password(dto.getPassword()) // 평문 비밇번호 저장
                 .nickname(dto.getNickname())
                 .gender(gender)  // 위에서 변환한 값 사용
                 .birthdate(dto.getBirthdate())
@@ -101,7 +104,11 @@ public class MemberServiceImpl implements MemberService {
     /** 로그인 처리 */
     @Override
     public Member login(LoginDto loginDto) {
-        return memberMapper.findByEmailAndPassword(loginDto);
+        System.out.println("로그인 시도: email=" + loginDto.getEmail() + ", password=" + loginDto.getPassword());
+        Member m = memberMapper.findByEmailAndPassword(loginDto);
+        System.out.println("조회 결과: " + m);
+        return m;
+//        return memberMapper.findByEmailAndPassword(loginDto);
     }
 
     /** 프로필 수정 */
@@ -114,8 +121,17 @@ public class MemberServiceImpl implements MemberService {
             dto.setNickname(null);
         }
 
+        // 비밀번호가 비어있지 않으면 암호화 처리
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            String encryptedPw = passwordEncoder.encode(dto.getPassword());
+            dto.setPassword(encryptedPw);
+        } else {
+            dto.setPassword(null); // 비밀번호 변경 안할 때 null로 넘기거나 DAO에서 처리
+        }
+
         memberDao.updateProfile(dto);
     }
+
 
     /** 참여한 크루 목록 조회 */
     @Override
