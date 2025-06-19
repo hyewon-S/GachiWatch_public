@@ -1,11 +1,14 @@
 package ssd.springcooler.gachiwatch.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -48,10 +51,22 @@ public class CrewCreateController {
     }
 
     @PostMapping
-    public String createCrew (Crew crew,
+    public String createCrew (@Valid @ModelAttribute("crewForm") CrewCommand crewCommand,
+                              BindingResult bindingResult,
+                              Crew crew,
+                              Model model,
                               @AuthenticationPrincipal CustomUserDetails userDetails,
                               HttpSession session, RedirectAttributes redirectAttributes) {
-                Member captain = memberService.getMember(userDetails.getMember().getMemberId());
+        if (bindingResult.hasErrors()) {
+            List<Platform> filteredPlatforms = Arrays.stream(Platform.values())
+                    .filter(p -> p != Platform.NULL)
+                    .collect(Collectors.toList());
+
+            model.addAttribute("platforms", filteredPlatforms);
+            return "crew/create"; // 폼 화면 이름
+        }
+
+        Member captain = memberService.getMember(userDetails.getMember().getMemberId());
         Crew newCcrew = crewService.createCrew(crew, captain);
 
         redirectAttributes.addAttribute("id", crew.getCrewId());

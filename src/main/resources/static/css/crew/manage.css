@@ -42,7 +42,9 @@ header {
 }
 
 .crew-info input[type="text"],
-.crew-info input[type="number"] {
+.crew-info input[type="number"],
+.crew-info input[type="date"],
+.crew-info textarea {
     width: 100%;
     padding: 10px;
     margin-top: 6px;

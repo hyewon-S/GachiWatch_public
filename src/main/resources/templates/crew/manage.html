@@ -39,10 +39,12 @@
             <input type="hidden" name="crewId" th:value="${crew.crewId}" />
 
             <label>그룹이름</label>
-            <input type="text" name="crewName" th:value="*{crewName}" />
+            <input type="text" th:field="*{crewName}"/>
+            <p th:if="${#fields.hasErrors('crewName')}" th:errors="*{crewName}" style="color: red;"></p>
 
             <label for="crewDesc">설명</label>
-            <textarea id="crewDesc" name="crewDesc" th:text="*{crewDesc}"></textarea>
+            <textarea id="crewDesc" th:field="*{crewDesc}" th:text="*{crewDesc}"></textarea>
+            <p th:if="${#fields.hasErrors('crewDesc')}" th:errors="*{crewDesc}" style="color: red;"></p>
 
             <label>OTT 플랫폼</label>
             <div class="ott-platforms">
@@ -58,9 +60,11 @@
                     </label>
                 </div>
             </div>
+            <p th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}" style="color: red;"></p>
 
             <label>인원</label>
-            <input type="number" name="maxMember" th:value="*{maxMember}" />
+            <input type="number" th:field="*{maxMember}" th:value="*{maxMember}" />
+            <p th:if="${#fields.hasErrors('maxMember')}" th:errors="*{maxMember}" style="color: red;"></p>
 
             <label for="payDate">결제일</label>
             <input type="date" id="payDate" name="payDate" th:value="${#dates.format(crew.payDate, 'yyyy-MM-dd')}" />
@@ -69,7 +73,8 @@
             <input type="text" id="account" name="account" th:value="*{account}" />
 
             <label for="payment">금액</label>
-            <input type="number" id="payment" name="payment" th:value="*{payment}" />
+            <input type="number" id="payment" th:field="*{payment}" th:value="*{payment}" />
+            <p th:if="${#fields.hasErrors('payment')}" th:errors="*{payment}" style="color: red;"></p>
 
             <button type="submit">변경</button>
         </form>

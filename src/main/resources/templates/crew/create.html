@@ -12,6 +12,7 @@
             <div>
                 <label for="crewName">크루 이름</label>
                 <input type="text" th:field="*{crewName}" id="crewName" />
+                <p th:if="${#fields.hasErrors('crewName')}" th:errors="*{crewName}"></p>
             </div>
 
             <div class="form-group">
@@ -22,23 +23,27 @@
                                th:field="*{platform}"
                         th:id="${'platform_' + platform.name()}"
                         th:value="${platform.name()}"
-                        required />
+                        />
                         <label th:for="${'platform_' + platform.name()}">
                             <img th:src="@{'/image/' + ${platform.name().toLowerCase()} + '.png'}"
                                  th:alt="${platform.label}" />
                         </label>
                     </div>
+                    <p th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}" style="display: block;"></p>
                 </div>
+
             </div>
 
             <div>
                 <label for="crewDesc">설명</label>
                 <textarea th:field="*{crewDesc}" id="crewDesc"></textarea>
+                <p th:if="${#fields.hasErrors('crewDesc')}" th:errors="*{crewDesc}"></p>
             </div>
 
             <div>
                 <label for="payment">월결제 금액</label>
                 <input type="number" th:field="*{payment}" id="payment" />
+                <p th:if="${#fields.hasErrors('payment')}" th:errors="*{payment}"></p>
             </div>
 
             <div>
@@ -49,6 +54,7 @@
             <div>
                 <label for="maxMember">최대 인원</label>
                 <input type="number" th:field="*{maxMember}" value="1" min="1" id="maxMember" />
+                <p th:if="${#fields.hasErrors('maxMember')}" th:errors="*{maxMember}"></p>
             </div>
 
             <div>
