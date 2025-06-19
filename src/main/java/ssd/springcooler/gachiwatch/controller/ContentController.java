@@ -193,9 +193,24 @@ public class ContentController {
                         c.getOtt().stream().anyMatch(ott::contains)) // 하나라도 포함되면 OK
                 .filter(c -> type.contains(c.getContentType().toUpperCase()))
                 .toList();
+System.out.println(sort);
+        return sortContentList(filtered, sort);
+    }
 
-        //sorting 구현은 아직
-        return filtered;
+    public List<ContentSummaryDto> sortContentList(List<ContentSummaryDto> contentList, String sortType) {
+
+        if (contentList == null || contentList.isEmpty()) return contentList;
+
+        // ❗ 불변 리스트를 변경 가능하게 복사
+        List<ContentSummaryDto> sortedList = new ArrayList<>(contentList);
+
+        if ("sortMax".equals(sortType)) {
+            sortedList.sort(Comparator.comparingDouble(ContentSummaryDto::getRateAsDouble).reversed());
+        } else if ("sortMin".equals(sortType)) {
+            sortedList.sort(Comparator.comparingDouble(ContentSummaryDto::getRateAsDouble));
+        }
+
+        return sortedList;
     }
 
     @PostMapping ("/keyword")

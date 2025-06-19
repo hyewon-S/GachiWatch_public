@@ -53,8 +53,7 @@ public class SecurityConfig {
                                 "/account/check-nickname",  "/account/register_result",
                                 "/content/search", "/content/detail","/css/**", "/js/**",
                                 "/image/**",
-                                "/ws/**", "/content/keyword").permitAll()
-
+                                "/ws/**", "/content/keyword", "/content/filter").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
