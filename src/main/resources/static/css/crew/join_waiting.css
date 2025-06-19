@@ -12,6 +12,11 @@ header {
     text-align: center;
 }
 
+textarea,
+input[type="date"] {
+    font-family: 'Segoe UI', sans-serif;
+}
+
 .crew-page {
     display: flex;
     justify-content: space-between;
