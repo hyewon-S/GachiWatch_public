@@ -224,12 +224,12 @@ public class ContentController {
         }
         try {
             List<ContentSummaryDto> contentList = tmdbService.runKeywordSearch(keyword);
+            Collections.shuffle(contentList);
             model.addAttribute("contentList", contentList);
             model.addAttribute("keyword", keyword);
             model.addAttribute("count", contentList.size());
         } catch (Exception e) {
             System.out.println("❌ 키워드 검색 실패");
-            model.addAttribute("err", true);
             model.addAttribute("count", 0);
         }
         return "content/keywordResultPage";

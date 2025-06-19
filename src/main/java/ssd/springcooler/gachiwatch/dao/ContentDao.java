@@ -1,5 +1,6 @@
 package ssd.springcooler.gachiwatch.dao;
 import ssd.springcooler.gachiwatch.domain.Content;
+import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface ContentDao {
     List<Content> getAllContentList();
 
     List<Integer> findAllContentIds();
+
+    List<ContentSummaryDto> searchByKeyword(String keyword);
 }

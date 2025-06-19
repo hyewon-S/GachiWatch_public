@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ssd.springcooler.gachiwatch.dao.ContentDao;
 import ssd.springcooler.gachiwatch.dao.mybatis.mapper.ContentMapper;
 import ssd.springcooler.gachiwatch.domain.Content;
+import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
 
 import java.util.List;
 import java.util.Set;
@@ -73,5 +74,10 @@ public class MybatisContentDao implements ContentDao {
     @Override
     public List<Integer> findAllContentIds() {
         return contentMapper.findAllContentIds();
+    }
+
+    @Override
+    public List<ContentSummaryDto> searchByKeyword(String keyword) {
+        return contentMapper.searchByKeyword(keyword);
     }
 }

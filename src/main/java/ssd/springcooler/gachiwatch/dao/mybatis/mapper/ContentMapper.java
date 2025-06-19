@@ -3,6 +3,7 @@ package ssd.springcooler.gachiwatch.dao.mybatis.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import ssd.springcooler.gachiwatch.domain.Content;
+import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
 
 import java.util.List;
 import java.util.Set;
@@ -34,4 +35,6 @@ public interface ContentMapper {
     List<Content> getAllContentList();
 
     List<Integer> findAllContentIds();
+
+    List<ContentSummaryDto> searchByKeyword(String keyword);
 }

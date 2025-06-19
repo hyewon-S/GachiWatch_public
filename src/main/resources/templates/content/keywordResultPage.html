@@ -184,16 +184,16 @@
 
 <main>
     <h2 th:text="'&quot;' + ${keyword} + '&quot; 검색결과'"></h2>
-    <h4 th:text="${count} + '개의 결과'"></h4>
+    <h4 th:text="${count} + '개의 결과 - 영어로 입력하면 더 많은 결과를 검색할 수 있습니다‼️'"></h4>
     <div id="contentContainer">
         <div th:each="content : ${contentList}" class="content">
-            <a th:href="@{/content/detail(contentId=${content.contentId})}"><img th:src="@{${content.thumbnailUrl}}" /></a>
+            <a th:href="@{/content/detail(contentId=${content.contentId})}"><img th:src="@{${content.thumbnailUrl}}" alt="포스터 사진" /></a>
             <br>&nbsp;
             <a th:href="@{/content/detail(contentId=${content.contentId})}"><b th:text="${content.title}"></b></a>
             <br>&nbsp;평점 <span th:text="${content.rating}"></span>
         </div>
     </div>
-    <h4>‼️검색 결과가 없습니다. 다른 키워드로 입력해주세요.</h4>
+    <h4 th:if="${#lists.isEmpty(contentList)}">‼️검색 결과가 없습니다. 다른 검색어를 사용하세요</h4>
 </main>
 </body>
 </html>

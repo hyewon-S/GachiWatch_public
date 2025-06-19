@@ -15,13 +15,18 @@ import okhttp3 .OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.json.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ssd.springcooler.gachiwatch.dao.ContentDao;
 import ssd.springcooler.gachiwatch.domain.Content;
 import ssd.springcooler.gachiwatch.domain.Genre;
 import ssd.springcooler.gachiwatch.dto.*;
 
 @Service
 public class TMDBService {
+    @Autowired
+    private ContentDao contentDao;
+
     private static final String API_KEY = "4ff777b6f68301ca1ed6a38a6d157461";
 
     private static final OkHttpClient client = new OkHttpClient();
@@ -296,27 +301,58 @@ public class TMDBService {
 
     //키워드 ID로 영화 검색
     public JSONArray getMoviesByKeyword(int keywordId, String apiKey) throws Exception {
-        String urlStr = String.format(
-                "https://api.themoviedb.org/3/keyword/%d/movies?api_key=%s&language=ko-KR",
-                keywordId, apiKey
-        );
+        JSONArray allResults = new JSONArray();
 
-        String response = readUrlForKeyword(urlStr);
-        JSONObject json = new JSONObject(response);
-        return json.getJSONArray("results");
+        for (int page = 1; page <= 5; page++) {
+            String urlStr = String.format(
+                    "https://api.themoviedb.org/3/keyword/%d/movies?api_key=%s&language=ko-KR&page=%d",
+                    keywordId, apiKey, page
+            );
+
+            String response = readUrlForKeyword(urlStr);
+            JSONObject json = new JSONObject(response);
+            JSONArray results = json.getJSONArray("results");
+
+            // 결과를 누적해서 추가
+            for (int i = 0; i < results.length(); i++) {
+                allResults.put(results.getJSONObject(i));
+            }
+
+            // 마지막 페이지일 경우 반복 종료
+            int totalPages = json.getInt("total_pages");
+            if (page >= totalPages) break;
+        }
+
+        return allResults;
     }
+
 
     //키워드 ID로 tv 검색
     public JSONArray getTvByKeyword(int keywordId, String apiKey) throws Exception {
-        String urlStr = String.format(
-                "https://api.themoviedb.org/3/discover/tv?api_key=%s&with_keywords=%d&language=ko-KR",
-                apiKey, keywordId
-        );
+        JSONArray allResults = new JSONArray();
 
-        String response = readUrlForKeyword(urlStr);
-        JSONObject json = new JSONObject(response);
-        return json.getJSONArray("results");
+        for (int page = 1; page <= 5; page++) {
+            String urlStr = String.format(
+                    "https://api.themoviedb.org/3/discover/tv?api_key=%s&with_keywords=%d&language=ko-KR&page=%d",
+                    apiKey, keywordId, page
+            );
+
+            String response = readUrlForKeyword(urlStr);
+            JSONObject json = new JSONObject(response);
+            JSONArray results = json.getJSONArray("results");
+
+            for (int i = 0; i < results.length(); i++) {
+                allResults.put(results.getJSONObject(i));
+            }
+
+            // 전체 페이지 수만큼 반복했으면 중지
+            int totalPages = json.getInt("total_pages");
+            if (page >= totalPages) break;
+        }
+
+        return allResults;
     }
+
 
     public String readUrlForKeyword(String urlString) throws Exception {
         URL url = new URL(urlString);
@@ -348,7 +384,9 @@ public class TMDBService {
                 content.setContentId((int)movie.get("id"));
                 content.setContentType("movie");
                 content.setTitle(movie.getString("title"));
-                content.setThumbnailUrl("https://image.tmdb.org/t/p/w500" + movie.getString("poster_path"));
+                String posterPath = movie.optString("poster_path", "");
+                if(posterPath.isEmpty()) {continue;}
+                content.setThumbnailUrl("https://image.tmdb.org/t/p/w500" + posterPath);
                 BigDecimal voteAverage = (BigDecimal) movie.get("vote_average");
                 content.setRating(String.format("%.1f", voteAverage.doubleValue()));
                 contentList.add(content);
@@ -360,7 +398,9 @@ public class TMDBService {
                 content.setContentId((int)tv.get("id"));
                 content.setTitle(tv.getString("name"));
                 content.setContentType("tv");
-                content.setThumbnailUrl("https://image.tmdb.org/t/p/w500" + tv.getString("poster_path"));
+                String posterPath = tv.optString("poster_path", "");
+                if(posterPath.isEmpty()) {continue;}
+                content.setThumbnailUrl("https://image.tmdb.org/t/p/w500" + posterPath);
                 BigDecimal voteAverage = (BigDecimal) tv.get("vote_average");
                 content.setRating(String.format("%.1f", voteAverage.doubleValue()));
 
@@ -369,11 +409,11 @@ public class TMDBService {
 
             return contentList;
         } catch (Exception e) {
-            System.out.println("❌ 키워드 검색 실패: 한글일 수 있음");
-            //한글에 대한 처리
+            System.out.println("❌ 키워드 검색 실패: 한글 키워드");
             e.printStackTrace();
+            //한글에 대한 처리
+            return contentDao.searchByKeyword(keyword);
         }
-        return null;
     }
 
 
