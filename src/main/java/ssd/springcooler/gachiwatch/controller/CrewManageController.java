@@ -66,9 +66,20 @@ public class CrewManageController {
                 .filter(p -> p != Platform.NULL)
                 .collect(Collectors.toList());
 
+        CrewCommand crewCommand = new CrewCommand();
+        crewCommand.setCrewId(crew.getCrewId());
+        crewCommand.setCaptain(crew.getCaptain());
+        crewCommand.setCrewName(crew.getCrewName());
+        crewCommand.setCrewDesc(crew.getCrewDesc());
+        crewCommand.setPlatform(crew.getPlatform());
+        crewCommand.setPayment(crew.getPayment());
+        crewCommand.setPayDate(crew.getPayDate());
+        crewCommand.setMaxMember(crew.getMaxMember());
+        crewCommand.setAccount(crew.getAccount());
+
         model.addAttribute("platforms", filteredPlatforms);
         model.addAttribute("loginUser", userDetails.getMember());
-        model.addAttribute("crew", crew);
+        model.addAttribute("crew", crewCommand);
         model.addAttribute("memberList", members);
 
         return "crew/manage";
