@@ -4,9 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
@@ -16,6 +15,7 @@ import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -33,10 +33,26 @@ public class CrewManageController {
         return "";
     }
 
-    @GetMapping("/kick")
-    public String kickMember() {
-        return "";
+    @PostMapping("/kick/{memberId}")
+    public String kickMember(
+            @PathVariable Integer memberId, @RequestParam Long crewId,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            RedirectAttributes redirectAttributes
+    ) {
+        Member loginUser = userDetails.getMember();
+
+        try {
+            crewService.kickMember(crewId, memberId);
+            redirectAttributes.addFlashAttribute("message", "강퇴가 완료되었습니다.");
+        } catch (NoSuchElementException e) {
+            redirectAttributes.addFlashAttribute("error", "멤버를 찾을 수 없습니다: " + e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "오류가 발생했습니다.");
+        }
+
+        return "redirect:/crew/manage?crewId=" + crewId;
     }
+
 
     @GetMapping("/report")
     public String reportMember() {

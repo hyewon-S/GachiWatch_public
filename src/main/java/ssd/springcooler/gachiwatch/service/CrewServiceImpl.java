@@ -149,9 +149,14 @@ public class CrewServiceImpl implements CrewFacade {
         //신고내용 db에 추가
         return true;
     }
-    public boolean kickMember(Long crewId, Member member) {
-        //return crewDao.deleteMember(crewId, member);
-        return true;
+    @Transactional
+    public boolean kickMember(Long crewId, Integer memberId) {
+        int deletedCount = joinedCrewRepository.deleteByCrewIdAndMemberId(crewId, memberId);
+        if (deletedCount > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public List<CrewChat> getCrewChat(Long crewId) {
