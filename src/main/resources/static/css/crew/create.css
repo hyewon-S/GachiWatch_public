@@ -156,6 +156,11 @@ search-button {
     background-color: #eee;
 }
 
+textarea,
+input[type="date"] {
+    font-family: 'Segoe UI', sans-serif;
+}
+
 .profile-image {
     width: 36px;
     height: 36px;

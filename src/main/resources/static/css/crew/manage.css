@@ -41,6 +41,11 @@ header {
     font-weight: bold;
 }
 
+textarea,
+input[type="date"] {
+    font-family: 'Segoe UI', sans-serif;
+}
+
 .crew-info input[type="text"],
 .crew-info input[type="number"],
 .crew-info input[type="date"],
