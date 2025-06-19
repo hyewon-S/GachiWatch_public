@@ -85,4 +85,4 @@ joblib.dump({
     'features': df['features'].tolist()
 }, "model.pkl")
 
-print("✅ 학습 완료 및 model.pkl 저장 완료")
+print("학습 완료 및 model.pkl 저장 완료")
