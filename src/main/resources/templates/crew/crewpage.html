@@ -3,218 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Gachi Watch - 크루 정보</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #e0e0e0;
-        }
-
-        header {
-            background-color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: purple;
-        }
-
-        .nav {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .nav button {
-            padding: 0.4rem 0.8rem;
-            border: 1px solid #ccc;
-            background: #f4f4f4;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .main {
-            display: flex;
-            background-color: white;
-            border-radius: 20px;
-            margin: 2rem;
-            padding: 2rem;
-            gap: 2rem;
-        }
-
-        .party-info {
-            position: relative;
-            width: 40%;
-            border-right: 2px solid #eee;
-            padding-right: 60px;
-        }
-        .platform-image {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-
-        .platform-image img {
-            width: 40px;
-            height: auto;
-        }
-        .party-info img {
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
-        }
-
-        .party-info .price {
-            font-size: 1.5rem;
-            margin: 10px 0;
-        }
-
-        .info-tag {
-            background: #eee;
-            display: inline-block;
-            margin: 0.2rem;
-            padding: 0.3rem 0.6rem;
-            border-radius: 5px;
-            font-size: 0.9rem;
-        }
-
-        .chat-box {
-            flex-grow: 1;
-        }
-
-        .notice {
-            border: 1px solid #ccc;
-            padding: 0.8rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-        }
-
-        .chat-entry {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .chat-entry img {
-            width: 30px;
-            margin-right: 0.5rem;
-        }
-
-        .chat-content {
-            background: #f1f1f1;
-            padding: 0.5rem 1rem;
-            border-radius: 10px;
-        }
-
-        .chat-input-container {
-            display: flex;
-            margin-top: 1rem;
-            gap: 1rem;
-        }
-
-        .chat-input {
-            flex-grow: 1;
-            padding: 0.6rem;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-        }
-
-        .send-button {
-            background: #7d4cd0;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            cursor: pointer;
-        }
-
-        .group-button {
-            margin-top: 1rem;
-            padding: 0.5rem 1rem;
-            background-color: #222;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-
-        .main-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: white;
-        }
-
-        .logo-search {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo {
-            width: 150px;
-            margin-right: 20px;
-            cursor: pointer;
-        }
-
-        .search-bar {
-            width: 250px;
-            padding: 10px;
-            border-radius: 20px;
-            border: 1px solid #ccc;
-        }
-
-        .search-button {
-            margin-left: 10px;
-            padding: 10px 16px;
-            border-radius: 6px;
-            border: none;
-            background-color: #eee;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .nav-menu a, .logout, .profile-image {
-            margin-left: 15px;
-            text-decoration: none;
-            color: #333;
-            cursor: pointer;
-        }
-
-        .logout, .profile-image {
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .logout {
-            background-color: #eee;
-        }
-
-        .profile-image {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-left: 15px;
-            border: 1px solid #ccc;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.2s ease;
-        }
-
-        .profile-image:hover {
-            box-shadow: 0 0 0 2px #4285f4;
-        }
-
-
-    </style>
+    <link rel="stylesheet" th:href="@{/css/crew/crewpage.css}">
 </head>
 <body>
 <header class="main-header">
@@ -272,10 +61,11 @@
             </div>
 
             <div id="chat-container" style="height: 300px; overflow-y: auto; padding: 10px;">
-                <div th:each="chat : ${chatList}" class="chat-entry">
+                <div th:each="chat : ${chatList}"
+                     th:classappend="${chat.member?.memberId} == ${user.memberId} ? ' chat-entry self' : ' chat-entry'">
                     <!--<img src="/images/user-icon.png" alt="User" />-->
                     <div>
-                        <div><strong th:text="${chat.member?.nickname} ?: '닉네임 없음'">닉네임</strong></div>
+                        <div><div class="nickname" th:text="${chat.member?.nickname} ?: '닉네임 없음'">닉네임</div></div>
                         <div class="chat-content" th:text="${chat.chat}">사용자가 입력한 채팅</div>
                     </div>
                 </div>
@@ -322,7 +112,12 @@
     function appendMessage(msg) {
         const container = document.getElementById("chat-container");
         const entry = document.createElement("div");
+        //entry.classList.add("chat-entry");
+
+        const isSelf = msg.member.memberId === memberId;
         entry.classList.add("chat-entry");
+        if (isSelf) entry.classList.add("self");
+
         entry.innerHTML = `<div>
             <div><strong>${msg.member.nickname}</strong></div>
             <div class="chat-content">${msg.chat}</div>
