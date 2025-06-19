@@ -90,4 +90,11 @@
         FROM content
     </select>
 
+    <select id="searchByKeyword" resultType="ssd.springcooler.gachiwatch.dto.ContentSummaryDto">
+        SELECT content_id AS contentId, title, img_url AS thumbnailUrl, ROUND(rate, 1) AS rating
+        FROM content
+        WHERE title LIKE '%' || #{keyword} || '%'
+    </select>
+
+
 </mapper>

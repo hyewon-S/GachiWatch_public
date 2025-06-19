@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ssd.springcooler.gachiwatch.dao.ContentDao;
 import ssd.springcooler.gachiwatch.dao.mybatis.mapper.ContentMapper;
 import ssd.springcooler.gachiwatch.domain.Content;
+import ssd.springcooler.gachiwatch.dto.ContentSummaryDto;
 
 import java.util.List;
 import java.util.Set;
@@ -37,8 +38,6 @@ public class MybatisContentDao implements ContentDao {
             contentMapper.insertPlatform(contentId, platformId);
         }
     }
-
-    //장르랑 플랫폼은 따로 가져와서 주입
     @Override
     public List<Content> getContentList(List<Integer> ids) {
         List<Content> contentList = contentMapper.getContentList(ids);
@@ -50,9 +49,6 @@ public class MybatisContentDao implements ContentDao {
         }
         return contentList;
     }
-
-    //장르랑 플랫폼은 따로 가져와서 주입
-    //여기서 개수 지정할까 고민중임
     @Override
     public List<Content> getAllContentList() {
         List<Content> contentList = contentMapper.getAllContentList();
@@ -64,12 +60,6 @@ public class MybatisContentDao implements ContentDao {
         }
         return contentList;
     }
-
-//    @Override 나중에 검색 기능 쓰게되면..
-//    public List<Content> findByKeyword(String keyword) {
-//        return contentMapper.findByKeyword(keyword);
-//    }
-
     @Override
     public Content findById(int id) {
         Content content = contentMapper.findById(id);
@@ -81,32 +71,13 @@ public class MybatisContentDao implements ContentDao {
         }
         return content;
     }
-
-    @Override
-    public void updateContent(Content content) {
-        contentMapper.updateContent(content);
-    }
-
-    @Override
-    public void deleteContent(int id) {
-        contentMapper.deleteContent(id);
-    }
-
-    @Override
-    public void deleteAllContents() {
-        contentMapper.deleteAllContentGenres();
-        contentMapper.deleteAllContentOTTs();
-        contentMapper.deleteAllContents();
-
-    }
-
-    @Override
-    public List<Content> search(List<Integer> genre, List<Integer> platform, String content_type, String range) {
-        return contentMapper.search(genre, platform, content_type, range);
-    }
-
     @Override
     public List<Integer> findAllContentIds() {
         return contentMapper.findAllContentIds();
+    }
+
+    @Override
+    public List<ContentSummaryDto> searchByKeyword(String keyword) {
+        return contentMapper.searchByKeyword(keyword);
     }
 }

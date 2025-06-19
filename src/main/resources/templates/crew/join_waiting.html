@@ -12,8 +12,10 @@
         <a th:href="@{/}">
             <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
         </a>
-        <input type="text" placeholder="콘텐츠, 키워드 입력" class="search-bar">
-        <button class="search-button">Search</button>
+        <form id="keywordForm" method="post" th:action="@{/content/keyword}">
+            <input type="text" name="keyword" placeholder="콘텐츠, 키워드 입력" class="search-bar">
+            <button class="search-button" type="submit">Search</button>
+        </form>
     </div>
     <nav class="nav-menu">
         <a th:href="@{/content/search}">통합 콘텐츠</a>

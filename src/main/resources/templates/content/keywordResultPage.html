@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${keyword + ' - GACHIWATCH'}">GACHIWATCH - 검색결과</title>
+    <style>
+        body {
+           margin: 0;
+       }
+
+       .main-header {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           background: white;
+           padding: 20px;
+       }
+
+       .logo-search {
+           display: flex;
+           align-items: center;
+       }
+
+       .logo {
+           width: 150px;
+           margin-right: 20px;
+           cursor: pointer;
+       }
+
+       .search-bar {
+           width: 250px;
+           padding: 10px;
+           border-radius: 20px;
+           border: 1px solid #ccc;
+       }
+
+       .search-button {
+           margin-left: 10px;
+           padding: 10px 16px;
+           border-radius: 6px;
+           border: none;
+           background-color: #eee;
+           cursor: pointer;
+           font-size: 14px;
+       }
+
+       .nav-menu a, .log-in, .register, .logout, .profile-image {
+           margin-left: 15px;
+           text-decoration: none;
+           color: #333;
+           cursor: pointer;
+       }
+       .log-in, .register {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .log-in {
+            background-color: #eee;
+        }
+
+        .register {
+            background-color: black;
+            color: white;
+        }
+
+        .logout, .profile-image {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .profile-image {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .profile-image:hover {
+            box-shadow: 0 0 0 2px #4285f4;
+        }
+
+        .logout {
+            background-color: #eee;
+        }
+
+       .nav-menu {
+           margin-right: 3%;
+       }
+       .platforms img {
+           margin-right: 1%;
+       }
+       .platforms {
+           margin-left: 2%;
+
+       }
+
+       main {
+           background-color: #C6C9FF;
+           margin-left: auto;
+           margin-right: auto;
+           width: 91%;
+           height: auto;
+           border-radius: 10px;
+       }
+
+       #contentContainer {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          gap: 15px;
+          padding: 1%;
+          justify-items: center; /* 중앙 정렬 */
+        }
+
+       .content {
+           background-color: rgb(246, 251, 255);
+           border-radius: 7px;
+           padding: 10px;
+           margin: 10px;
+           display: inline-block;
+           width: 100%;
+            box-sizing: border-box;
+       }
+
+       .content img {
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            height: auto;
+       }
+
+       h2, h4 {
+           margin-left: 2%;
+       }
+       .content a {
+            text-decoration-line: none;
+            color: black;
+            font-weight: bold;
+       }
+       .content a:visited {
+            color: black;
+       }
+
+       .content a:hover {
+            color: #C6C9FF;
+       }
+
+    </style>
+</head>
+<body>
+<header class="main-header">
+    <div class="logo-search">
+        <a th:href="@{/}">
+            <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
+        </a>
+        <form id="keywordForm" method="post" th:action="@{/content/keyword}">
+            <input type="text" name="keyword" placeholder="콘텐츠, 키워드 입력" class="search-bar">
+            <button class="search-button" type="submit">Search</button>
+        </form>
+    </div>
+    <nav class="nav-menu">
+        <a th:href="@{/content/search}" >통합 콘텐츠</a>
+        <a th:href="${isLoggedIn} ? (@{/content/recommend}) : (@{/account/login})">추천 콘텐츠</a>
+        <a th:href="${isLoggedIn} ? (@{/crew/view}) : (@{/account/login})">공유 매칭</a>
+        <!-- 로그인 안했다면 -->
+        <a th:unless="${isLoggedIn}" th:href="@{/account/login}"><button class="log-in">Login</button></a>
+        <a th:unless="${isLoggedIn}" th:href="@{/account/register_email_step1}"><button class="register">Register</button></a>
+
+        <!-- 로그인 했다면 -->
+        <a th:if="${isLoggedIn}" th:href="@{/account/logout}"><button class="logout">Logout</button></a>
+        <a th:if="${isLoggedIn}" th:href="@{/mypage/mypage}">
+            <img th:src="@{/image/profile_img_default.png}" alt="프로필" class="profile-image">
+        </a>
+    </nav>
+</header>
+
+<main>
+    <h2 th:text="'&quot;' + ${keyword} + '&quot; 검색결과'"></h2>
+    <h4 th:text="${count} + '개의 결과 - 영어로 입력하면 더 많은 결과를 검색할 수 있습니다‼️'"></h4>
+    <div id="contentContainer">
+        <div th:each="content : ${contentList}" class="content">
+            <a th:href="@{/content/detail(contentId=${content.contentId})}"><img th:src="@{${content.thumbnailUrl}}" alt="포스터 사진" /></a>
+            <br>&nbsp;
+            <a th:href="@{/content/detail(contentId=${content.contentId})}"><b th:text="${content.title}"></b></a>
+            <br>&nbsp;평점 <span th:text="${content.rating}"></span>
+        </div>
+    </div>
+    <h4 th:if="${#lists.isEmpty(contentList)}">‼️검색 결과가 없습니다. 다른 검색어를 사용하세요</h4>
+</main>
+</body>
+</html>

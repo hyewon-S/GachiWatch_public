@@ -59,4 +59,8 @@ public class CustomUserDetails implements UserDetails, Serializable {
     public Member getMember() {
         return member;
     }
+
+    public Integer getMemberId() {
+        return member.getMemberId() != null ? member.getMemberId() : null;
+    }
 }

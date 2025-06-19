@@ -1,5 +1,6 @@
 package ssd.springcooler.gachiwatch.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ssd.springcooler.gachiwatch.dao.MemberDao;
@@ -7,9 +8,10 @@ import ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper;
 import ssd.springcooler.gachiwatch.domain.*;
 import ssd.springcooler.gachiwatch.dto.*;
 import ssd.springcooler.gachiwatch.repository.MemberRepository;
+import ssd.springcooler.gachiwatch.repository.ReviewRepository;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 //@RequiredArgsConstructor -> 오류가 발생하는 듯 하여 주석 처리해두었습니다.
@@ -20,13 +22,15 @@ public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
     private final PasswordEncoder passwordEncoder;
     private final FileStorageService fileStorageService;
+    private final ReviewRepository reviewRepository;
 
-    protected MemberServiceImpl(MemberDao memberDao, MemberRepository memberRepository, MemberMapper memberMapper, PasswordEncoder passwordEncoder, FileStorageService fileStorageService) {
+    protected MemberServiceImpl(MemberDao memberDao, MemberRepository memberRepository, MemberMapper memberMapper, PasswordEncoder passwordEncoder, FileStorageService fileStorageService, ReviewRepository reviewRepository) {
         this.memberDao = memberDao;
         this.memberRepository = memberRepository;
         this.memberMapper = memberMapper;
         this.passwordEncoder = passwordEncoder;
         this.fileStorageService = fileStorageService;
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -57,7 +61,7 @@ public class MemberServiceImpl implements MemberService {
                 .nickname(dto.getNickname())
                 .gender(gender)  // 위에서 변환한 값 사용
                 .birthdate(dto.getBirthdate())
-                .subscribedOTTs(platformList)
+                .subscribedOtts(platformList)
                 .preferredGenres(genreList)
                 .build();
 
@@ -87,37 +91,14 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void updateProfile(ProfileUpdateDto dto) {
         System.out.println("updateProfile 호출됨");
-//        // 프로필 이미지 처리
-//        if (profileImage != null && !profileImage.isEmpty()) {
-//            System.out.println("파일 저장 시작");
-//            String profileImagePath = fileStorageService.store(profileImage);
-//            System.out.println("저장된 파일 경로: " + profileImagePath);
-//            dto.setProfileImage(profileImagePath);
-//        } else {
-//            dto.setProfileImage(null); // 변경 안함 처리
-//        }
 
         // 닉네임 비어있으면 null 처리
         if (dto.getNickname() == null || dto.getNickname().isBlank()) {
             dto.setNickname(null);
         }
 
-//        // 3. 비밀번호 처리
-//        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-//            if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
-//                throw new IllegalArgumentException("비밀번호 확인이 일치하지 않습니다.");
-//            }
-//            dto.setPassword(passwordEncoder.encode(dto.getPassword()));
-//        } else {
-//            dto.setPassword(null); // 변경 안함
-//        }
-
-        // DAO 호출
-//        memberDao.updateProfile(dto, profileImage);
         memberDao.updateProfile(dto);
     }
-
-
 
     /** 참여한 크루 목록 조회 */
     @Override
@@ -144,33 +125,65 @@ public class MemberServiceImpl implements MemberService {
         memberDao.deleteWatchedContentById(contentId);
     }
 
-    /** 구독 중인 OTT 조회 */
-    @Override
-    public List<Platform> getSubscribedOttList(int memberId) {
-        return memberMapper.getSubscribedOttList(memberId); // mapper에서 DB 조회
+    @Transactional
+    public List<Platform> findMyOttList(Integer memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("회원 없음"));
+        return member.getSubscribedOtts();
     }
 
-    /** 구독 중인 OTT 수정 */
-    @Override
-    public void updateSubscribedOtt(int memberId, List<Platform> ottList) {
-        // 기존 OTT 삭제
-        memberDao.deleteMemberOtts(memberId);
-
-        // 새 OTT 저장 (String → ID 변환 로직이 필요하다면 서비스에서 처리)
-        // List<Long> ottIds = convertToOttIds(ottList);
-        // memberDao.insertMemberOtts(memberId, ottIds);
+    @Transactional
+    public void updateMyOttList(Integer memberId, List<Platform> newOttList) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("회원 없음"));
+        member.getSubscribedOtts().clear();
+        member.getSubscribedOtts().addAll(newOttList);
+        // 트랜잭션 안에서 자동 반영됨
     }
 
-    /** 선호 장르 수정 */
-    @Override
-    public void updatePreferredGenre(int memberId, List<Genre> genreList) {
-        // 기존 장르 삭제
-        memberDao.deleteMemberGenres(memberId);
 
-        // 새 장르 저장 (String → ID 변환 로직이 필요하다면 서비스에서 처리)
-        // List<Long> genreIds = convertToGenreIds(genreList);
-        // memberDao.insertMemberGenres(memberId, genreIds);
+    @Override
+    public List<MemberReviewDto> findMyReviews(int memberId, String sort) {
+        List<Review> reviews = "desc".equalsIgnoreCase(sort) ?
+                reviewRepository.findByMember_MemberIdOrderByScoreDesc(memberId) :
+                reviewRepository.findByMember_MemberIdOrderByScoreAsc(memberId);
+
+        return reviews.stream()
+                .map(MemberReviewDto::fromEntity)
+                .collect(Collectors.toList());
     }
+
+    @Transactional
+    @Override
+    public void deleteMyReviews(int memberId, List<Integer> reviewIds) {
+        // 해당 리뷰가 본인 리뷰인지 검증하고 삭제
+        List<Review> toDelete = reviewRepository.findAllById(reviewIds)
+                .stream()
+                .filter(r -> r.getMember().getMemberId() == memberId)
+                .collect(Collectors.toList());
+
+        reviewRepository.deleteAll(toDelete);
+    }
+
+    // 선호 장르 조회
+    @Transactional
+    @Override
+    public List<Genre> findMyGenreList(Integer memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+        return member.getPreferredGenres();
+    }
+
+    // 선호 장르 수정
+    @Transactional
+    @Override
+    public void updateMyGenreList(int memberId, List<Genre> genreList) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+
+        member.setPreferredGenres(genreList); // 기존 리스트 clear 후 새로 추가
+    }
+
 
     /** 내가 신고당한 내역 조회 */
     @Override
@@ -189,169 +202,13 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findById(memberId).get();
     }
 
-    @Override
-    public List<Genre> getPreferredGenres(int memberId) {
-        return List.of();
-    }
+//    @Override
+//    public List<Genre> getPreferredGenres(int memberId) {
+//        return List.of();
+//    }
 
     @Override
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email).orElse(null);
     }
 }
-
-//// repository 사용
-//package ssd.springcooler.gachiwatch.service;
-//
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//import ssd.springcooler.gachiwatch.domain.*;
-//import ssd.springcooler.gachiwatch.dto.*;
-//import ssd.springcooler.gachiwatch.repository.MemberRepository;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Optional;
-//
-//@Service
-//@Transactional
-//public abstract class MemberServiceImpl implements MemberService {
-//
-//    private final MemberRepository memberRepository;
-//
-//    public MemberServiceImpl(MemberRepository memberRepository) {
-//        this.memberRepository = memberRepository;
-//    }
-//
-//    @Override
-//    public void register(MemberRegisterDto dto) {
-//        Member member = Member.builder()
-//                .name(dto.getName())
-//                .email(dto.getEmail())
-//                .password(dto.getPassword())  // 나중에 암호화 필수!
-//                .nickname(dto.getNickname())
-//                .gender(Gender.valueOf(dto.getGender()))
-//                .birthdate(dto.getBirthdate())
-//                .subscribedOTTs(dto.getSubscribedOtts() != null ? dto.getSubscribedOtts() : new ArrayList<>())
-//                .preferredGenres(dto.getPreferredGenres() != null ? dto.getPreferredGenres() : new ArrayList<>())
-//                .build();
-//
-//        memberRepository.save(member);
-//    }
-//
-//    @Override
-//    public void login(LoginDto dto) {
-//        // 리포지토리에 메서드 추가 필요!
-//        Optional<Member> memberOpt = memberRepository.findByEmailAndPassword(dto.getEmail(), dto.getPassword());
-//        if (memberOpt.isEmpty()) {
-//            throw new RuntimeException("로그인 실패: 이메일 또는 비밀번호가 잘못되었습니다.");
-//        }
-//        // 로그인 성공 시 처리 로직 추가
-//    }
-//
-//    @Override
-//    public void updateProfile(ProfileUpdateDto dto) {
-//        Optional<Member> memberOpt = memberRepository.findById(dto.getMemberId());
-//        if (memberOpt.isPresent()) {
-//            Member member = memberOpt.get();
-//            member.setNickname(dto.getNickname());
-//            member.setProfileImage(dto.getProfileImage());
-//            // 필요시 다른 필드도 업데이트
-//            memberRepository.save(member);
-//        } else {
-//            throw new RuntimeException("회원 정보가 존재하지 않습니다.");
-//        }
-//    }
-//
-//    @Override
-//    public List<CrewDto> getMyCrews(int memberId) {
-//        Optional<Member> memberOpt = memberRepository.findById(memberId);
-//        if (memberOpt.isPresent()) {
-//            List<Crew> crews = memberOpt.get().getJoinedCrews();
-//            // Crew → CrewDto 변환 필요
-//            return crews.stream()
-//                    .map(crew -> new CrewDto(crew.getCrewId(), crew.getCrewName()))
-//                    .toList();
-//        }
-//        return new ArrayList<>();
-//    }
-//
-//    @Override
-//    public List<ContentSummaryDto> getLikedContents(int memberId) {
-//        Optional<Member> memberOpt = memberRepository.findById(memberId);
-//        if (memberOpt.isPresent()) {
-//            List<Content> liked = memberOpt.get().getLikedContents();
-//            // Content → ContentSummaryDto 변환 필요
-//            return liked.stream()
-//                    .map(content -> new ContentSummaryDto(content.getContentId(), content.getTitle()))
-//                    .toList();
-//        }
-//        return new ArrayList<>();
-//    }
-//
-//    @Override
-//    public List<ContentSummaryDto> getWatchedContents(int memberId) {
-//        Optional<Member> memberOpt = memberRepository.findById(memberId);
-//        if (memberOpt.isPresent()) {
-//            List<Content> watched = memberOpt.get().getWatchedContents();
-//            // Content → ContentSummaryDto 변환 필요
-//            return watched.stream()
-//                    .map(content -> new ContentSummaryDto(content.getContentId(), content.getTitle()))
-//                    .toList();
-//        }
-//        return new ArrayList<>();
-//    }
-//
-//    @Override
-//    public void deleteWatchedContent(int memberId, int contentId) {
-//        Optional<Member> memberOpt = memberRepository.findById(memberId);
-//        if (memberOpt.isPresent()) {
-//            Member member = memberOpt.get();
-//            member.getWatchedContents().removeIf(content -> content.getContentId() == contentId);
-//            memberRepository.save(member);
-//        } else {
-//            throw new RuntimeException("회원 정보가 없습니다.");
-//        }
-//    }
-//
-//    @Override
-//    public void updateSubscribedOtt(int memberId, List<Platform> ottList) {
-//        Optional<Member> memberOpt = memberRepository.findById(memberId);
-//        if (memberOpt.isPresent()) {
-//            Member member = memberOpt.get();
-//            member.setSubscribedOTTs(ottList);
-//            memberRepository.save(member);
-//        } else {
-//            throw new RuntimeException("회원 정보가 없습니다.");
-//        }
-//    }
-//
-//    @Override
-//    public void updatePreferredGenre(int memberId, List<Genre> genreList) {
-//        Optional<Member> memberOpt = memberRepository.findById(memberId);
-//        if (memberOpt.isPresent()) {
-//            Member member = memberOpt.get();
-//            member.setPreferredGenres(genreList);
-//            memberRepository.save(member);
-//        } else {
-//            throw new RuntimeException("회원 정보가 없습니다.");
-//        }
-//    }
-//
-//    @Override
-//    public List<ReportDto> getReports(int memberId) {
-//        // Report 엔티티와 repository 필요
-//        // 임시로 빈 리스트 반환
-//        return new ArrayList<>();
-//    }
-//
-//    @Override
-//    public boolean deleteMember(int memberId) {
-//        if (memberRepository.existsById((memberId))) {
-//            memberRepository.deleteById(memberId);
-//            return true;
-//        }
-//        return false;
-//    }
-//}
-//
