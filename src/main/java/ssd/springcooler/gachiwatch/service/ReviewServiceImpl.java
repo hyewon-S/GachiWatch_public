@@ -45,8 +45,14 @@ public class ReviewServiceImpl implements ReviewService{
         for (Review review : reviewList) {
             if(memberId == review.getMember().getMemberId() && memberId != 0) { continue; }
             Member member = memberRepository.findById(review.getMember().getMemberId()).orElse(null);
+            String nickname = "";
+            if(member == null) {
+                nickname = "탈퇴한 사용자";
+            } else {
+                nickname = member.getNickname();
+            }
             reviewDtos.add(new ReviewDto(Integer.toString(review.getReviewId()), Integer.toString(review.getContentId()),
-                    review.getDate(), review.getSubstance(), Integer.toString(review.getScore()), Integer.toString(review.getLikes()), member.getNickname(), false));
+                    review.getDate(), review.getSubstance(), Integer.toString(review.getScore()), Integer.toString(review.getLikes()), nickname, false));
         }
         return reviewDtos;
     }
