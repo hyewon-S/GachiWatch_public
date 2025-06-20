@@ -42,39 +42,8 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         System.out.println("로그인 성공: " + email);
         System.out.println("member: " + member);
 
-//        // 새 SecurityContext 생성
-//        SecurityContext context = SecurityContextHolder.createEmptyContext();
-//        context.setAuthentication(authentication);
-//        SecurityContextHolder.setContext(context);
-//
-//        // 명시적으로 세션에 SecurityContext 저장
-//        HttpSession session = request.getSession(true);
-//        session.setAttribute("SPRING_SECURITY_CONTEXT", context);
-
-          // 현재 로그인 폼에서 AJAX로 하지않고, 일반 폼 제출 방식으로 하고 있어서 일단 주석처리.
-//        if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-//            response.setStatus(HttpServletResponse.SC_OK);
-//            response.setContentType("application/json");
-//            response.getWriter().write("{\"message\": \"Login success\"}");
-//        } else {
-//            SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
-//            if (savedRequest != null) {
-//                response.sendRedirect(savedRequest.getRedirectUrl());
-//            } else {
-//                response.sendRedirect("/home");
-//            }
-//        }
-
-
         // AJAX 구분 없이 무조건 홈으로 리다이렉트
         response.sendRedirect("/home");
-
-//        SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
-//        if (savedRequest != null) {
-//            response.sendRedirect(savedRequest.getRedirectUrl());
-//        } else {
-//            response.sendRedirect("/home");
-//        }
 
     }
 }

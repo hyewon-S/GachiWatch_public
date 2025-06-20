@@ -16,14 +16,4 @@ public class SubscribedContent {
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-
-    //나중에 활성화 content에서 오류남
-//    @ManyToOne
-//    @JoinColumn(name = "content_id", nullable = false)
-//    private Content content;
-//
-//    public SubscribedContent(Member member, Content content) {
-//        this.member = member;
-//        this.content = content;
-//    }
 }

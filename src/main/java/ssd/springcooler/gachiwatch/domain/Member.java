@@ -35,7 +35,7 @@ public class Member implements Serializable {
     private String password; // 비밀번호
     private String email; // 이메일
     private String nickname; // 닉네임
-    private String profileImage; // 프로필 사진
+//    private String profileImage; // 프로필 사진
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name="gender_id")
@@ -83,11 +83,6 @@ public class Member implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "crew_id")
     )
     private List<Crew> joinedCrews = new ArrayList<>(); // 참여중인 크루 목록
-
-    //임의로 추가
-//    public int getUserId() {
-//        return memberId;
-//    }
 
 
 }

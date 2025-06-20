@@ -22,6 +22,7 @@ public interface MemberService {
     /** 로그인 처리 */
     Member login(LoginDto loginDto);
 
+    /** 이메일로 사용자 찾기 */
     Member findByEmail(String username);
 
     /** 프로필 정보 수정 */
@@ -30,14 +31,9 @@ public interface MemberService {
     /** 내가 참여 중인 가치크루 목록 조회 */
     List<CrewDto> getMyCrews(int memberId);
 
-    /** '찜했어요' 콘텐츠 목록 조회 */
-    List<ContentSummaryDto> getLikedContents(int memberId);
-
-    /** '봤어요' 콘텐츠 목록 조회 */
-    List<ContentSummaryDto> getWatchedContents(int memberId);
-
-    /** '봤어요' 콘텐츠 개별 삭제 */
-    void deleteWatchedContent(int contentId);
+    /** 짐했어요/봤어요 목록 */
+    List<ContentSummaryDto> getLikedContents(int memberId, List<String> ottList, List<String> typeList);
+    List<ContentSummaryDto> getWatchedContents(int memberId, List<String> ottList, List<String> typeList);
 
     /** 리뷰 */
     @Transactional
@@ -52,11 +48,7 @@ public interface MemberService {
     List<Genre> findMyGenreList(Integer memberId);
     void updateMyGenreList(int memberId, List<Genre> genreList);
 
-
-    /** 내가 신고당한 내역 조회*/
-    List<ReportDto> getReports(int memberId);
-
-    boolean deleteMember(int memberId);
+    void deleteMemberByEmail(String email);
 
     Member getMember(int memberId);
 

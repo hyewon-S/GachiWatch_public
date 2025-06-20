@@ -61,18 +61,6 @@
           text-decoration: none;
           color: black;
         }
-<!--        .tabs {-->
-<!--          display: flex;-->
-<!--          margin-top: 1.5rem;-->
-<!--          border: 1px solid #eee;-->
-<!--        }-->
-<!--        .tab {-->
-<!--          flex: 1;-->
-<!--          text-align: center;-->
-<!--          padding: 0.75rem;-->
-<!--          cursor: pointer;-->
-<!--          background-color: #f8f0fc;-->
-<!--        }-->
         .tabs {
           display: flex;
           width: 100%; /* 전체 너비 차지 */
@@ -174,7 +162,7 @@
             </div>
 
             <div class="section no-border" th:onclick="|location.href='@{/mypage/my_crew}'|">
-                <div class="section-title">나의 가치클럽 ▶</div>
+                <div class="section-title">나의 가치크루 ▶</div>
             </div>
 
         </div>
@@ -202,10 +190,6 @@
         <div class="section-title">선호하는 장르 ▶</div>
     </div>
 
-    <div class="section" th:onclick="|location.href='@{/mypage/my_report}'|">
-        <div class="section-title">신고 ▶</div>
-    </div>
-
     <div class="withdraw-link" onclick="document.getElementById('modal').style.display = 'flex';">
         회원 탈퇴하기
     </div>
@@ -216,7 +200,9 @@
         <p>정말 탈퇴하시겠습니까?</p>
         <div class="modal-buttons">
             <button class="btn no" onclick="document.getElementById('modal').style.display = 'none';">아니오</button>
-            <button class="btn yes" onclick="window.location.href='/logout-and-delete'" th:onclick="|location.href='@{/logout-and-delete}'|">네</button>
+            <!-- Thymeleaf가 서버 경로 인식하게 렌더링함 -->
+            <button class="btn yes" th:onclick="|location.href='@{/account/delete}'|">네</button>
+
         </div>
     </div>
 </div>
@@ -246,8 +232,6 @@
           `;
         }
       });
-
-      // 아래는 기존에 있던 ott 버튼 및 콘텐츠 카드 처리
     });
 </script>
 
