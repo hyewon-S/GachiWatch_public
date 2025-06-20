@@ -40,7 +40,9 @@
             <br>
             <div th:text="${crew.crewDesc}">크루 설명</div>
             <br>
-            <div class="info-tag">크루장 <span th:text="${crew.captain.nickname}">멤버</span></div>
+            <div class="info-tag">
+                크루장 <span th:text="${captain != null} ? ${captain.nickname} : '탈퇴한 사용자'">크루장</span>
+            </div>
             <br>
             <div class="info-tag">인원 <span th:text="|${crew.getCurrentCount()} / ${crew.maxMember}|">3 / 4</span></div>
             <br>
