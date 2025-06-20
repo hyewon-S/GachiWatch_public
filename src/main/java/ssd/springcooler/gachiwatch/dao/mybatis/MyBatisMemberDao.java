@@ -18,11 +18,6 @@ public class MyBatisMemberDao implements MemberDao {
     private MemberMapper memberMapper;
 
     @Override
-    public Member findByEmailAndPassword(LoginDto loginDto) {
-        return memberMapper.findByEmailAndPassword(loginDto);
-    }
-
-    @Override
     public void updateProfile(ProfileUpdateDto dto) {
         memberMapper.updateProfile(dto);
     }

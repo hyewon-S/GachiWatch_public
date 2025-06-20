@@ -104,14 +104,41 @@ public class MemberServiceImpl implements MemberService {
     }
 
     /** 로그인 처리 */
+//    @Override
+//    public Member login(LoginDto loginDto) {
+//        System.out.println("로그인 시도: email=" + loginDto.getEmail() + ", password=" + loginDto.getPassword());
+//        Member m = memberMapper.findByEmailAndPassword(loginDto);
+//        System.out.println("조회 결과: " + m);
+//        return m;
+////        return memberMapper.findByEmailAndPassword(loginDto);
+//    }
     @Override
     public Member login(LoginDto loginDto) {
-        System.out.println("로그인 시도: email=" + loginDto.getEmail() + ", password=" + loginDto.getPassword());
-        Member m = memberMapper.findByEmailAndPassword(loginDto);
-        System.out.println("조회 결과: " + m);
-        return m;
-//        return memberMapper.findByEmailAndPassword(loginDto);
+        Optional<Member> optionalMember = memberRepository.findByEmailAndDeletedFalse(loginDto.getEmail());
+
+        if (optionalMember.isEmpty()) {
+            System.out.println("❌ 회원 없음 or 탈퇴 회원");
+            return null;
+        }
+
+        Member member = optionalMember.get();
+
+        // 2. 탈퇴한 회원이면 로그인 불가
+        if (member.isDeleted()) {
+            System.out.println("탈퇴한 회원입니다.");
+            return null;
+        }
+
+        // 비밀번호 일치 확인
+        if (!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())) {
+            System.out.println("❌ 비밀번호 불일치");
+            return null;
+        }
+
+        System.out.println("✅ 로그인 성공: " + member.getNickname());
+        return member;
     }
+
 
     /** 프로필 수정 */
     @Override
@@ -330,15 +357,12 @@ public class MemberServiceImpl implements MemberService {
             member.getLikedContents().clear();
             member.getWatchedContents().clear();
             member.getJoinedCrews().clear();
-            memberRepository.delete(member);
+
+            member.setDeleted(true);
+            memberRepository.save(member);
+            System.out.println("회원 탈퇴 처리 완료: " + member.getEmail());
         });
     }
-
-//    @Override
-//    public boolean deleteMember(int memberId) {
-//        //구현 필요
-//        return false;
-//    }
 
     @Override
     public Member getMember(int memberId) {

@@ -10,9 +10,6 @@ import java.util.List;
 
 @Mapper
 public interface MemberMapper {
-    // 로그인
-    Member findByEmailAndPassword(LoginDto loginDto);
-
     // 프로필
     void updateProfile(@Param("dto") ProfileUpdateDto dto);
 

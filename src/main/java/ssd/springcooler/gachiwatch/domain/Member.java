@@ -2,6 +2,7 @@ package ssd.springcooler.gachiwatch.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import java.util.List;
 @Setter
 @Entity
 @Builder
+@Where(clause = "deleted = false")
 public class Member implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -83,6 +85,9 @@ public class Member implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "crew_id")
     )
     private List<Crew> joinedCrews = new ArrayList<>(); // 참여중인 크루 목록
+
+    @Column(name = "deleted")
+    private boolean deleted = false;
 
 
 }

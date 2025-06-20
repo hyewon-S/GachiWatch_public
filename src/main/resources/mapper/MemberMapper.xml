@@ -5,14 +5,7 @@
 
 <mapper namespace="ssd.springcooler.gachiwatch.dao.mybatis.mapper.MemberMapper">
 
-    <select id="findByEmailAndPassword"
-            parameterType="ssd.springcooler.gachiwatch.dto.LoginDto"
-            resultType="ssd.springcooler.gachiwatch.domain.Member">
-        SELECT * FROM member
-        WHERE email = #{email} AND password = #{password}
-    </select>
-
-    <!-- 3. 프로필 수정  -->
+    <!-- 프로필 수정  -->
     <update id="updateProfile" parameterType="ssd.springcooler.gachiwatch.dto.ProfileUpdateDto">
         UPDATE member
         SET nickname = #{nickname},

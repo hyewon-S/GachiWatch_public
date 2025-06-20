@@ -53,7 +53,7 @@ public class CustomUserDetails implements UserDetails, Serializable {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return !member.isDeleted(); // 🔥 탈퇴한 회원은 로그인 불가
     }
 
     public Member getMember() {

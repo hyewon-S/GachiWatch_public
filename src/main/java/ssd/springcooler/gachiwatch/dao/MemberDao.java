@@ -7,9 +7,6 @@ import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.dto.*;
 
 public interface MemberDao {
-    // 로그인
-    Member findByEmailAndPassword(LoginDto loginDto);
-
     // 프로필
     void updateProfile(ProfileUpdateDto dto);
 

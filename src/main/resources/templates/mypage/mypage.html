@@ -200,12 +200,14 @@
         <p>정말 탈퇴하시겠습니까?</p>
         <div class="modal-buttons">
             <button class="btn no" onclick="document.getElementById('modal').style.display = 'none';">아니오</button>
-            <!-- Thymeleaf가 서버 경로 인식하게 렌더링함 -->
-            <button class="btn yes" th:onclick="|location.href='@{/account/delete}'|">네</button>
-
+            <!-- form으로 POST 요청 보내기 -->
+            <form id="deleteForm" th:action="@{/account/delete}" method="post" style="display: inline;">
+                <button class="btn yes" type="submit">네</button>
+            </form>
         </div>
     </div>
 </div>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

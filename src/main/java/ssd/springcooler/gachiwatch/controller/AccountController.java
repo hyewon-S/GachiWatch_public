@@ -17,6 +17,7 @@ import ssd.springcooler.gachiwatch.domain.Member;
 import ssd.springcooler.gachiwatch.domain.Platform;
 import ssd.springcooler.gachiwatch.dto.LoginDto;
 import ssd.springcooler.gachiwatch.dto.MemberRegisterDto;
+import ssd.springcooler.gachiwatch.security.CustomUserDetails;
 import ssd.springcooler.gachiwatch.service.MemberService;
 
 import java.util.*;
@@ -138,14 +139,15 @@ public class AccountController {
     }
 
     /** 회원 탈퇴 */
-    @GetMapping("/delete")
-    public String delete(@AuthenticationPrincipal Member member, HttpSession session) {
-        if (member != null) {
-            memberService.deleteMemberByEmail(member.getEmail());
-            session.invalidate(); // 세션 끊기
-            SecurityContextHolder.clearContext(); // Spring Security 인증 해제
+    @PostMapping("/delete")
+    public String delete(@AuthenticationPrincipal CustomUserDetails customUserDetails, HttpSession session) {
+        if (customUserDetails != null && !customUserDetails.getMember().isDeleted()) {
+            memberService.deleteMemberByEmail(customUserDetails.getUsername()); // email 가져오기
+            session.invalidate();
+            SecurityContextHolder.clearContext();
         }
         return "redirect:/home";
     }
+
 
 }
