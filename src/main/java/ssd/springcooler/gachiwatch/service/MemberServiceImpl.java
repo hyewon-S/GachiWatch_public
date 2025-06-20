@@ -103,15 +103,6 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.existsByNickname(nickname);
     }
 
-    /** 로그인 처리 */
-//    @Override
-//    public Member login(LoginDto loginDto) {
-//        System.out.println("로그인 시도: email=" + loginDto.getEmail() + ", password=" + loginDto.getPassword());
-//        Member m = memberMapper.findByEmailAndPassword(loginDto);
-//        System.out.println("조회 결과: " + m);
-//        return m;
-////        return memberMapper.findByEmailAndPassword(loginDto);
-//    }
     @Override
     public Member login(LoginDto loginDto) {
         Optional<Member> optionalMember = memberRepository.findByEmailAndDeletedFalse(loginDto.getEmail());
@@ -139,28 +130,22 @@ public class MemberServiceImpl implements MemberService {
         return member;
     }
 
-
     /** 프로필 수정 */
     @Override
+    @Transactional
     public void updateProfile(ProfileUpdateDto dto) {
-        System.out.println("updateProfile 호출됨");
+        Member member = memberRepository.findById(dto.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
 
-        // 닉네임 비어있으면 null 처리
-        if (dto.getNickname() == null || dto.getNickname().isBlank()) {
-            dto.setNickname(null);
+        if (dto.getNickname() != null && !dto.getNickname().isBlank()) {
+            member.setNickname(dto.getNickname());
         }
 
-        // 비밀번호가 비어있지 않으면 암호화 처리
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            String encryptedPw = passwordEncoder.encode(dto.getPassword());
-            dto.setPassword(encryptedPw);
-        } else {
-            dto.setPassword(null); // 비밀번호 변경 안할 때 null로 넘기거나 DAO에서 처리
+            String encodedPassword = passwordEncoder.encode(dto.getPassword());
+            member.setPassword(encodedPassword);
         }
-
-        memberDao.updateProfile(dto);
     }
-
 
     /** 참여한 크루 목록 조회 */
     @Override

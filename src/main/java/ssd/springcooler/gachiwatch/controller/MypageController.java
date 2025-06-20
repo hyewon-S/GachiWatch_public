@@ -21,11 +21,14 @@ import ssd.springcooler.gachiwatch.service.CrewServiceImpl;
 import ssd.springcooler.gachiwatch.security.CustomUserDetails;
 import ssd.springcooler.gachiwatch.service.MemberService;
 import ssd.springcooler.gachiwatch.service.ReviewService;
+import ssd.springcooler.gachiwatch.repository.MemberRepository;
+
 
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -35,12 +38,15 @@ public class MypageController {
     private final MemberService memberService;
     private final ReviewService reviewService;
     private final CrewServiceImpl crewService;
+    private final MemberRepository memberRepository;
+
 
     @Autowired
-    public MypageController(MemberService memberService, ReviewService reviewService, CrewServiceImpl crewService) {
+    public MypageController(MemberService memberService, ReviewService reviewService, CrewServiceImpl crewService, MemberRepository memberRepository) {
         this.memberService = memberService;
         this.reviewService = reviewService;
         this.crewService = crewService;
+        this.memberRepository = memberRepository;
     }
 
     /** 마이페이지 불러오기 */
@@ -97,6 +103,21 @@ public class MypageController {
 
         redirectAttributes.addFlashAttribute("result", "success");
         return "redirect:/mypage/mypage";
+    }
+
+    @GetMapping("/account/check-nickname")
+    @ResponseBody
+    public Map<String, Boolean> checkNickname(@RequestParam String nickname,
+                                              @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        boolean exists = memberRepository.existsByNickname(nickname);
+
+        // 본인 닉네임이면 중복 아님 처리
+        if (userDetails != null && userDetails.getMember().getNickname().equals(nickname)) {
+            exists = false;
+        }
+
+        return Collections.singletonMap("exists", exists);
     }
 
     /** 내 크루 페이지 불러오기 */
