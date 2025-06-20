@@ -416,143 +416,70 @@ public class TMDBService {
         }
     }
 
-//    public EmailNotiDto getTopPopularContentByGenres(List<Genre> genreList) throws Exception {
-//        // 1. genre 객체 리스트 -> genre ID 리스트
-//        List<Integer> genreIds = genreList.stream()
-//                .map(Genre::getGenre_id)
-//                .collect(Collectors.toList());
-//
-//        if (genreIds.isEmpty()) return null;
-//
-//        String today = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
-//        String genreParam = genreIds.stream()
-//                .map(String::valueOf)
-//                .collect(Collectors.joining(","));
-//
-//        // 2. discover API 호출 (인기순 정렬)
-//        String url = String.format(
-//                "https://api.themoviedb.org/3/discover/movie?api_key=%s&language=ko-KR&sort_by=popularity.desc&region=KR&release_date.lte=%s&with_genres=%s",
-//                API_KEY, today, genreParam
-//        );
-//
-//        JSONObject response = new JSONObject(readUrl(url));
-//        JSONArray results = response.optJSONArray("results");
-//
-//        if (results == null || results.length() == 0) {
-//            return null;
-//        }
-//
-//        JSONObject topMovie = results.getJSONObject(0);
-//        String title = topMovie.optString("title", "제목 없음");
-//        int contentId = topMovie.getInt("id");
-//
-//        // 3. 장르 정보 추출
-//        JSONArray genreIdArray = topMovie.optJSONArray("genre_ids");
-//        String matchedGenreName = "추천 장르";
-//        if (genreIdArray != null) {
-//            for (int i = 0; i < genreIdArray.length(); i++) {
-//                int id = genreIdArray.getInt(i);
-//                for (Genre g : genreList) {
-//                    if (g.getGenre_id() == id) {
-//                        matchedGenreName = g.getLabel(); // Genre enum에 getDisplayName() 있어야 함
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//
-//        // 4. 플랫폼 정보 추출
-//        String platformUrl = String.format(
-//                "https://api.themoviedb.org/3/movie/%d/watch/providers?api_key=%s", contentId, API_KEY);
-//        JSONObject providerResponse = new JSONObject(readUrl(platformUrl));
-//        JSONObject kr = providerResponse.optJSONObject("results") != null
-//                ? providerResponse.getJSONObject("results").optJSONObject("KR")
-//                : null;
-//        JSONArray flatrate = kr != null ? kr.optJSONArray("flatrate") : null;
-//
-//        String platformName = "해당 없음";
-//        if (flatrate != null) {
-//            for (int i = 0; i < flatrate.length(); i++) {
-//                int pid = flatrate.getJSONObject(i).getInt("provider_id");
-//                if (PROVIDER_ID_TO_PLATFORM.containsKey(pid)) {
-//                    platformName = PROVIDER_ID_TO_PLATFORM.get(pid);
-//                    break;
-//                }
-//            }
-//        }
-//
-//        return new EmailNotiDto(title, matchedGenreName, platformName);
-//    }
-
     public EmailNotiDto getTopPopularContentByGenres(List<Genre> genreList) throws Exception {
-        // 1. genre 객체 리스트 -> genre ID 리스트
-        List<Integer> genreIds = genreList.stream()
-                .map(Genre::getGenre_id)
-                .collect(Collectors.toList());
-
-        if (genreIds.isEmpty()) return null;
-
-        String today = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
-        String genreParam = genreIds.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(","));
-
-        // 2. discover API 호출 (인기순 정렬)
-        String url = String.format(
-                "https://api.themoviedb.org/3/discover/movie?api_key=%s&language=ko-KR&sort_by=popularity.desc&region=KR&release_date.lte=%s&with_genres=%s",
-                API_KEY, today, genreParam
-        );
-
-        JSONObject response = new JSONObject(readUrl(url));
-        JSONArray results = response.optJSONArray("results");
-
-        if (results == null || results.length() == 0) {
-            return null;
+        if (genreList == null || genreList.isEmpty()) {
+            throw new IllegalArgumentException("장르 리스트가 비어 있습니다.");
         }
 
-        // 인기순으로 콘텐츠를 순회하면서 플랫폼 정보가 있는 콘텐츠를 찾기
-        for (int idx = 0; idx < results.length(); idx++) {
-            JSONObject movie = results.getJSONObject(idx);
-            String title = movie.optString("title", "제목 없음");
-            int contentId = movie.getInt("id");
+        // 1. 장르 중 하나를 랜덤으로 선택
+        Genre selectedGenre = genreList.get(new Random().nextInt(genreList.size()));
+        int selectedGenreId = selectedGenre.getGenre_id();
+        String matchedGenreName = selectedGenre.getLabel();
 
-            // 3. 장르 정보 추출
-            JSONArray genreIdArray = movie.optJSONArray("genre_ids");
-            String matchedGenreName = "추천 장르";
-            if (genreIdArray != null) {
-                for (int i = 0; i < genreIdArray.length(); i++) {
-                    int id = genreIdArray.getInt(i);
-                    for (Genre g : genreList) {
-                        if (g.getGenre_id() == id) {
-                            matchedGenreName = g.getLabel();
-                            break;
+        String today = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
+
+        int page = 1;
+        int maxPage = 50; // TMDB API 최대 페이지 제한 고려
+
+        while (true) {
+            String url = String.format(
+                    "https://api.themoviedb.org/3/discover/movie?api_key=%s&language=ko-KR&sort_by=popularity.desc&region=KR&release_date.lte=%s&with_genres=%d&page=%d",
+                    API_KEY, today, selectedGenreId, page
+            );
+
+            JSONObject response = new JSONObject(readUrl(url));
+            JSONArray results = response.optJSONArray("results");
+
+            if (results == null || results.length() == 0) {
+                // 다음 페이지가 없거나 더 이상 결과가 없을 경우 처음부터 다시 시작 (다음 콘텐츠가 있을 때까지 반복)
+                page = 1;
+                continue;
+            }
+
+            for (int idx = 0; idx < results.length(); idx++) {
+                JSONObject movie = results.getJSONObject(idx);
+                String title = movie.optString("title", "제목 없음");
+                int contentId = movie.getInt("id");
+
+                // 플랫폼 정보 추출
+                String platformUrl = String.format(
+                        "https://api.themoviedb.org/3/movie/%d/watch/providers?api_key=%s",
+                        contentId, API_KEY
+                );
+                JSONObject providerResponse = new JSONObject(readUrl(platformUrl));
+                JSONObject kr = providerResponse.optJSONObject("results") != null
+                        ? providerResponse.getJSONObject("results").optJSONObject("KR")
+                        : null;
+                JSONArray flatrate = kr != null ? kr.optJSONArray("flatrate") : null;
+
+                if (flatrate != null) {
+                    for (int i = 0; i < flatrate.length(); i++) {
+                        int pid = flatrate.getJSONObject(i).getInt("provider_id");
+                        if (PROVIDER_ID_TO_PLATFORM.containsKey(pid)) {
+                            String platformName = PROVIDER_ID_TO_PLATFORM.get(pid);
+                            return new EmailNotiDto(title, matchedGenreName, platformName);
                         }
                     }
                 }
             }
 
-            // 4. 플랫폼 정보 추출
-            String platformUrl = String.format(
-                    "https://api.themoviedb.org/3/movie/%d/watch/providers?api_key=%s", contentId, API_KEY);
-            JSONObject providerResponse = new JSONObject(readUrl(platformUrl));
-            JSONObject kr = providerResponse.optJSONObject("results") != null
-                    ? providerResponse.getJSONObject("results").optJSONObject("KR")
-                    : null;
-            JSONArray flatrate = kr != null ? kr.optJSONArray("flatrate") : null;
-
-            if (flatrate != null) {
-                for (int i = 0; i < flatrate.length(); i++) {
-                    int pid = flatrate.getJSONObject(i).getInt("provider_id");
-                    if (PROVIDER_ID_TO_PLATFORM.containsKey(pid)) {
-                        String platformName = PROVIDER_ID_TO_PLATFORM.get(pid);
-                        return new EmailNotiDto(title, matchedGenreName, platformName);
-                    }
-                }
+            page++;
+            if (page > maxPage) {
+                // 최대 페이지를 초과했으면 다시 처음부터 검색 시작
+                page = 1;
             }
-            // 플랫폼 정보가 없으면 다음 콘텐츠로 넘어감
-        }
 
-        // 반복문을 다 돌았는데도 플랫폼 있는 콘텐츠를 찾지 못한 경우
-        return null;
+            // 혹시나 무한 루프를 방지하고 싶다면, 최대 반복 횟수를 제한할 수도 있습니다
+        }
     }
 }
