@@ -145,8 +145,7 @@
             padding: 20px;
             background: white;
         }
-
-        .logo-search {
+.logo-search {
             display: flex;
             align-items: center;
         }
@@ -174,18 +173,27 @@
             font-size: 14px;
         }
 
-        .nav-menu a, .logout, .profile-image {
+        .nav-menu a, .log-in, .register, .logout, .profile-image {
             margin-left: 15px;
             text-decoration: none;
             color: #333;
             cursor: pointer;
         }
 
-        .logout, .profile-image {
+        .log-in, .register, .logout {
             padding: 6px 12px;
             border-radius: 6px;
             border: none;
             cursor: pointer;
+        }
+
+        .log-in {
+            background-color: #eee;
+        }
+
+        .register {
+            background-color: black;
+            color: white;
         }
 
         .logout {
@@ -197,10 +205,10 @@
             height: 36px;
             border-radius: 50%;
             object-fit: cover;
-            margin-left: 15px;
             border: 1px solid #ccc;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             transition: box-shadow 0.2s ease;
+            vertical-align: middle;
         }
 
         .profile-image:hover {
