@@ -88,7 +88,6 @@ public class CrewServiceImpl implements CrewFacade {
     }
 
     public List<Member> getMembers(Long crewId) {
-        //return crewDao.getMembers(crewId);
         List<JoinedCrew> joinedCrewList = joinedCrewRepository.findAll();
         List<Member> crewList = joinedCrewList.stream()
                 .map(JoinedCrew::getMember)  // 각 JoinedCrew에서 Crew 추출
@@ -98,8 +97,7 @@ public class CrewServiceImpl implements CrewFacade {
 
     public List<CrewJoinWaiting> getWaitingList(Long crewId) {
         List<CrewJoinWaiting> crewJoinWaitingList = crewJoinWaitingRepository.findByCrewId(crewId);
-        //List<Member> memberList = crewJoinWaitingList.stream()
-       //         .map(CrewJoinWaiting::getCrewId);
+
         return crewJoinWaitingList;
     }
 
@@ -113,36 +111,27 @@ public class CrewServiceImpl implements CrewFacade {
         return crew;
     }
     @Transactional
-    public Crew updateCrew(Crew crew) {
-        return crewRepository.save(crew);
+    public void updateCrew(Crew crew) {
+        crewRepository.save(crew);
     }
 
-    @Override
-    public boolean deleteCrew(Crew crew) {
-        crewRepository.delete(crew);
-        //더 구현 필요
-        return false;
-    }
 
-    public boolean makeApplication(Long crewId, Member member) {
+    public void makeApplication(Long crewId, Member member) {
         System.out.println(crewId + " , " + member.getMemberId());
         CrewJoinWaiting crewJoinWaiting = new CrewJoinWaiting(crewId, member.getMemberId());
         crewJoinWaitingRepository.save(crewJoinWaiting);
-        return true;
     }
 
     @Transactional
-    public boolean denyMember(Long crewId, Integer memberId) {
+    public void denyMember(Long crewId, Integer memberId) {
         crewJoinWaitingRepository.deleteByCrewIdAndUserId(crewId, memberId);
-        return true;
     }
 
     @Transactional
-    public boolean acceptMember(Long crewId, Integer memberId) {
+    public void acceptMember(Long crewId, Integer memberId) {
         joinedCrewRepository.insertJoinedCrew(crewId, memberId, false);
         crewJoinWaitingRepository.deleteByCrewIdAndUserId(crewId, memberId);
 
-        return true;
     }
 
     public boolean reportMember(Long crewId, Member member, String reason) {
@@ -150,12 +139,10 @@ public class CrewServiceImpl implements CrewFacade {
         return true;
     }
     @Transactional
-    public boolean kickMember(Long crewId, Integer memberId) {
+    public void kickMember(Long crewId, Integer memberId) {
         int deletedCount = joinedCrewRepository.deleteByCrewIdAndMemberId(crewId, memberId);
         if (deletedCount > 0) {
-            return true;
         } else {
-            return false;
         }
     }
 
@@ -170,9 +157,8 @@ public class CrewServiceImpl implements CrewFacade {
         return true;
     }
 
-    public boolean insertCrewChat(CrewChat crewChat){
+    public void insertCrewChat(CrewChat crewChat){
         crewChatRepository.save(crewChat);
-        return true;
     }
 
     @Override
@@ -190,12 +176,7 @@ public class CrewServiceImpl implements CrewFacade {
     }
 
     @Transactional
-    public boolean deleteMemberByMemberId(Long crewId, Integer memberId) {
+    public void deleteMemberByMemberId(Long crewId, Integer memberId) {
         int deletedCount = joinedCrewRepository.deleteByCrewIdAndMemberId(crewId, memberId);
-        if (deletedCount > 0) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }

@@ -85,7 +85,6 @@ public class MemberServiceImpl implements MemberService {
                 .preferredGenres(genreList)
                 .build();
 
-        String encodedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encodedPassword);
 
         System.out.println("DTO 장르 목록: " + dto.getPreferredGenres());
