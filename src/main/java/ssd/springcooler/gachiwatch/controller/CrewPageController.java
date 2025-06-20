@@ -37,23 +37,6 @@ public class CrewPageController {
         return "redirect:/account/login";
     }
 
-    /*
-    @RequestMapping("/chat")
-    public String writeChat(@RequestParam Long crewId,
-                            @RequestParam("message") String chatMessage,
-                            @AuthenticationPrincipal CustomUserDetails userDetails,
-                            HttpSession session) {
-        Member member = userDetails.getMember();
-        Crew crew = crewService.getCrew(crewId).get();
-
-        Date now = new Date();
-        CrewChat newChat = new CrewChat(crew, now, chatMessage, member);
-
-        crewService.insertCrewChat(newChat);
-
-        return "redirect:/crew/crewpage/" + crewId;
-    }*/
-
     @GetMapping("/{id}")
     public String viewCrewPage(@PathVariable Long id, Model model) {
         Crew crew = crewService.getCrew(id).get();
@@ -69,10 +52,12 @@ public class CrewPageController {
                 .collect(Collectors.toList());
 
         Member captain = null;
-        try {
+        if (crew.getCaptain() != null) {
             captain = memberService.getMember(crew.getCaptain().getMemberId());
-        } catch (NoSuchElementException e) {
-            // 크루장이 탈퇴한 사용자일 경우 null 유지
+        }
+        else {
+            captain = new Member();
+            captain.setNickname("탈퇴한 사용자");
         }
 
         model.addAttribute("crew", crew);
