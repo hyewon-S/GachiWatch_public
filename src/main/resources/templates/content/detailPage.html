@@ -238,9 +238,9 @@
          }
 
         function toggleReviewHeart(reviewId, memberId) {
-            const icon = document.getElementById("review-heart");
+            const icon = document.getElementById(`review-heart-${reviewId}`);
             const isRed = icon.src.includes("icon-heart-red.png");
-            const likeSpan = document.getElementById("likeCount");
+            const likeSpan = document.getElementById(`likeCount-${reviewId}`);
             let current = parseInt(likeSpan.innerText);
 
             // 아이콘 바꾸기
@@ -391,9 +391,9 @@
                 <span th:text="${review.nickname}"></span> &emsp; <span th:text="${review.date}"></span> &emsp;
 
                 <!-- 좋아요 버튼 -->
-                <img id="review-heart" th:if="${isLoggedIn}" th:src="@{${review_heartUrl}}"
+                <img th:id="'review-heart-' + ${review.reviewId}" th:if="${isLoggedIn}" th:src="@{${review_heartUrl}}"
                      th:attr="onclick=|toggleReviewHeart(${review.reviewId}, ${user.memberId})|"
-                     style="width: 30px;"/> <span id="likeCount" th:if="${isLoggedIn}" th:text="${review.likes}">0</span>
+                     style="width: 30px;"/> <span th:id="'likeCount-' + ${review.reviewId}" th:if="${isLoggedIn}" th:text="${review.likes}">0</span>
 
                 <img th:unless="${isLoggedIn}" th:src="@{/image/icon/icon-heart-red.png}"
                      onclick="alert('로그인이 필요합니다.')"
