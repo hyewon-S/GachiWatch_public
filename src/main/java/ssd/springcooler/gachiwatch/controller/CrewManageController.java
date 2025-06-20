@@ -86,7 +86,14 @@ public class CrewManageController {
 
         CrewCommand crewCommand = new CrewCommand();
         crewCommand.setCrewId(crew.getCrewId());
-        crewCommand.setCaptain(crew.getCaptain());
+        if (crew.getCaptain() != null) {
+            crewCommand.setCaptain(crew.getCaptain());
+        }
+        else {
+            Member member = new Member();
+            member.setNickname("탈퇴한 사용자");
+            crewCommand.setCaptain(member);
+        }
         crewCommand.setCrewName(crew.getCrewName());
         crewCommand.setCrewDesc(crew.getCrewDesc());
         crewCommand.setPlatform(crew.getPlatform());
@@ -94,6 +101,8 @@ public class CrewManageController {
         crewCommand.setPayDate(crew.getPayDate());
         crewCommand.setMaxMember(crew.getMaxMember());
         crewCommand.setAccount(crew.getAccount());
+
+        //model.addAttribute("captain", captain);
 
         model.addAttribute("platforms", filteredPlatforms);
         model.addAttribute("loginUser", userDetails.getMember());
