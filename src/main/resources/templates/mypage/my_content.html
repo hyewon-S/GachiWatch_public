@@ -132,6 +132,19 @@
             font-size: 0.8rem;
             color: gray;
         }
+
+        .content-card a {
+            text-decoration-line: none;
+            color: black;
+            font-weight: bold;
+       }
+       .content-card a:visited {
+            color: black;
+       }
+
+       .content-card a:hover {
+            color: #C6C9FF;
+       }
     </style>
 </head>
 <body>
@@ -172,8 +185,8 @@
 
 <div class="content-grid">
     <div class="content-card" th:each="content : ${contentList}" th:attr="data-id=${content.contentId}">
-        <img th:src="${content.thumbnailUrl}" alt="포스터" />
-        <div class="content-title" th:text="${content.title}">작품 제목</div>
+        <a th:href="@{/content/detail(contentId=${content.contentId})}"><img th:src="${content.thumbnailUrl}" alt="포스터" /></a>
+        <a th:href="@{/content/detail(contentId=${content.contentId})}"><div class="content-title" th:text="${content.title}">작품 제목</div></a>
         <div class="content-rating" th:text="'별점 ' + ${content.rating}">별점</div>
     </div>
 </div>
