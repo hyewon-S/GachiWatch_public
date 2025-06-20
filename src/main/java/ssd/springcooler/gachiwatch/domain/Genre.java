@@ -8,7 +8,7 @@ public enum Genre {
     TV_MOVIE("TV 영화", 10770),
     FAMILY("가족", 10751),
     HORROR("공포", 27),
-    DOCUMENTARY("다큐멘터리", 99),
+    DOCUMENTARY("다큐", 99),
     DRAMA("드라마", 18),
     ROMANCE("로맨스", 10749),
     ADVENTURE("모험", 12),
