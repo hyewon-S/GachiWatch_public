@@ -17,6 +17,7 @@ import ssd.springcooler.gachiwatch.service.MemberServiceImpl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Controller
@@ -67,8 +68,15 @@ public class CrewPageController {
                         .build())
                 .collect(Collectors.toList());
 
+        Member captain = null;
+        try {
+            captain = memberService.getMember(crew.getCaptain().getMemberId());
+        } catch (NoSuchElementException e) {
+            // 크루장이 탈퇴한 사용자일 경우 null 유지
+        }
 
         model.addAttribute("crew", crew);
+        model.addAttribute("captain", captain);
         model.addAttribute("chatList", chatDtoList);
 
         return "crew/crewpage";

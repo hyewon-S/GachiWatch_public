@@ -11,6 +11,7 @@ import ssd.springcooler.gachiwatch.repository.*;
 
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -342,7 +343,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member getMember(int memberId) {
-        return memberRepository.findById(memberId).get();
+        //return memberRepository.findById(memberId).get();
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        if (!optionalMember.isPresent()) {
+            throw new NoSuchElementException("회원이 존재하지 않거나 탈퇴한 사용자입니다. ID: " + memberId);
+        }
+        return optionalMember.get();
     }
 
     @Override
