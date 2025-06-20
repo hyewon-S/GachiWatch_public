@@ -11,7 +11,7 @@
         <a th:href="@{/}">
             <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
         </a>
-        <form id="keywordForm" method="post" th:action="@{/content/keyword}">
+        <form id="keywordForm" method="get" th:action="@{/content/keyword}">
             <input type="text" name="keyword" placeholder="콘텐츠, 키워드 입력" class="search-bar">
             <button class="search-button" type="submit">Search</button>
         </form>
@@ -87,11 +87,12 @@
     const memberId = /*[[${user.memberId}]]*/ 0;
     const nickname = /*[[${user.nickname}]]*/ '사용자';
 
-    const socket = new SockJS('/ws');
+    const socket = new SockJS('http://172.30.33.33:8080/ws');
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, function (frame) {
         stompClient.subscribe(`/topic/chatroom/${crewId}`, function (chatMessage) {
+        console.log("Received message on B:", chatMessage);
             const msg = JSON.parse(chatMessage.body);
             appendMessage(msg);
         });

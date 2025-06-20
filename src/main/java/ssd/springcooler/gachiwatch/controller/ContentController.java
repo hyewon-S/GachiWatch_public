@@ -213,7 +213,7 @@ System.out.println(sort);
         return sortedList;
     }
 
-    @PostMapping ("/keyword")
+    @GetMapping ("/keyword")
     public String keyword(@RequestParam(required = false) String keyword, Model model, @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails != null) {
             model.addAttribute("isLoggedIn", true);

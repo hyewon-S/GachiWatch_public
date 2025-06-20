@@ -12,7 +12,7 @@
         <a th:href="@{/}">
             <img th:src="@{/image/logo.png}" alt="Gachi Watch Logo" class="logo">
         </a>
-        <form id="keywordForm" method="post" th:action="@{/content/keyword}">
+        <form id="keywordForm" method="get" th:action="@{/content/keyword}">
             <input type="text" name="keyword" placeholder="콘텐츠, 키워드 입력" class="search-bar">
             <button class="search-button" type="submit">Search</button>
         </form>
