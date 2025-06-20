@@ -5,76 +5,77 @@
     <title>프로필 수정</title>
     <style>
         body {
-          font-family: 'Noto Sans KR', sans-serif;
-          background-color: #f5f5f5;
-          margin: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
         }
 
         .container {
-          max-width: 500px;
-          margin: 3rem auto;
-          background: white;
-          padding: 2.5rem;
-          border-radius: 30px;
+            max-width: 500px;
+            margin: 3rem auto;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 30px;
         }
 
         .header {
-          display: flex;
-          align-items: center;
-          margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
         }
 
         .back-button {
-          font-size: 1.5rem;
-          margin-right: 1rem;
-          cursor: pointer;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
         }
 
         h2 {
-          text-align: center;
-          margin-bottom: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
         }
 
         .profile-img {
-          display: flex;
-          justify-content: center;
-          margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
         }
 
         .profile-img img {
-          width: 120px;
-          height: 120px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-
-        .change-btn {
-          display: block;
-          margin: 0 auto 2rem auto;
-          padding: 0.5rem 1rem;
-          border: none;
-          background: #eee;
-          border-radius: 8px;
-          cursor: pointer;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
         }
 
         .form-input {
-          width: 100%;
-          padding: 0.8rem;
-          margin-bottom: 1rem;
-          border-radius: 8px;
-          border: 1px solid #ccc;
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
         }
 
         .submit-btn {
-          width: 100%;
-          padding: 0.9rem;
-          background-color: #333;
-          color: white;
-          border: none;
-          border-radius: 8px;
-          font-size: 1rem;
-          cursor: pointer;
+            width: 100%;
+            padding: 0.9rem;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        #nickname-check-msg, #passwordMessage, #confirmPasswordMessage {
+            font-size: 0.9em;
+            margin-top: 4px;
+            margin-bottom: 8px;
         }
     </style>
 </head>
@@ -85,64 +86,119 @@
         <h2 style="flex-grow: 1; text-align: center;">프로필 수정</h2>
     </div>
 
-<!--    <form th:action="@{/mypage/my_profile}" method="post" enctype="multipart/form-data">-->
-<!--        <div class="profile-img">-->
-<!--            <img th:src="@{${profileImageUrl}}" id="preview-img" alt="프로필 이미지">-->
-<!--        </div>-->
-<!--        <input type="file" name="profileImage" id="profileImageInput" accept="image/*" style="display:none;" onchange="previewImage(event)">-->
-<!--        <button type="button" class="change-btn" onclick="document.getElementById('profileImageInput').click()">프로필 사진 변경</button>-->
-
-<!--        <input type="text" name="nickname" th:placeholder="${user.nickname}" class="form-input">-->
-<!--        <input type="password" name="password" placeholder="비밀번호 변경" class="form-input">-->
-
-<!--        <button type="submit" class="submit-btn">저장</button>-->
-<!--    </form>-->
     <form th:action="@{/mypage/my_profile}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
         <div class="profile-img">
             <img th:src="@{/image/profile_img_default.png}" alt="프로필" id="profile-img"/>
         </div>
-<!--        <input type="file" name="profileImage" id="profileImageInput" accept="image/*" style="display:none;" onchange="previewImage(event)">-->
-<!--        <button type="button" class="change-btn" onclick="document.getElementById('profileImageInput').click()">프로필 사진 변경</button>-->
 
-        <input type="text" name="nickname" th:placeholder="${user.nickname}" id="nicknameInput" class="form-input">
+        <div class="form-group">
+            <input type="text" name="nickname" th:placeholder="${user.nickname}" th:value="${user.nickname}"
+                   id="nicknameInput" class="form-input" placeholder="닉네임 변경">
+            <button type="button" onclick="checkNickname()">중복 확인</button>
+            <div id="nickname-check-msg"></div>
+        </div>
 
-        <input type="password" name="password" placeholder="비밀번호 변경" id="passwordInput" class="form-input">
-        <input type="password" name="passwordConfirm" placeholder="비밀번호 확인" id="passwordConfirmInput" class="form-input">
+        <div class="form-group">
+            <input type="password" name="password" placeholder="비밀번호 변경" id="passwordInput" class="form-input">
+            <div id="passwordMessage"></div>
+        </div>
+
+        <div class="form-group">
+            <input type="password" name="passwordConfirm" placeholder="비밀번호 확인" id="passwordConfirmInput" class="form-input">
+            <div id="confirmPasswordMessage"></div>
+        </div>
 
         <button type="submit" class="submit-btn">저장</button>
     </form>
-
 </div>
 
 <script>
-    const originalNickname = /*[[${user != null} ? '${user.nickname}' : '' ]]*/ '';
+    const originalNickname = /*[[${user.nickname}]]*/ '';
 
-<!--    function previewImage(event) {-->
-<!--        const reader = new FileReader();-->
-<!--        reader.onload = function () {-->
-<!--            document.getElementById('preview-img').src = reader.result;-->
-<!--        };-->
-<!--        reader.readAsDataURL(event.target.files[0]);-->
-<!--    }-->
+    function checkPasswordFormat(password) {
+        const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{7,}$/;
+        return regex.test(password);
+    }
+
+    function checkNickname() {
+        const nickname = document.getElementById("nicknameInput").value.trim();
+        const msg = document.getElementById("nickname-check-msg");
+
+        if (!nickname) {
+            msg.textContent = "닉네임을 입력해주세요.";
+            msg.style.color = "red";
+            return;
+        }
+
+        if (nickname === originalNickname) {
+            msg.textContent = "현재 사용 중인 닉네임입니다.";
+            msg.style.color = "gray";
+            return;
+        }
+
+        fetch(`/account/check-nickname?nickname=${encodeURIComponent(nickname)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.exists) {
+                    msg.textContent = "이미 사용 중인 닉네임입니다.";
+                    msg.style.color = "red";
+                } else {
+                    msg.textContent = "사용 가능한 닉네임입니다.";
+                    msg.style.color = "green";
+                }
+            })
+            .catch(() => {
+                msg.textContent = "서버 오류로 확인에 실패했습니다.";
+                msg.style.color = "red";
+            });
+    }
+
+    document.getElementById("passwordInput").addEventListener("input", function () {
+        const pwd = this.value;
+        const msg = document.getElementById("passwordMessage");
+
+        if (!checkPasswordFormat(pwd)) {
+            msg.innerText = "영문+숫자 조합 7자 이상이어야 합니다.";
+            msg.style.color = "red";
+        } else {
+            msg.innerText = "";
+        }
+    });
+
+    document.getElementById("passwordConfirmInput").addEventListener("input", function () {
+        const pwd = document.getElementById("passwordInput").value;
+        const confirmPwd = this.value;
+        const msg = document.getElementById("confirmPasswordMessage");
+
+        if (pwd !== confirmPwd) {
+            msg.innerText = "비밀번호가 일치하지 않습니다.";
+            msg.style.color = "red";
+        } else {
+            msg.innerText = "";
+        }
+    });
 
     function validateForm() {
         const nickname = document.getElementById('nicknameInput').value.trim();
         const password = document.getElementById('passwordInput').value;
         const passwordConfirm = document.getElementById('passwordConfirmInput').value;
-<!--        const fileInput = document.getElementById('profileImageInput');-->
 
         const nicknameChanged = nickname !== '' && nickname !== originalNickname;
         const passwordChanged = password !== '';
-<!--        const imageChanged = fileInput.files.length > 0;-->
 
-        // 비밀번호 확인 검사
-        if (passwordChanged && password !== passwordConfirm) {
-            alert("비밀번호가 일치하지 않습니다.");
-            return false;
+        if (passwordChanged) {
+            if (!checkPasswordFormat(password)) {
+                alert("비밀번호 형식이 올바르지 않습니다.");
+                return false;
+            }
+
+            if (password !== passwordConfirm) {
+                alert("비밀번호가 일치하지 않습니다.");
+                return false;
+            }
         }
 
-        // 모든 항목 변경 없음
-        if (!nicknameChanged && !passwordChanged && !imageChanged) {
+        if (!nicknameChanged && !passwordChanged) {
             alert("변경사항이 없습니다.");
             return false;
         }
