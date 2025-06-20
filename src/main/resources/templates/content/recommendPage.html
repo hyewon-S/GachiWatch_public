@@ -52,7 +52,7 @@
            cursor: pointer;
        }
 
-       .log-in, .register {
+       .log-in, .register, .logout {
             padding: 6px 12px;
             border-radius: 6px;
             border: none;
@@ -68,29 +68,23 @@
             color: white;
         }
 
-        .logout, .profile-image {
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
+        .logout {
+            background-color: #eee;
         }
 
         .profile-image {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 1px solid #ccc;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        transition: box-shadow 0.2s ease;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.2s ease;
+            vertical-align: middle;
         }
 
         .profile-image:hover {
             box-shadow: 0 0 0 2px #4285f4;
-        }
-
-        .logout {
-            background-color: #eee;
         }
 
        .nav-menu {
