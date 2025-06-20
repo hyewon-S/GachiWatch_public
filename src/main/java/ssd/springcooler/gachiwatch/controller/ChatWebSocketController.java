@@ -6,6 +6,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import ssd.springcooler.gachiwatch.domain.Crew;
 import ssd.springcooler.gachiwatch.domain.CrewChat;
 import ssd.springcooler.gachiwatch.domain.Member;
@@ -23,8 +24,10 @@ public class ChatWebSocketController {
     @Autowired
     private MemberServiceImpl memberService;
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
     @MessageMapping("/chat.send/{crewId}")
-    @SendTo("/topic/chatroom/{crewId}")
     public ChatDto send(@Payload ChatDto message, @DestinationVariable Long crewId) {
         Crew crew = crewService.getCrew(crewId).get();
         Member member = memberService.getMember(message.getMember().getMemberId());
@@ -32,6 +35,7 @@ public class ChatWebSocketController {
         crewService.insertCrewChat(chat);
 
         message.setDate(chat.getChatDate());
+        messagingTemplate.convertAndSend("/topic/chatroom/" + crewId, message);
         return message;
     }
 }
