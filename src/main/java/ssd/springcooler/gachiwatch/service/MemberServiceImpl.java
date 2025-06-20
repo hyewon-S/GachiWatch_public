@@ -355,7 +355,9 @@ public class MemberServiceImpl implements MemberService {
         //return memberRepository.findById(memberId).get();
         Optional<Member> optionalMember = memberRepository.findById(memberId);
         if (!optionalMember.isPresent()) {
-            throw new NoSuchElementException("회원이 존재하지 않거나 탈퇴한 사용자입니다. ID: " + memberId);
+            Member member = new Member();
+            member.setNickname("탈퇴한 사용자");
+            return member;
         }
         return optionalMember.get();
     }
