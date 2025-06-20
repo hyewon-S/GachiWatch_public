@@ -209,78 +209,6 @@ public class TMDBService {
         return latestMovies;
     }
 
-    //회원 메인페이지 "나를 위한 추천" 관련 코드 (사용자가 선택한 선호 장르 기반 추천)
-
-    public List<ForMeContentDto> getForMeContents(int count, List<Genre> genreIdList) throws Exception {
-        List<ForMeContentDto> contents = new ArrayList<>();
-
-        // 장르 리스트 -> 쉼표 구분된 genre_id 문자열로 변환
-        String genreIdParam = genreIdList.stream()
-                .map(g -> String.valueOf(g.getGenre_id()))
-                .collect(Collectors.joining(","));
-
-        // genreIdParam이 비어있을 경우 기본 장르 ID 사용 (예: 액션 28) 비어있을 경우 액션을 default로 보여줌
-        if (genreIdParam.isEmpty()) {
-            genreIdParam = "28";
-        }
-
-        // 영화 API URL
-        final String MOVIE_URL = "https://api.themoviedb.org/3/discover/movie"
-                + "?with_genres=" + genreIdParam
-                + "&language=ko-KR"
-                + "&sort_by=popularity.desc"
-                + "&region=KR"
-                + "&api_key=" + API_KEY;
-
-        // TV API URL
-        final String TV_URL = "https://api.themoviedb.org/3/discover/tv"
-                + "?with_genres=" + genreIdParam
-                + "&language=ko-KR"
-                + "&sort_by=popularity.desc"
-                + "&region=KR"
-                + "&api_key=" + API_KEY;
-
-        // 영화 콘텐츠 먼저 가져오기
-        contents.addAll(fetchContentFromUrl(MOVIE_URL, "movie", count));
-
-        // TV 콘텐츠는 남은 수만큼 추가
-        if (contents.size() < count) {
-            int remaining = count - contents.size();
-            contents.addAll(fetchContentFromUrl(TV_URL, "tv", remaining));
-        }
-
-        return contents;
-    }
-
-    private List<ForMeContentDto> fetchContentFromUrl(String url, String mediaType, int maxCount) throws Exception {
-        List<ForMeContentDto> result = new ArrayList<>();
-        int page = 1;
-
-        while (result.size() < maxCount) {
-            String pagedUrl = url + "&page=" + page;
-            String jsonResponse = readUrl(pagedUrl);
-
-            JSONObject jsonObject = new JSONObject(jsonResponse);
-            JSONArray results = jsonObject.getJSONArray("results");
-
-            if (results.length() == 0) break; // 더 이상 결과 없음
-
-            for (int i = 0; i < results.length() && result.size() < maxCount; i++) {
-                JSONObject obj = results.getJSONObject(i);
-                int id = obj.getInt("id");
-                String posterPath = obj.optString("poster_path", null);
-
-                if (posterPath != null && !posterPath.isEmpty()) {
-                    result.add(new ForMeContentDto(id, posterPath, mediaType));
-                }
-            }
-
-            page++;
-        }
-
-        return result;
-    }
-
     //키워드로 키워드 ID 검색
     public int getKeywordId(String query, String apiKey) throws Exception {
         String urlStr = String.format(
@@ -326,7 +254,6 @@ public class TMDBService {
         return allResults;
     }
 
-
     //키워드 ID로 tv 검색
     public JSONArray getTvByKeyword(int keywordId, String apiKey) throws Exception {
         JSONArray allResults = new JSONArray();
@@ -352,7 +279,6 @@ public class TMDBService {
 
         return allResults;
     }
-
 
     public String readUrlForKeyword(String urlString) throws Exception {
         URL url = new URL(urlString);
@@ -415,74 +341,6 @@ public class TMDBService {
             return contentDao.searchByKeyword(keyword);
         }
     }
-
-//    public EmailNotiDto getTopPopularContentByGenres(List<Genre> genreList) throws Exception {
-//        // 1. genre 객체 리스트 -> genre ID 리스트
-//        List<Integer> genreIds = genreList.stream()
-//                .map(Genre::getGenre_id)
-//                .collect(Collectors.toList());
-//
-//        if (genreIds.isEmpty()) return null;
-//
-//        String today = LocalDate.now().format(DateTimeFormatter.ISO_DATE);
-//        String genreParam = genreIds.stream()
-//                .map(String::valueOf)
-//                .collect(Collectors.joining(","));
-//
-//        // 2. discover API 호출 (인기순 정렬)
-//        String url = String.format(
-//                "https://api.themoviedb.org/3/discover/movie?api_key=%s&language=ko-KR&sort_by=popularity.desc&region=KR&release_date.lte=%s&with_genres=%s",
-//                API_KEY, today, genreParam
-//        );
-//
-//        JSONObject response = new JSONObject(readUrl(url));
-//        JSONArray results = response.optJSONArray("results");
-//
-//        if (results == null || results.length() == 0) {
-//            return null;
-//        }
-//
-//        JSONObject topMovie = results.getJSONObject(0);
-//        String title = topMovie.optString("title", "제목 없음");
-//        int contentId = topMovie.getInt("id");
-//
-//        // 3. 장르 정보 추출
-//        JSONArray genreIdArray = topMovie.optJSONArray("genre_ids");
-//        String matchedGenreName = "추천 장르";
-//        if (genreIdArray != null) {
-//            for (int i = 0; i < genreIdArray.length(); i++) {
-//                int id = genreIdArray.getInt(i);
-//                for (Genre g : genreList) {
-//                    if (g.getGenre_id() == id) {
-//                        matchedGenreName = g.getLabel(); // Genre enum에 getDisplayName() 있어야 함
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//
-//        // 4. 플랫폼 정보 추출
-//        String platformUrl = String.format(
-//                "https://api.themoviedb.org/3/movie/%d/watch/providers?api_key=%s", contentId, API_KEY);
-//        JSONObject providerResponse = new JSONObject(readUrl(platformUrl));
-//        JSONObject kr = providerResponse.optJSONObject("results") != null
-//                ? providerResponse.getJSONObject("results").optJSONObject("KR")
-//                : null;
-//        JSONArray flatrate = kr != null ? kr.optJSONArray("flatrate") : null;
-//
-//        String platformName = "해당 없음";
-//        if (flatrate != null) {
-//            for (int i = 0; i < flatrate.length(); i++) {
-//                int pid = flatrate.getJSONObject(i).getInt("provider_id");
-//                if (PROVIDER_ID_TO_PLATFORM.containsKey(pid)) {
-//                    platformName = PROVIDER_ID_TO_PLATFORM.get(pid);
-//                    break;
-//                }
-//            }
-//        }
-//
-//        return new EmailNotiDto(title, matchedGenreName, platformName);
-//    }
 
     public EmailNotiDto getTopPopularContentByGenres(List<Genre> genreList) throws Exception {
         // 1. genre 객체 리스트 -> genre ID 리스트
