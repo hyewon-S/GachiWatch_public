@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 import joblib
+import threading
+import model
 
 app = Flask(__name__)
 
@@ -31,6 +33,21 @@ def recommend(title=None, content_id=None, top_n=any):
             "score": score
         })
     return recommended
+
+@app.route("/reload_model", methods=["GET"])
+def reload_model():
+    def retrain_thread():
+        global cosine_sim, titles, content_ids
+        print("[INFO] 모델 재학습 시작")
+        model.save_model()
+        model_data = joblib.load("model.pkl")
+        cosine_sim = model_data['cosine_sim']
+        titles = model_data['titles']
+        content_ids = model_data['content_ids']
+        print("[INFO] 모델 재학습 완료 및 메모리 갱신")
+
+    threading.Thread(target=retrain_thread).start()
+    return jsonify({"message": "Model retraining started asynchronously"})
 
 @app.route("/recommend", methods=["GET"])
 def recommend_api():

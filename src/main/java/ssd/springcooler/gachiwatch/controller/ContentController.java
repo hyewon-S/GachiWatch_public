@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import ssd.springcooler.gachiwatch.dao.ContentDao;
 import ssd.springcooler.gachiwatch.domain.Content;
 import ssd.springcooler.gachiwatch.domain.LikedContent;
@@ -44,6 +45,8 @@ public class ContentController {
 
     @Autowired
     private RecommendationService recommendationService;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @GetMapping("/search")
     public String search(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -243,8 +246,25 @@ System.out.println(sort);
     //API 에서 콘텐츠 받아와서 DB에 데이터 넣어둠
     //자정마다 실행됨!
     @Scheduled(cron = "0 0 0 * * *")
-    public String insert(Model model) {
+    public String insert() {
         contentService.insertNewContent(50, 50);
+        try {
+            Process process = Runtime.getRuntime().exec("python3 retrain_model.py");
+            process.waitFor();
+        } catch (Exception e) {
+            System.err.println("[ERROR] 모델 재학습 중 예외: " + e.getMessage());
+        }
+
+        try {
+            ResponseEntity<String> response = restTemplate.getForEntity("http://localhost:5000/reload_model", String.class);
+            if (response.getStatusCode().is2xxSuccessful()) {
+                System.out.println("[SUCCESS] Flask 모델 리로드 성공");
+            } else {
+                System.err.println("[ERROR] Flask 모델 리로드 실패: " + response.getStatusCode());
+            }
+        } catch (Exception e) {
+            System.err.println("[ERROR] Flask 모델 리로드 예외: " + e.getMessage());
+        }
         return "content/searchPage";
     }
 
