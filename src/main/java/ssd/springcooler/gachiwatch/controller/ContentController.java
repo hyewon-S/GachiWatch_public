@@ -245,7 +245,7 @@ System.out.println(sort);
 
     //API 에서 콘텐츠 받아와서 DB에 데이터 넣어둠
     //자정마다 실행됨!
-    @Scheduled(cron = "0 49 17 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public String insert() {
         contentService.insertNewContent(50, 50);
         try {
