@@ -71,13 +71,14 @@ public class MainController {//홈페이지 첫 메인화면 관련 컨트롤러
 
                 //나를 위한 추천
                 List<LikedContent> likedContentList = contentService.getLikedContentsByUserId(loginUser.getMemberId());
-                List<ContentDto> recommendList = recommendationService.getRecommendations(likedContentList.get(0).getContentId(), 30);
+                if (likedContentList != null && !likedContentList.isEmpty()) {
+                    List<ContentDto> recommendList = recommendationService.getRecommendations(likedContentList.get(0).getContentId(), 30);
 
-                Collections.shuffle(recommendList);
-                recommendList = recommendList.subList(0, Math.min(20, recommendList.size()));
+                    Collections.shuffle(recommendList);
+                    recommendList = recommendList.subList(0, Math.min(20, recommendList.size()));
 
-                model.addAttribute("formecontents", recommendList);
-
+                    model.addAttribute("formecontents", recommendList);
+                }
 
                 // === [이메일 추천 발송] ===
                 List<Genre> preferredGenres = loginUser.getPreferredGenres();

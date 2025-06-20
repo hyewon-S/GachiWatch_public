@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface JoinedCrewRepository extends JpaRepository<JoinedCrew, JoinedCrewId> {
-    //List<JoinedCrew> findByMemberMemberId(Long memberId);
     Page<JoinedCrew> findByMemberMemberId(int memberId, Pageable pageable);
 
     @Query("SELECT jc FROM JoinedCrew jc WHERE jc.crew.id = :crewId AND jc.member.id = :memberId")

@@ -13,7 +13,4 @@ import java.util.List;
 public interface CrewMemberRepository extends JpaRepository<Member, Long> {
     @Query("SELECT m FROM Member m JOIN m.joinedCrews c WHERE c.crewId = :crewId")
     List<Member> findAllByCrewId(@Param("crewId") Long crewId);
-
-    //@Query("SELECT m FROM Crew m JOIN m.joinedCrews c WHERE c.crewId = :crewId")
-    //List<Crew> findAllByMemberId(@Param("crewId") Long memberId);
 }
