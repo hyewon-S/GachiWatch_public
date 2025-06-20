@@ -113,13 +113,14 @@
         const container = document.getElementById("chat-container");
         const entry = document.createElement("div");
         //entry.classList.add("chat-entry");
-
         const isSelf = msg.member.memberId === memberId;
+        const nicknameAlignClass = isSelf ? 'nickname self-nickname' : 'nickname';
+
         entry.classList.add("chat-entry");
         if (isSelf) entry.classList.add("self");
 
         entry.innerHTML = `<div>
-            <div><strong>${msg.member.nickname}</strong></div>
+             <div class="${nicknameAlignClass}">${msg.member.nickname}</div>
             <div class="chat-content">${msg.chat}</div>
         </div>`;
         container.appendChild(entry);
